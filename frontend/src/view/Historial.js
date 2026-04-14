@@ -296,7 +296,7 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
-    axios.put(`http://localhost:3100/api/historial/actualizar/${datos.id_rol}`,{
+    axios.put(`http://localhost:3100/api/historial/actualizar/${datos.id_historial}`,{
       id_historial:Id_historial,
       id_motos:Id_motos,
       id_tecnico:Id_tecnico,
@@ -360,8 +360,8 @@ function Editar({datos,cerrarmodal}){
 }
 
 function Eliminar ({id, cerrarmodal}){
-  const eliminar_Rol = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar este Repuesto?")){
+  const eliminar_Historial = ()=>{
+    if(window.confirm("¿seguro que quieres eliminar este Historial?")){
       axios.delete(`http://localhost:3100/api/historial/eliminar/${id}`).then(()=>{
         alert("Historial eliminado");
         cerrarmodal();
@@ -376,7 +376,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>seguro que quieres eliminar este Historial</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
+      <button className='btn btn-danger mb-3' onClick={eliminar_Historial}>eliminar</button>
     </div>
   )
 }

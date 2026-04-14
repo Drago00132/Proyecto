@@ -232,7 +232,7 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
-    axios.put(`http://localhost:3100/api/repuestos/actualizar/${datos.id_rol}`,{
+    axios.put(`http://localhost:3100/api/repuestos/actualizar/${datos.id_repuestos}`,{
       id_repuestos: Id_repuestos,
       nombre_repuesto: Nombre_repuesto,
       cantidad: Cantidad

@@ -253,7 +253,7 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
-    axios.put(`http://localhost:3100/api/motos/actualizar/${datos.id_rol}`,{
+    axios.put(`http://localhost:3100/api/motos/actualizar/${datos.id_motos}`,{
       id_motos:Id_motos,
       numero_identidad: Numero_identidad,
       marca_moto: Marca_moto,

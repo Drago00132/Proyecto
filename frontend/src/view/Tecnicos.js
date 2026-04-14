@@ -80,7 +80,7 @@ function Tecnicos() {
                     setMostrarEditar(true);}}>
                       Editar</button>
                     <button className="btn btn-danger" onClick={()=>{ 
-                    setTecnicoSelecionado(tecnicos.numero_identidad);
+                    setTecnicoSelecionado(tecnicos.id_tecnico);
                     setmostrarEliminar(true);}}>
                       Eliminar</button></td>
                 </tr>
@@ -261,7 +261,7 @@ function Editar({datos,cerrarmodal}){
 }
 
 function Eliminar ({id, cerrarmodal}){
-  const eliminar_Rol = ()=>{
+  const eliminar_Tecnico = ()=>{
     if(window.confirm("¿seguro que quieres eliminar a este Tecnico?")){
       axios.delete(`http://localhost:3100/api/tecnico/eliminar/${id}`).then(()=>{
         alert("Tecnico eliminado");
@@ -276,8 +276,8 @@ function Eliminar ({id, cerrarmodal}){
 
   return(
     <div>
-      <h5>seguro que quieres eliminar este Rol</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
+      <h5>seguro que quieres eliminar este Tecnico</h5>
+      <button className='btn btn-danger mb-3' onClick={eliminar_Tecnico}>eliminar</button>
     </div>
   )
 }
