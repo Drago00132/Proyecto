@@ -1,4 +1,4 @@
-const db = require('../Config/db');
+const db = require('../config/db');
 
 const repuesto = {
     findAll: async()=>{

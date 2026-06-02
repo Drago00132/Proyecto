@@ -1,0 +1,70 @@
+const tecnico_mo = require('../model/tecnicoModelo');
+
+exports.ListarTecnico = async (req, res) => {
+    try {
+        const tecnico = await tecnico_mo.findAll();
+        res.status(200).json(tecnico);
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.obtenerTecnico = async (req, res) => {
+    try {
+        const tecnico = await tecnico_mo.findById(req.params.id);
+        if (!tecnico) return res.status(404).json({ message: 'Técnico no encontrado' });
+        res.status(200).json(tecnico);
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.agregarTecnico = async (req, res) => {
+    const { numero_identidad, reparaciones_asignadas } = req.body;
+
+    if (!numero_identidad || reparaciones_asignadas === undefined) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        const id = await tecnico_mo.create(req.body);
+        res.status(201).json({ id_tecnico: id, ...req.body });
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.actializarTecnico = async (req, res) => {
+    const { numero_identidad, reparaciones_asignadas } = req.body;
+
+    if (!numero_identidad || reparaciones_asignadas === undefined) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        const existe = await tecnico_mo.findById(req.params.id);
+        if (!existe) return res.status(404).json({ message: 'Técnico no encontrado' });
+
+        await tecnico_mo.update(req.params.id, req.body);
+        res.status(200).json({ message: 'Técnico actualizado correctamente' });
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.eliminarTecnico = async (req, res) => {
+    try {
+        const existe = await tecnico_mo.findById(req.params.id);
+        if (!existe) return res.status(404).json({ message: 'Técnico no encontrado' });
+
+        await tecnico_mo.delete(req.params.id);
+        res.status(200).json({ message: 'Técnico eliminado correctamente' });
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        res.status(500).json({ error: error.message });
+    }
+};

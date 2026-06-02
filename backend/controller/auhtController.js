@@ -1,4 +1,4 @@
-const usuariosModelo = require('../Model/auhtModel');
+const usuariosModelo = require('../model/auhtModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -19,9 +19,9 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: usuario.numero_identidad, nombre: usuario.nombre }, 
-            "mi_clave_secreta_super_segura", 
-            { expiresIn: '1h' }
+            { id: usuario.numero_identidad, nombre: usuario.nombre, rol: usuario.id_rol }, 
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
         );
 
         res.json({ message: "Bienvenido", token });

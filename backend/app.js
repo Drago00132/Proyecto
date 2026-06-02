@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const usuariosRoutes = require('./Routes/usuariosRoutes');
-const RolesRutas = require('./Routes/RolRutas');
-const MotosRutas = require('./Routes/motosRutas');
-const repuestoRutas = require('./Routes/repuestosRutas');
-const tecnicoRutas = require('./Routes/tecnicoRutas');
-const historialRutas = require('./Routes/historialRepustos');
-const login = require ('./Routes/logion');
+const usuariosRoutes = require('./routes/usuariosRoutes');
+const RolesRutas = require('./routes/rolRutas');
+const MotosRutas = require('./routes/motosRutas');
+const repuestoRutas = require('./routes/repuestosRutas');
+const tecnicoRutas = require('./routes/tecnicoRutas');
+const historialRutas = require('./routes/historialRepustos');
+const login = require ('./routes/logion');
 const app = express();
 
 app.use(cors());
@@ -19,5 +19,10 @@ app.use('/api/motos', MotosRutas);
 app.use('/api/repuestos', repuestoRutas);
 app.use('/api/tecnico', tecnicoRutas);
 app.use('/api/Historial', historialRutas);
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Ocurrió un error interno en el servidor' });
+});
 
 module.exports = app;

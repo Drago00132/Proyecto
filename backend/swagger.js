@@ -1,8 +1,7 @@
-const swaggerAutogen = require  ("swagger-autogen")();
+const swaggerAutogen = require  ('swagger-autogen')();
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./app.js']; 
-
+const endpointsFiles = ['./app.js'];
 const doc = {
     info: {
         title: 'API de sigat',
