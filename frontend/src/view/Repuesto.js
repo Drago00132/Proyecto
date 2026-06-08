@@ -9,21 +9,29 @@ function Repuestos() {
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [RepuestoSelecionado, setRepuestoSelecionado] = useState(null);
+  //paginador 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const limite = 5;
 
   const buscarRepuesto = () =>{
     axios.get(`http://localhost:3100/api/repuestos/consultar/${busqueda}`)
     .then((res) => {
       setRepuestos(Array.isArray(res.data) ? res.data : [res.data]);
+      setTotalPaginas(1);
+      setPaginaActual(1);
     }).catch((err)=>{
       console.error("Error en la busqueda",err);
     });
   };
 
-    const obtenerRepuesto = () => {
-      axios.get('http://localhost:3100/api/repuestos/listar').then((res)=>{
-        setRepuestos(res.data);
+    const obtenerRepuesto = (page = 1) => {
+      axios.get(`http://localhost:3100/api/repuestos/listar?page=${page}&limit=${limite}`).then((res)=>{
+        setRepuestos(res.data.repuesto || []);
+        setTotalPaginas(res.data.totalPages || 1);
+        setPaginaActual(res.data.currentPage || 1);
       }).catch((error)=>{
-        console.error("Error al mostrar Rol: ",error);
+        console.error("Error al mostrar Repuestos: ", error);
       });
     };
 
@@ -31,7 +39,7 @@ function Repuestos() {
       setMostrarAgregar(false);
       setMostrarEditar(false);
       setmostrarEliminar(false);
-      obtenerRepuesto();
+      obtenerRepuesto(paginaActual);
     };
 
     useEffect(()=>{
@@ -87,6 +95,33 @@ function Repuestos() {
               ))}
             </tbody>
           </table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === 1} 
+              onClick={() => {
+                const paginaAnterior = paginaActual - 1;
+                obtenerRepuesto(paginaAnterior);
+              }}
+            >
+              Anterior
+            </button>
+            
+            <span className="fw-bold">
+              Página {paginaActual} de {totalPaginas}
+            </span>
+            
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === totalPaginas} 
+              onClick={() => {
+                const paginaSiguiente = paginaActual + 1;
+                obtenerRepuesto(paginaSiguiente);
+              }}
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
 

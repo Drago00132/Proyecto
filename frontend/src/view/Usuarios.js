@@ -9,29 +9,41 @@ function Usuario() {
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+  //paginador 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const limite = 5;
 
   const buscarUsuario = () =>{
     axios.get(`http://localhost:3100/api/usuarios/consultar/${busqueda}`)
     .then((res) => {
       setUsuarios(Array.isArray(res.data) ? res.data : [res.data]);
+      setTotalPaginas(1);
+      setPaginaActual(1);
     }).catch((err)=>{
       console.error("Error en la busqueda",err);
     });
   };
 
-    const obtenerUsuarios = () => {
-      axios.get('http://localhost:3100/api/usuarios/listar').then((res)=>{
-        setUsuarios(res.data);
-      }).catch((error)=>{
-        console.error("Error al mostrar usuarios: ",error);
-      });
-    };
+  const obtenerUsuarios = (page = 1) => {
+  const pagina = typeof page === 'number' ? page : 1;
+
+  axios.get(`http://localhost:3100/api/usuarios/listar?page=${pagina}&limit=${limite}`)
+    .then((res) => {
+      setUsuarios(res.data.usuarios || []);
+      setTotalPaginas(res.data.totalPages || 1);
+      setPaginaActual(res.data.currentPage || 1);
+    })
+    .catch((error) => {
+      console.error("Error al mostrar usuarios: ", error);
+    });
+  };
 
     const cerrarModal =()=>{
       setMostrarAgregar(false);
       setMostrarEditar(false);
       setmostrarEliminar(false);
-      obtenerUsuarios();
+      obtenerUsuarios(paginaActual);
     };
 
     useEffect(()=>{
@@ -93,9 +105,36 @@ function Usuario() {
               ))}
             </tbody>
           </table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === 1} 
+              onClick={() => {
+                const paginaAnterior = paginaActual - 1;
+                obtenerUsuarios(paginaAnterior);
+              }}
+            >
+              Anterior
+            </button>
+            
+            <span className="fw-bold">
+              Página {paginaActual} de {totalPaginas}
+            </span>
+            
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === totalPaginas} 
+              onClick={() => {
+                const paginaSiguiente = paginaActual + 1;
+                obtenerUsuarios(paginaSiguiente);
+              }}
+            >
+              Siguiente
+            </button>
+          </div>
+
         </div>
       </div>
-
       {/*modal de agregar*/}
       {mostrarAgregar && (
         <div style={{

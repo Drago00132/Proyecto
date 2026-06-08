@@ -2,8 +2,25 @@ const motos_mo = require('../model/motosModelo');
 
 exports.listarMotos = async (req, res) => {
     try {
-        const motos = await motos_mo.findAll();
-        res.status(200).json(motos);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const esAdmin = req.usuario.rol === 1;
+        const filtroIdentidad = esAdmin ? null : req.usuario.id;
+
+        const motos = await motos_mo.findAll(filtroIdentidad);
+
+        const totalItems = motos.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const motosPaginados = motos.slice(offset, offset + limit);
+
+        res.status(200).json({
+            motos: motosPaginados,
+            totalItems,
+            totalPages,
+            currentPage: page
+        });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         res.status(500).json({ error: error.message });

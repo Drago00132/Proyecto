@@ -22,9 +22,11 @@ exports.login = async (req, res) => {
             { id: usuario.numero_identidad, nombre: usuario.nombre, rol: usuario.id_rol }, 
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
+            
         );
 
-        res.json({ message: "Bienvenido", token });
+        res.json({ message: "Bienvenido", token, rol: usuario.id_rol 
+});
 
     } catch (error) {
         res.status(500).json({ error: error.message });

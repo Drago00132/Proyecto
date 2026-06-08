@@ -47,6 +47,7 @@ function Iniciarsesion() {
             }
 
             localStorage.setItem("token", data.token);
+            localStorage.setItem("rol", data.rol);
 
             alert("Inicio de sesión exitoso.");
 

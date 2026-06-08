@@ -2,8 +2,8 @@ const db = require('../config/db');
 
 const moto = {
 
-    findAll: async () => {
-        const [rows] = await db.query(`
+    findAll: async (numero_identidad = null) => {
+        let query = `
             SELECT
                 m.id_motos,
                 m.marca_moto,
@@ -13,8 +13,16 @@ const moto = {
                 u.nombre,
                 u.apellido
             FROM motos m
-            INNER JOIN usuarios u ON m.numero_identidad = u.numero_identidad
-        `);
+            LEFT JOIN usuarios u ON m.numero_identidad = u.numero_identidad
+        `;
+        
+        const params = [];
+        if (numero_identidad) {
+            query += ` WHERE m.numero_identidad = ?`;
+            params.push(numero_identidad);
+        }
+
+        const [rows] = await db.query(query, params);
         return rows;
     },
 
@@ -29,7 +37,7 @@ const moto = {
                 u.nombre,
                 u.apellido
             FROM motos m
-            INNER JOIN usuarios u ON m.numero_identidad = u.numero_identidad
+            LEFT JOIN usuarios u ON m.numero_identidad = u.numero_identidad
             WHERE m.id_motos = ?
         `, [id]);
         return rows[0];

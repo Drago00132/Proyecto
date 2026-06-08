@@ -2,8 +2,19 @@ const tecnico_mo = require('../model/tecnicoModelo');
 
 exports.ListarTecnico = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1 ) * limit;
         const tecnico = await tecnico_mo.findAll();
-        res.status(200).json(tecnico);
+        const totgalItems = tecnico.length;
+        const totalPages = Math.ceil(totgalItems / limit);
+        const tecnicosPaginados = tecnico.slice(offset, offset + limit);
+        res.status(200).json({
+            tecnico: tecnicosPaginados,
+            totgalItems,
+            totalPages,
+            currentPage: page
+        });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         res.status(500).json({ error: error.message });

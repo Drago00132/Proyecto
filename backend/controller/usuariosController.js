@@ -2,9 +2,20 @@ const usuario_modelo = require('../model/usuariosModelo');
 
 exports.listarUsuarios = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
         const usuarios = await usuario_modelo.findAll();
         const usuariosSinContrasena = usuarios.map(({ contrasena, ...resto }) => resto);
-        res.status(200).json(usuariosSinContrasena);
+        const totalItems = usuariosSinContrasena.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const usuariosPaginados = usuariosSinContrasena.slice(offset, offset + limit);
+        res.status(200).json({
+            usuarios: usuariosPaginados,
+            totalItems,
+            totalPages,
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

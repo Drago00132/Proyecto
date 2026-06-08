@@ -2,10 +2,13 @@ const db = require('../config/db');
 
 const historial = {
 
-    findAll: async () => {
-        const [rows] = await db.query(`
+    findAll: async (numero_identidad = null) => {
+        let query = `
             SELECT 
                 h.id_historial,
+                h.id_motos,
+                h.id_tecnico,
+                h.id_historial_cliente,
                 h.descripcion_prodlema,
                 h.estado,
                 h.descripcion_trabajo,
@@ -18,11 +21,22 @@ const historial = {
                 u_cliente.nombre AS nombre_cliente,
                 u_cliente.apellido AS apellido_cliente
             FROM historial h
-            INNER JOIN motos m ON h.id_motos = m.id_motos
-            INNER JOIN tecnico t ON h.id_tecnico = t.id_tecnico
-            INNER JOIN usuarios u_tecnico ON t.numero_identidad = u_tecnico.numero_identidad
-            INNER JOIN usuarios u_cliente ON h.id_historial_cliente = u_cliente.numero_identidad
-        `);
+            LEFT JOIN motos m ON h.id_motos = m.id_motos
+            LEFT JOIN tecnico t ON h.id_tecnico = t.id_tecnico
+            LEFT JOIN usuarios u_tecnico ON t.numero_identidad = u_tecnico.numero_identidad
+            LEFT JOIN usuarios u_cliente ON m.numero_identidad = u_cliente.numero_identidad
+        `;
+
+        const params = [];
+
+        if (numero_identidad) {
+            /* CORREGIDO: Filtra si el ID del usuario logueado coincide con el dueño de la moto 
+               O con el técnico encargado del trabajo */
+            query += ` WHERE m.numero_identidad = ? OR t.numero_identidad = ?`;
+            params.push(numero_identidad, numero_identidad);
+        }
+
+        const [rows] = await db.query(query, params);
         return rows;
     },
 
@@ -30,6 +44,9 @@ const historial = {
         const [rows] = await db.query(`
             SELECT 
                 h.id_historial,
+                h.id_motos,
+                h.id_tecnico,
+                h.id_historial_cliente,
                 h.descripcion_prodlema,
                 h.estado,
                 h.descripcion_trabajo,
@@ -42,10 +59,10 @@ const historial = {
                 u_cliente.nombre AS nombre_cliente,
                 u_cliente.apellido AS apellido_cliente
             FROM historial h
-            INNER JOIN motos m ON h.id_motos = m.id_motos
-            INNER JOIN tecnico t ON h.id_tecnico = t.id_tecnico
-            INNER JOIN usuarios u_tecnico ON t.numero_identidad = u_tecnico.numero_identidad
-            INNER JOIN usuarios u_cliente ON h.id_historial_cliente = u_cliente.numero_identidad
+            LEFT JOIN motos m ON h.id_motos = m.id_motos
+            LEFT JOIN tecnico t ON h.id_tecnico = t.id_tecnico
+            LEFT JOIN usuarios u_tecnico ON t.numero_identidad = u_tecnico.numero_identidad
+            LEFT JOIN usuarios u_cliente ON m.numero_identidad = u_cliente.numero_identidad
             WHERE h.id_historial = ?
         `, [id]);
         return rows[0];

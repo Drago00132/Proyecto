@@ -11,7 +11,7 @@ const tecnico = {
                 u.nombre,
                 u.apellido
             FROM tecnico t
-            INNER JOIN usuarios u ON t.numero_identidad = u.numero_identidad
+            LEFT JOIN usuarios u ON t.numero_identidad = u.numero_identidad
         `);
         return rows;
     },
@@ -25,7 +25,7 @@ const tecnico = {
                 u.nombre,
                 u.apellido
             FROM tecnico t
-            INNER JOIN usuarios u ON t.numero_identidad = u.numero_identidad
+            LEFT JOIN usuarios u ON t.numero_identidad = u.numero_identidad
             WHERE t.id_tecnico = ?
         `, [id]);
         return rows[0];

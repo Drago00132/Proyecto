@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function Motos() {
+  const rol = Number(localStorage.getItem("rol"));
   const [Motos, setMotos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   //modales y sus funciones 
@@ -9,19 +10,32 @@ function Motos() {
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [Motoselecionado, setMotoselecionado] = useState(null);
+  //paginador 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const limite = 5;
 
   const buscarMotos = () =>{
     axios.get(`http://localhost:3100/api/motos/consultar/${busqueda}`)
     .then((res) => {
       setMotos(Array.isArray(res.data) ? res.data : [res.data]);
+      setTotalPaginas(1);
+      setPaginaActual(1);
     }).catch((err)=>{
       console.error("Error en la busqueda",err);
     });
   };
 
-    const obtenerMoto = () => {
-      axios.get('http://localhost:3100/api/motos/listar').then((res)=>{
-        setMotos(res.data);
+    const obtenerMoto = (page = 1) => {
+      const token = localStorage.getItem("token");
+      axios.get(`http://localhost:3100/api/motos/listar?page=${page}&limit=${limite}`,{
+        Headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      }).then((res)=>{
+        setMotos(res.data.motos || []);
+        setTotalPaginas(res.data.totalPages || 1);
+        setPaginaActual(res.data.currentPage || 1);
       }).catch((error)=>{
         console.error("Error al mostrar Rol: ",error);
       });
@@ -31,7 +45,7 @@ function Motos() {
       setMostrarAgregar(false);
       setMostrarEditar(false);
       setmostrarEliminar(false);
-      obtenerMoto();
+      obtenerMoto(paginaActual);
     };
 
     useEffect(()=>{
@@ -63,8 +77,9 @@ function Motos() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                <th scope="col">Id del la Motos</th>
-                <th scope="col">Numero de identidad</th>
+                {rol === 1 && (<th scope="col">Id del la Motos</th>)}
+                {rol === 1 && (<th scope="col">Numero de identidad</th>)}
+                {rol === 1 && (<th scope="col">Nombre y apellido</th>)}
                 <th scope="col">Marca de la moto</th>
                 <th scope="col">Modelo de la moto</th>
                 <th scope="col">Placa</th>
@@ -74,8 +89,9 @@ function Motos() {
             <tbody>
               {Motos.map((motos, index) => (
                 <tr key={index}> 
-                  <td>{motos.id_motos}</td>
-                  <td>{motos.numero_identidad}</td>
+                  { rol === 1 && (<td>{motos.id_motos}</td>)}
+                  { rol === 1 && (<td>{motos.numero_identidad}</td>)}
+                  { rol === 1 && (<td>{motos.nombre}, {motos.apellido}</td>)}
                   <td>{motos.marca_moto}</td>
                   <td>{motos.modelo_moto}</td>
                   <td>{motos.placa}</td>
@@ -91,6 +107,33 @@ function Motos() {
               ))}
             </tbody>
           </table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === 1} 
+              onClick={() => {
+                const paginaAnterior = paginaActual - 1;
+                obtenerMoto(paginaAnterior);
+              }}
+            >
+              Anterior
+            </button>
+            
+            <span className="fw-bold">
+              Página {paginaActual} de {totalPaginas}
+            </span>
+            
+            <button 
+              className="btn btn-outline-primary" 
+              disabled={paginaActual === totalPaginas} 
+              onClick={() => {
+                const paginaSiguiente = paginaActual + 1;
+                obtenerMoto(paginaSiguiente);
+              }}
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
 
