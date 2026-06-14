@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Tecnicos() {
   const [Tecnico, setTecnico] = useState([]);
@@ -26,7 +28,7 @@ function Tecnicos() {
   };
 
     const obtenerTecnicos = () => {
-      axios.get('http://localhost:3100/api/tecnico/listar?page=${page}&limit=${limite}').then((res)=>{
+      axios.get(`http://localhost:3100/api/tecnico/listar?page=${paginaActual}&limit=${limite}`).then((res)=>{
         setTecnico(res.data.tecnico || []);
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
@@ -44,18 +46,19 @@ function Tecnicos() {
 
     useEffect(()=>{
       obtenerTecnicos();
-    },[]);
+    },[paginaActual]);
 
   return (
     <div className="App">
       <div className="container mt-5"> 
         <div className="card p-4">
+          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Tecnicos</h2>
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
           <button className='btn btn-primary mb-3' 
-          onClick={()=> setMostrarAgregar(true)}>Agregar Tecnico</button>
+          onClick={()=> setMostrarAgregar(true)}>subir Tecnico</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
@@ -98,31 +101,11 @@ function Tecnicos() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === 1} 
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerTecnicos(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
+            <button className="btn btn-outline-primary" disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
             
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
+            <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
             
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === totalPaginas} 
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerTecnicos(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
+            <button className="btn btn-outline-primary" disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
           </div>
         </div>
       </div>
@@ -219,36 +202,37 @@ function Tecnicos() {
 }
 
 function Agregar({cerrarmodal}){
+  const [archivo, setArchivo] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
-  const [Numero_identidad , setNumero_identidad ] = useState("");
-  const [Reparaciones_asignadas	, setReparaciones_asignadas] = useState("");
+const subirArchivo = async () => {
+  if (!archivo) return toast.error("Por favor selecciona un archivo primero");
 
-  const add = (event) =>{
-    event.preventDefault();
+  const formData = new FormData();
+  formData.append('archivo', archivo);
 
-    axios.post("http://localhost:3100/api/tecnico/agregar",{
-      numero_identidad:Numero_identidad,
-      reparaciones_asignadas:Reparaciones_asignadas
-    })
-    .then(()=>{
-      cerrarmodal();
-      alert("reguistro Exitoso");
+  try {
+    await axios.post('http://localhost:3100/api/usuarios/cargar-masiva', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
     });
+    
+    toast.success("Carga masiva exitosa");
+    
+    cerrarmodal(false); 
+    
+  } catch (error) {
+    toast.error("Error al subir el archivo: " + error.message);
   }
-
+};
 
   return (
-    <form>
-      <div className="mb-3">
-        <label className="form-label">Numero de identidad</label>
-        <input className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
-      </div>
-      <div className="mb-3">
-        <label className="form-label">Reparaciones asignadas</label>
-        <input className="form-control" onChange={(event) => {setReparaciones_asignadas(event.target.value);}} type='text'></input>
-      </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
-    </form>
+  <div className="mb-3">
+    <label className="btn btn-outline-primary w-100">
+      {archivo ? archivo.name : "Seleccionar archivo Excel"}
+      <input type="file" hidden accept=".xlsx, .xls" onChange={(e) => setArchivo(e.target.files[0])} />
+    </label>
+    <button className="btn btn-success w-100 mt-3" onClick={subirArchivo} disabled={!archivo} >{cargando ? "Procesando..." : "Subir Técnicos"}</button>
+  </div>
   )
 }
 
@@ -269,13 +253,18 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
+    if (Numero_identidad.trim() === "" || Reparaciones_asignadas.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.put(`http://localhost:3100/api/tecnico/actualizar/${datos.id_tecnico}`,{
       id_tecnico:Id_tecnico,
       numero_identidad:Numero_identidad,
       reparaciones_asignadas:Reparaciones_asignadas
     }).then(()=>{
       cerrarmodal();
-      alert("Rol actualizado correctamente");
+      toast.success("Tecnico actualizado correctamente");
     });
   };
   return (
@@ -301,11 +290,11 @@ function Eliminar ({id, cerrarmodal}){
   const eliminar_Tecnico = ()=>{
     if(window.confirm("¿seguro que quieres eliminar a este Tecnico?")){
       axios.delete(`http://localhost:3100/api/tecnico/eliminar/${id}`).then(()=>{
-        alert("Tecnico eliminado");
+        toast.success("Tecnico eliminado");
         cerrarmodal();
       }).catch((error)=>{
         console.error("Error al eliminar: ",error);
-        alert("el Tecnico no fue eliminado");
+        toast.error("el Tecnico no fue eliminado");
         cerrarmodal();
       });
     }

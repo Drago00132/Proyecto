@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Usuario() {
   const [usuarios, setUsuarios] = useState([]);
@@ -54,6 +56,7 @@ function Usuario() {
     <div className="App">
       <div className="container mt-5"> 
         <div className="card p-4">
+          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Usuarios</h2>
 
           {/*agregar, buscar y resetear*/}
@@ -237,9 +240,71 @@ function Agregar({cerrarmodal}){
   const [Correo_electronico, setCorreo_electrico] = useState("");
   const [Contrasena, setContrasena] = useState("");
   const [Id_rol, setId_rol] = useState("");
+  const [roles, setRoles] = useState([]);
 
   const add = (event) =>{
     event.preventDefault();
+
+    if (Numero_identidad.trim() === "" || Tipo_documento.trim() === "" || Nombre.trim() === "" || Fecha_nacimiento.trim() === "" || Correo_electronico.trim() === "" || Contrasena.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
+    const validarFormulario = () => {
+
+    const fechaNacimiento = new Date(Fecha_nacimiento);
+    const hoy = new Date();
+    
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
+
+    if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+      edad--;
+    }
+
+    if (edad < 18) {
+      toast.error("El usuario debe ser mayor de 18 años.");
+      return false;
+    }
+
+    if (Contrasena.length < 8 || Contrasena.length > 20) {
+      toast.error("La contraseña debe tener entre 8 y 20 caracteres.");
+      return false;
+    }
+
+    if (Numero_identidad.length< 10 || Numero_identidad.length > 10) {
+      toast.error("El numero de identidad debe tener 10 caracteres.");
+      return false;
+    }
+
+    if (Numero_celular.length< 10 || Numero_celular.length > 10) {
+      toast.error("El numero de celular debe tener 10 caracteres.");
+      return false;
+    }
+
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+    if (!soloLetras.test(Nombre)) {
+      toast.error("El nombre no debe contener números ni caracteres especiales.");
+      return false;
+    }
+
+    if (!soloLetras.test(Apellido)) {
+      toast.error("El apellido no debe contener números ni caracteres especiales.");
+      return false;
+    }
+
+    const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
+    if (!regexCorreo.test(Correo_electronico)) {
+      toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
+      return false;
+    }
+    return true;
+    };
+
+    if (!validarFormulario()) {
+    return; 
+    }
 
     axios.post("http://localhost:3100/api/usuarios/agregar",{
       numero_identidad: Numero_identidad,
@@ -254,9 +319,19 @@ function Agregar({cerrarmodal}){
     })
     .then(()=>{
       cerrarmodal();
-      alert("reguistro Exitoso");
+      toast.success("reguistro Exitoso");
     });
   }
+
+  useEffect(()=>{
+    axios.get("http://localhost:3100/api/roles/listar")
+    .then((res)=>{
+      setRoles(res.data.rol || []);
+    })
+    .catch((error)=>{
+      console.error("error al odtener los roles ",error);
+    });
+  }, []);
 
 
   return (
@@ -302,9 +377,11 @@ function Agregar({cerrarmodal}){
         <label className="form-label">Rol</label>
         <select className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
           <option value=''>seleccione un rol</option>
-          <option value='1'>Administrador</option>
-          <option value='2'>Tecnico</option>
-          <option value='3'>Cliente</option>
+          {roles.map((r) => (
+          <option value={r.id_rol}>
+            {r.rol}
+          </option>
+        ))}
         </select>
       </div>
       <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
@@ -323,6 +400,7 @@ function Editar({datos,cerrarmodal}){
   const [Correo_electronico, setCorreo_electrico] = useState("");
   const [Contrasena, setContrasena] = useState("");
   const [Id_rol, setId_rol] = useState("");
+  const [roles, setRoles] = useState([]);
 
   useEffect (()=>{
     if(datos){
@@ -341,6 +419,67 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
+    if (Numero_identidad.trim() === "" || Tipo_documento.trim() === "" || Nombre.trim() === "" || Fecha_nacimiento.trim() === "" || Correo_electronico.trim() === "" || Contrasena.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
+    const validarFormulario = () => {
+
+    const fechaNacimiento = new Date(Fecha_nacimiento);
+    const hoy = new Date();
+    
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
+
+    if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+      edad--;
+    }
+
+    if (edad < 18) {
+      toast.error("El usuario debe ser mayor de 18 años.");
+      return false;
+    }
+
+    if (Contrasena.length < 8 || Contrasena.length > 20) {
+      toast.error("La contraseña debe tener entre 8 y 20 caracteres.");
+      return false;
+    }
+
+    if (Numero_identidad.length< 10 || Numero_identidad.length > 10) {
+      toast.error("El numero de identidad debe tener 10 caracteres.");
+      return false;
+    }
+
+    if (Numero_celular.length< 10 || Numero_celular.length > 10) {
+      toast.error("El numero de celular debe tener 10 caracteres.");
+      return false;
+    }
+
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+    if (!soloLetras.test(Nombre)) {
+      toast.error("El nombre no debe contener números ni caracteres especiales.");
+      return false;
+    }
+
+    if (!soloLetras.test(Apellido)) {
+      toast.error("El apellido no debe contener números ni caracteres especiales.");
+      return false;
+    }
+
+    const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
+    if (!regexCorreo.test(Correo_electronico)) {
+      toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
+      return false;
+    }
+    return true;
+    };
+
+    if (!validarFormulario()) {
+    return; 
+    }
+
     axios.put(`http://localhost:3100/api/usuarios/actualizar/${datos.numero_identidad}`,{
       numero_identidad:Numero_identidad,
       tipo_documento: Tipo_documento,
@@ -353,9 +492,20 @@ function Editar({datos,cerrarmodal}){
       id_rol: Id_rol
     }).then(()=>{
       cerrarmodal();
-      alert("Usuarios actualizado correctamente");
+      toast.success("Usuarios actualizado correctamente");
     });
   };
+
+  useEffect(()=>{
+    axios.get("http://localhost:3100/api/roles/listar")
+    .then((res)=>{
+      setRoles(res.data.rol || []);
+    })
+    .catch((error)=>{
+      console.error("error al odtener los roles ",error);
+    });
+  }, []);
+
   return (
     <form>
       <div className="mb-3">
@@ -399,9 +549,11 @@ function Editar({datos,cerrarmodal}){
         <label className="form-label">Rol</label>
         <select className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
           <option value=''>seleccione un rol</option>
-          <option value='1'>Administrador</option>
-          <option value='2'>Tecnico</option>
-          <option value='3'>Cliente</option>
+          {roles.map((r) => (
+          <option value={r.id_rol}>
+            {r.rol}
+          </option>
+        ))}
         </select>
       </div>
       <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
@@ -413,11 +565,11 @@ function Eliminar ({id, cerrarmodal}){
   const eliminar_usuario = ()=>{
     if(window.confirm("¿seguro que quieres eliminar a este usuario?")){
       axios.delete(`http://localhost:3100/api/usuarios/eliminar/${id}`).then(()=>{
-        alert("usuario eliminado");
+        toast.success("usuario eliminado");
         cerrarmodal();
       }).catch((error)=>{
         console.error("Error al eliminar: ",error);
-        alert("el usuario no fue eliminado");
+        toast.error("el usuario no fue eliminado");
         cerrarmodal();
       });
     }

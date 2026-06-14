@@ -9,6 +9,7 @@ function Dashboard() {
       <nav style={{ width: '250px', background: '#f4f4f4', height: '100vh', padding: '20px' }}>
         <h2>Panel</h2>
         <ul className='nav flex-column mt2'>
+          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel" className='nav-link text-black px-0 py-2' >inicio</Link></li>
           {rol === 1 && ( <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/usuarios" className='nav-link text-black px-0 py-2'>usuarios</Link></li>)}
           {rol === 1 && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/tecnico" className='nav-link text-black px-0 py-2'>tecnico</Link></li>)}
           {rol === 1 && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/roles" className='nav-link text-black px-0 py-2'>roles</Link></li>)}

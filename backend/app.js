@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const usuariosRoutes = require('./routes/usuariosRoutes');
 const RolesRutas = require('./routes/rolRutas');
 const MotosRutas = require('./routes/motosRutas');
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/login',login);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/roles', RolesRutas);

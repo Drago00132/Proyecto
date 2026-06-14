@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Repuestos() {
   const [Repuesto, setRepuestos] = useState([]);
@@ -50,6 +52,7 @@ function Repuestos() {
     <div className="App">
       <div className="container mt-5"> 
         <div className="card p-4">
+          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Repuestos</h2>
 
           {/*agregar, buscar y resetear*/}
@@ -224,13 +227,34 @@ function Agregar({cerrarmodal}){
   const add = (event) =>{
     event.preventDefault();
 
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
+    const validarFormulario = () => {
+
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+    if (!soloLetras.test(Nombre_repuesto)) {
+      toast.error("El nombre no debe contener números ni caracteres especiales.");
+      return false;
+    }
+
+    return true;
+    };
+
+  if (!validarFormulario()) {
+    return; 
+    }
+
     axios.post("http://localhost:3100/api/repuestos/agregar",{
       nombre_repuesto:Nombre_repuesto,
       cantidad:Cantidad
     })
     .then(()=>{
       cerrarmodal();
-      alert("reguistro Exitoso");
+      toast.success("reguistro Exitoso");
     });
   }
 
@@ -267,13 +291,18 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.put(`http://localhost:3100/api/repuestos/actualizar/${datos.id_repuestos}`,{
       id_repuestos: Id_repuestos,
       nombre_repuesto: Nombre_repuesto,
       cantidad: Cantidad
     }).then(()=>{
       cerrarmodal();
-      alert("Repuesto actualizado correctamente");
+      toast.success("Repuesto actualizado correctamente");
     });
   };
   return (
@@ -299,11 +328,11 @@ function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     if(window.confirm("¿seguro que quieres eliminar este Repuesto?")){
       axios.delete(`http://localhost:3100/api/repuestos/eliminar/${id}`).then(()=>{
-        alert("Repuesto eliminado");
+        toast.success("Repuesto eliminado");
         cerrarmodal();
       }).catch((error)=>{
         console.error("Error al eliminar: ",error);
-        alert("el Repuesto no fue eliminado");
+        toast.error("el Repuesto no fue eliminado");
         cerrarmodal();
       });
     }

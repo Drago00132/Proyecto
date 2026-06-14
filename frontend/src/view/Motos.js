@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Motos() {
   const rol = Number(localStorage.getItem("rol"));
@@ -22,7 +24,7 @@ function Motos() {
       setTotalPaginas(1);
       setPaginaActual(1);
     }).catch((err)=>{
-      console.error("Error en la busqueda",err);
+      toast.error("Error en la busqueda",err);
     });
   };
 
@@ -37,7 +39,7 @@ function Motos() {
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
       }).catch((error)=>{
-        console.error("Error al mostrar Rol: ",error);
+        toast.error("Error al mostrar Rol: ",error);
       });
     };
 
@@ -56,6 +58,9 @@ function Motos() {
     <div className="App">
       <div className="container mt-5"> 
         <div className="card p-4">
+
+          <ToastContainer position="top-right" autoClose={3000}/>
+
           <h2 className="text-center mb-4">Motos</h2>
 
           {/*agregar, buscar y resetear*/}
@@ -229,14 +234,24 @@ function Motos() {
 }
 
 function Agregar({cerrarmodal}){
+  const rol = Number(localStorage.getItem("rol"));
 
-  const [Numero_identidad, setNumero_identidad] = useState("");
+  const usuarioLogueadoRol = Number(localStorage.getItem("rol"));
+  const usuarioLogueadoIdentidad = localStorage.getItem("numero_identidad") || "";
+
+  const [Numero_identidad, setNumero_identidad] = useState(usuarioLogueadoRol === 3 ? usuarioLogueadoIdentidad : "");
   const [Marca_moto, setMarca_moto] = useState("");
   const [Modelo_moto, setModelo_moto] = useState("");
   const [Placa, setPlaca] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
 
   const add = (event) =>{
     event.preventDefault();
+
+    if (Numero_identidad.trim() === "" || Marca_moto.trim() === "" || Modelo_moto.trim() === "" || Placa.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
 
     axios.post("http://localhost:3100/api/motos/agregar",{
       numero_identidad: Numero_identidad,
@@ -246,17 +261,32 @@ function Agregar({cerrarmodal}){
     })
     .then(()=>{
       cerrarmodal();
-      alert("reguistro Exitoso");
+      toast.success("reguistro Exitoso");
     });
   }
 
+  useEffect(() => {
+    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999')
+      .then((res) => {
+        setUsuarios(res.data.usuarios || []);
+      })
+      .catch((error) => {
+        toast.error("Error al mostrar usuarios: ", error);
+      });
+    }, []);
 
   return (
     <form>
+      {rol === 1 && (
       <div className="mb-3">
         <label className="form-label">Numero_identidad</label>
-        <input className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
+        <select value={Numero_identidad} className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} >
+        <option value=''>seleccione un usuario</option>
+          {usuarios.filter((u) => Number(u.id_rol) === 3).map((u) => (
+            <option key={u.numero_identidad} value={u.numero_identidad}> {u.nombre} {u.apellido}</option>
+        ))}</select>
       </div>
+      )}
       <div className="mb-3">
         <label className="form-label">Marca de la moto</label>
         <input className="form-control" onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
@@ -275,13 +305,13 @@ function Agregar({cerrarmodal}){
 }
 
 function Editar({datos,cerrarmodal}){
+  const rol = Number(localStorage.getItem("rol"));
 
   const [Id_motos, setId_motos] = useState("");
-  const [Numero_identidad, setNumero_identidad] = useState("");
+  const [Numero_identidad, setNumero_identidad] = useState();
   const [Marca_moto, setMarca_moto] = useState("");
   const [Modelo_moto, setModelo_moto] = useState("");
   const [Placa, setPlaca] = useState("");
-
 
   useEffect (()=>{
     if(datos){
@@ -296,6 +326,11 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
+    if (Numero_identidad.trim() === "" || Marca_moto.trim() === "" || Modelo_moto.trim() === "" || Placa.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.put(`http://localhost:3100/api/motos/actualizar/${datos.id_motos}`,{
       id_motos:Id_motos,
       numero_identidad: Numero_identidad,
@@ -304,19 +339,23 @@ function Editar({datos,cerrarmodal}){
       placa: Placa
     }).then(()=>{
       cerrarmodal();
-      alert("Moto actualizado correctamente");
+      toast.success("Moto actualizado correctamente");
     });
   };
   return (
     <form>
+      {rol === 1 && (
       <div className="mb-3">
         <label className="form-label">Id Moto</label>
         <input className="form-control"value={Id_motos} onChange={(event) => {setId_motos(event.target.value);}} type='number' disabled></input>
       </div>
+      )}
+      {rol === 1 && (
       <div className="mb-3">
         <label className="form-label">Numero_identidad</label>
-        <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text'></input>
+        <input className="form-control" value={Numero_identidad} type='number' disabled />
       </div>
+      )}
       <div className="mb-3">
         <label className="form-label">Marca de la moto</label>
         <input className="form-control" value={Marca_moto} onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
@@ -338,11 +377,11 @@ function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     if(window.confirm("¿seguro que quieres eliminar esta Moto?")){
       axios.delete(`http://localhost:3100/api/motos/eliminar/${id}`).then(()=>{
-        alert("Moto eliminado");
+        toast.success("Moto eliminado");
         cerrarmodal();
       }).catch((error)=>{
         console.error("Error al eliminar: ",error);
-        alert("la Moto no fue eliminado");
+        toast.error("la Moto no fue eliminado");
         cerrarmodal();
       });
     }

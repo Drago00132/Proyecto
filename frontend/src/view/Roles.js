@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Roles() {
   const [Rol, setRol] = useState([]);
@@ -50,6 +52,7 @@ function Roles() {
     <div className="App">
       <div className="container mt-5"> 
         <div className="card p-4">
+          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Roles</h2>
 
           {/*agregar, buscar y resetear*/}
@@ -221,12 +224,17 @@ function Agregar({cerrarmodal}){
   const add = (event) =>{
     event.preventDefault();
 
+    if (Rol.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.post("http://localhost:3100/api/roles/agregar",{
       rol: Rol
     })
     .then(()=>{
       cerrarmodal();
-      alert("reguistro Exitoso");
+      toast.success("reguistro Exitoso");
     });
   }
 
@@ -257,12 +265,17 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
+    if (Rol.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.put(`http://localhost:3100/api/roles/actualizar/${datos.id_rol}`,{
       id_rol: Id_rol,
       rol: Rol
     }).then(()=>{
       cerrarmodal();
-      alert("Rol actualizado correctamente");
+      toast.success("Rol actualizado correctamente");
     });
   };
   return (
@@ -284,11 +297,11 @@ function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     if(window.confirm("¿seguro que quieres eliminar este Rol?")){
       axios.delete(`http://localhost:3100/api/roles/eliminar/${id}`).then(()=>{
-        alert("Rol eliminado");
+        toast.success("Rol eliminado");
         cerrarmodal();
       }).catch((error)=>{
         console.error("Error al eliminar: ",error);
-        alert("el Rol no fue eliminado");
+        toast.error("el Rol no fue eliminado");
         cerrarmodal();
       });
     }

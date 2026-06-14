@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Iniciarsesion() {
     const navigate = useNavigate();
@@ -23,7 +25,7 @@ function Iniciarsesion() {
         console.log("Datos del formulario:", form);
 
         if (form.usuario === "" || form.contrasena === "") {
-            alert("Todos los campos son obligatorios");
+            toast.error("Todos los campos son obligatorios");
             return;
         }
 
@@ -42,14 +44,15 @@ function Iniciarsesion() {
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.message || "Error al iniciar sesión");
+                toast.error("Error al iniciar sesión");
                 return;
             }
 
             localStorage.setItem("token", data.token);
             localStorage.setItem("rol", data.rol);
+            localStorage.setItem("numero_identidad", data.numero_identidad);
 
-            alert("Inicio de sesión exitoso.");
+            toast.success("Inicio de sesión exitoso.");
 
             navigate("/panel");
 
@@ -88,6 +91,8 @@ function Iniciarsesion() {
                                 <div className="d-grid gap-2" >
                                     <button className='btn btn-link' onClick={()=>navigate("/Registarse")}>Registrarse</button>
                                 </div> 
+
+                                <ToastContainer position="top-right" autoClose={3000} />
 
                             </div>
                         </div>

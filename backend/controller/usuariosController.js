@@ -1,4 +1,5 @@
 const usuario_modelo = require('../model/usuariosModelo');
+const xlsx = require('xlsx');
 
 exports.listarUsuarios = async (req, res) => {
     try {
@@ -35,7 +36,7 @@ exports.obtenerUsuario = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
     const { numero_identidad, tipo_documento, nombre, apellido, fecha_nacimiento, numero_celular, correo_electronico, contrasena, id_rol } = req.body;
 
-    if (!numero_identidad || !tipo_documento || !nombre || !apellido || !fecha_nacimiento || !numero_celular || !correo_electronico || !contrasena || !id_rol) {
+    if (!numero_identidad || !tipo_documento || !nombre || !fecha_nacimiento || !correo_electronico || !contrasena || !id_rol) {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
@@ -51,7 +52,7 @@ exports.crearUsuario = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
     const { tipo_documento, nombre, apellido, fecha_nacimiento, numero_celular, correo_electronico, id_rol } = req.body;
 
-    if (!tipo_documento || !nombre || !apellido || !fecha_nacimiento || !numero_celular || !correo_electronico || !id_rol) {
+    if (!tipo_documento || !nombre || !fecha_nacimiento || !correo_electronico || !id_rol) {
         return res.status(400).json({ message: 'Todos los campos obligatorios deben estar presentes' });
     }
 
@@ -77,5 +78,33 @@ exports.eliminarUsuario = async (req, res) => {
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         res.status(500).json({ error: error.message });
+    }
+};
+
+exports.cargaMasiva = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No se recibió ningún archivo' });
+        }
+
+        console.log("Ruta del archivo temporal:", req.file.path);
+
+        const workbook = xlsx.readFile(req.file.path);
+        
+        // Obtener la primera hoja
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data = xlsx.utils.sheet_to_json(sheet);
+
+        console.log("Datos procesados:", data);
+
+        for (const usuario of data) {
+            await usuario_modelo.create(usuario);
+        }
+
+        res.status(200).json({ message: 'Carga masiva realizada con éxito' });
+    } catch (error) {
+        console.error("ERROR CRÍTICO EN CARGA MASIVA:", error);
+        res.status(500).json({ message: 'Error interno al procesar el archivo', error: error.message });
     }
 };

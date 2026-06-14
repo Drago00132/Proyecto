@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Registrarse(){
   const navigate = useNavigate();
@@ -18,6 +20,11 @@ function Registrarse(){
   const add = (event) =>{
     event.preventDefault();
 
+    if (Numero_identidad.trim() === "" || Tipo_documento.trim() === "" || Nombre.trim() === "" || Fecha_nacimiento.trim() === "" || Correo_electronico.trim() === "" || Contrasena.trim() === "") {
+      toast.error("Faltan datos obligatorio");
+      return;
+    }
+
     axios.post("http://localhost:3100/api/usuarios/agregar",{
       numero_identidad: Numero_identidad,
       tipo_documento: Tipo_documento,
@@ -31,7 +38,7 @@ function Registrarse(){
     })
     .then(()=>{
         navigate("/panel")
-      alert("reguistro Exitoso");
+      toast.success("reguistro Exitoso");
     });
   }
 
@@ -44,6 +51,9 @@ function Registrarse(){
                 <div className="col-lg-5 col-md-8 mx-auto">
                     <div className="card border-0 shadow-lg p-3 rounded-3" >
                         <div className="card-body">
+
+                            <ToastContainer position="top-right" autoClose={3000} />
+                            
                             <h2 className="tex-center md.4">Registarse</h2>
                             <form>
                                 <div className="mb-3">

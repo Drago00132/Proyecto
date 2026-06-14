@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
             
         );
 
-        res.json({ message: "Bienvenido", token, rol: usuario.id_rol 
+        res.json({ message: "Bienvenido", token, rol: usuario.id_rol, numero_identidad: usuario.numero_identidad
 });
 
     } catch (error) {
