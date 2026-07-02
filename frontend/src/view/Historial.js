@@ -677,12 +677,12 @@ function Editar({datos, cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label">Moto </label>
-        <select className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={!clienteSeleccionado} required>
+        <select className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={rol === 2 || !clienteSeleccionado} required>
           <option value="">
             {clienteSeleccionado ? "Seleccione una moto" : "Primero seleccione un dueño"}
           </option>
           {motosFiltradas.map((moto) => (
-            <option key={moto.id_motos} value={moto.id_motos}>
+            <option key={moto.id_motos} value={moto.id_motos} >
               {moto.marca_moto} {moto.modelo_moto} - Placa: [{moto.placa}]
             </option>
           ))}
@@ -722,10 +722,12 @@ function Editar({datos, cerrarmodal}){
         <input className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
       </div>
       )}
+      {(rol === 1 || rol === 3) && (
       <div className="mb-3">
         <label className="form-label">Fotos</label>
         <input className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
       </div>
+      )}
       <div className="mb-3">
         <label className="form-label">Fecha de inicio</label>
         <input className="form-control" value={Fecha_inicio} onChange={(event) => setFecha_inicio(event.target.value)} type='date' required></input>
@@ -736,7 +738,7 @@ function Editar({datos, cerrarmodal}){
         <input className="form-control" value={Fecha_fin} onChange={(event) => setFecha_fin(event.target.value)} type='date'></input>
       </div>
       )}
-      {rol === 1 && (
+      {(rol === 1 || rol === 2) && (
         <div className="mb-3">
   <label className="form-label fw-bold">Repuestos Utilizados</label>
   {repuestosSeleccionados.map((item, index) => (
@@ -781,7 +783,6 @@ function Editar({datos, cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Historial = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar este Historial?")){
       axios.delete(`http://localhost:3100/api/historial/eliminar/${id}`).then(()=>{
         toast.success("Historial eliminado");
         cerrarmodal();
@@ -791,7 +792,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>

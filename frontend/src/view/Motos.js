@@ -375,7 +375,6 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar esta Moto?")){
       axios.delete(`http://localhost:3100/api/motos/eliminar/${id}`).then(()=>{
         toast.success("Moto eliminado");
         cerrarmodal();
@@ -385,7 +384,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>

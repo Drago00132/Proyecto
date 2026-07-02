@@ -288,7 +288,6 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Tecnico = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar a este Tecnico?")){
       axios.delete(`http://localhost:3100/api/tecnico/eliminar/${id}`).then(()=>{
         toast.success("Tecnico eliminado");
         cerrarmodal();
@@ -298,7 +297,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>

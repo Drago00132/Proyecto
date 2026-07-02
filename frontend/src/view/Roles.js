@@ -295,7 +295,6 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar este Rol?")){
       axios.delete(`http://localhost:3100/api/roles/eliminar/${id}`).then(()=>{
         toast.success("Rol eliminado");
         cerrarmodal();
@@ -305,7 +304,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>

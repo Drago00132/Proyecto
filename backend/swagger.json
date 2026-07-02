@@ -10,6 +10,14 @@
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "authorization",
+      "description": "Introduce el token JWT con el formato: Bearer <token>"
+    }
+  },
   "paths": {
     "/api/login/login": {
       "post": {
@@ -44,6 +52,35 @@
         }
       }
     },
+    "/api/usuarios/cargar-masiva": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/usuarios/listar": {
       "get": {
         "description": "",
@@ -51,6 +88,16 @@
           {
             "name": "authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -290,6 +337,16 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -491,6 +548,16 @@
           {
             "name": "authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -712,6 +779,16 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -919,6 +996,16 @@
           {
             "name": "authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -1128,6 +1215,16 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1208,9 +1305,6 @@
                 "id_tecnico": {
                   "example": "any"
                 },
-                "id_historial_cliente": {
-                  "example": "any"
-                },
                 "descripcion_prodlema": {
                   "example": "any"
                 },
@@ -1221,6 +1315,9 @@
                   "example": "any"
                 },
                 "fecha_inicio": {
+                  "example": "any"
+                },
+                "repuestos": {
                   "example": "any"
                 }
               }
@@ -1290,6 +1387,12 @@
                 },
                 "fecha_inicio": {
                   "example": "any"
+                },
+                "fecha_fin": {
+                  "example": "any"
+                },
+                "repuestos": {
+                  "example": "any"
                 }
               }
             }
@@ -1358,5 +1461,10 @@
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

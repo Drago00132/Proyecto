@@ -326,7 +326,6 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar este Repuesto?")){
       axios.delete(`http://localhost:3100/api/repuestos/eliminar/${id}`).then(()=>{
         toast.success("Repuesto eliminado");
         cerrarmodal();
@@ -336,7 +335,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>

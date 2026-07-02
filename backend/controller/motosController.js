@@ -6,8 +6,8 @@ exports.listarMotos = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
 
-        const esAdmin = req.usuario.rol === 1;
-        const filtroIdentidad = esAdmin ? null : req.usuario.id;
+        const esAdminOTecnico = req.usuario.rol === 1 || req.usuario.rol === 2;
+        const filtroIdentidad = esAdminOTecnico ? null : req.usuario.id;
 
         const motos = await motos_mo.findAll(filtroIdentidad);
 

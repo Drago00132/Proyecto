@@ -25,7 +25,7 @@ function Registrarse(){
       return;
     }
 
-    axios.post("http://localhost:3100/api/usuarios/agregar",{
+    axios.post("http://localhost:3100/api/usuarios/registrar-publico",{
       numero_identidad: Numero_identidad,
       tipo_documento: Tipo_documento,
       nombre: Nombre,

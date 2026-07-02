@@ -563,7 +563,6 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_usuario = ()=>{
-    if(window.confirm("¿seguro que quieres eliminar a este usuario?")){
       axios.delete(`http://localhost:3100/api/usuarios/eliminar/${id}`).then(()=>{
         toast.success("usuario eliminado");
         cerrarmodal();
@@ -573,7 +572,6 @@ function Eliminar ({id, cerrarmodal}){
         cerrarmodal();
       });
     }
-  };
 
   return(
     <div>
