@@ -508,7 +508,7 @@ function Editar({datos, cerrarmodal}){
   useEffect(() => {
     if(datos){
       setId_historial(datos.id_historial || "");
-      setId_motos(datos.id_motos || "");
+      setId_motos(String(datos.id_motos || ""));
       setId_tecnico(datos.id_tecnico || "");
       setId_historial_cliente(datos.id_historial_cliente || "");
       setDescripcion_prodlema(datos.descripcion_prodlema || "");
@@ -616,7 +616,7 @@ function Editar({datos, cerrarmodal}){
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    axios.get('http://localhost:3100/api/repuestos/listar', config)
+    axios.get('http://localhost:3100/api/repuestos/listar?limit=999999', config)
       .then((res) => setRepuestosDisponibles(res.data.repuesto || []))
       .catch((err) => console.error(err));
 

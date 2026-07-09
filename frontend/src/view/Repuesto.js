@@ -6,12 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 function Repuestos() {
   const [Repuesto, setRepuestos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [RepuestoSelecionado, setRepuestoSelecionado] = useState(null);
-  //paginador 
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -55,7 +53,6 @@ function Repuestos() {
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Repuestos</h2>
 
-          {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
           <button className='btn btn-primary mb-3' 
           onClick={()=> setMostrarAgregar(true)}>Agregar Repuesto</button>
@@ -68,8 +65,6 @@ function Repuestos() {
               <button className="btn btn-outline-secondary" onClick={obtenerRepuesto}>resetear</button>
             </div>
           </div>
-
-          {/* tabal de Roles*/}
 
           <table className="table table-hover">
             <thead className="table-dark">
@@ -128,19 +123,11 @@ function Repuestos() {
         </div>
       </div>
 
-      {/*modal de agregar*/}
       {mostrarAgregar && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center', zIndex: 1000
         }}>
           <div className="modal d-block">
             <div className="modal-dialog">
@@ -157,19 +144,11 @@ function Repuestos() {
           </div>  
         </div>
       )}
-      {/*modales de editar*/}
       {mostrarEditar && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center', zIndex: 1000
         }}>
           <div className="modal d-block">
             <div className="modal-dialog">
@@ -186,19 +165,11 @@ function Repuestos() {
           </div>  
         </div>
       )}
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center', zIndex: 1000
         }}>
           <div className="modal d-block">
             <div className="modal-dialog">
@@ -223,38 +194,54 @@ function Agregar({cerrarmodal}){
 
   const [Nombre_repuesto, setNombre_repuesto] = useState("");
   const [Cantidad, setCantidad] = useState("");
+  const [Id_distribuidor, setId_distribuidor] = useState("");
+  const [distribuidores, setDistribuidores] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
+      .then((res) => setDistribuidores(res.data.distribuidores || []))
+      .catch((error) => console.error("Error al mostrar distribuidores: ", error));
+  }, []);
 
   const add = (event) =>{
     event.preventDefault();
 
-    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "" || Id_distribuidor === "") {
       toast.error("Faltan datos obligatorio");
       return;
     }
 
     const validarFormulario = () => {
-
-    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
-    if (!soloLetras.test(Nombre_repuesto)) {
-      toast.error("El nombre no debe contener números ni caracteres especiales.");
-      return false;
-    }
-
-    return true;
+      const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+      if (!soloLetras.test(Nombre_repuesto)) {
+        toast.error("El nombre no debe contener números ni caracteres especiales.");
+        return false;
+      }
+      return true;
     };
 
-  if (!validarFormulario()) {
-    return; 
+    if (!validarFormulario()) {
+      return; 
     }
 
     axios.post("http://localhost:3100/api/repuestos/agregar",{
       nombre_repuesto:Nombre_repuesto,
       cantidad:Cantidad
     })
+    .then((res)=>{
+      const id_repuestos = res.data.id_repuestos;
+      return axios.post("http://localhost:3100/api/repuestoDistribuidor/asignar", {
+        id_repuestos,
+        id_distribuidor: Id_distribuidor
+      });
+    })
     .then(()=>{
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error)=>{
+      console.error("Error al agregar: ", error);
+      toast.error("No se pudo completar el registro");
     });
   }
 
@@ -269,6 +256,15 @@ function Agregar({cerrarmodal}){
         <label className="form-label">Cantidad</label>
         <input className="form-control" onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
       </div>
+      <div className="mb-3">
+        <label className="form-label">Distribuidor</label>
+        <select className="form-control" value={Id_distribuidor} onChange={(event) => {setId_distribuidor(event.target.value);}}>
+          <option value=''>seleccione un distribuidor</option>
+          {distribuidores.map((d) => (
+            <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
+          ))}
+        </select>
+      </div>
       <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
@@ -279,19 +275,33 @@ function Editar({datos,cerrarmodal}){
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Nombre_repuesto, setNombre_repuesto] = useState("");
   const [Cantidad, setCantidad] = useState("");
+  const [Id_distribuidor, setId_distribuidor] = useState("");
+  const [distribuidores, setDistribuidores] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
+      .then((res) => setDistribuidores(res.data.distribuidores || []))
+      .catch((error) => console.error("Error al mostrar distribuidores: ", error));
+  }, []);
 
   useEffect (()=>{
     if(datos){
       setId_repuestos(datos.id_repuestos || "");
       setNombre_repuesto(datos.nombre_repuesto || "");
       setCantidad(datos.cantidad || "");
+
+      axios.get(`http://localhost:3100/api/repuestoDistribuidor/porRepuesto/${datos.id_repuestos}`)
+        .then((res) => {
+          setId_distribuidor(res.data ? String(res.data.id_distribuidor) : "");
+        })
+        .catch((error) => console.error("Error al obtener distribuidor asignado: ", error));
     }
   },[datos]);
 
   const editar= (event)=>{
     event.preventDefault();
 
-    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "" || Id_distribuidor === "") {
       toast.error("Faltan datos obligatorio");
       return;
     }
@@ -300,9 +310,20 @@ function Editar({datos,cerrarmodal}){
       id_repuestos: Id_repuestos,
       nombre_repuesto: Nombre_repuesto,
       cantidad: Cantidad
-    }).then(()=>{
+    })
+    .then(()=>{
+      return axios.post("http://localhost:3100/api/repuestoDistribuidor/asignar", {
+        id_repuestos: Id_repuestos,
+        id_distribuidor: Id_distribuidor
+      });
+    })
+    .then(()=>{
       cerrarmodal();
       toast.success("Repuesto actualizado correctamente");
+    })
+    .catch((error)=>{
+      console.error("Error al actualizar: ", error);
+      toast.error("No se pudo completar la actualización");
     });
   };
   return (
@@ -318,6 +339,15 @@ function Editar({datos,cerrarmodal}){
       <div className="mb-3">
         <label className="form-label">Cantidad</label>
         <input className="form-control" value={Cantidad} onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Distribuidor</label>
+        <select className="form-control" value={Id_distribuidor} onChange={(event) => {setId_distribuidor(event.target.value);}}>
+          <option value=''>seleccione un distribuidor</option>
+          {distribuidores.map((d) => (
+            <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
+          ))}
+        </select>
       </div>
       <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

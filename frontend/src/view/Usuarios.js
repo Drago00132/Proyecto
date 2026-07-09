@@ -404,7 +404,7 @@ function Editar({datos,cerrarmodal}){
 
   useEffect (()=>{
     if(datos){
-      setNumero_identidad(datos.numero_identidad || "");
+      setNumero_identidad(String(datos.numero_identidad ?? ""));
       setTipo_documento(datos.tipo_documento || "");
       setNombre(datos.nombre || "");
       setApellido(datos.apellido || "");

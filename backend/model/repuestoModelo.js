@@ -24,6 +24,7 @@ const repuesto = {
     },
     
     delete: async(id)=>{
+        await db.query('DELETE FROM repuesto_distribuidor WHERE id_repuestos = ?', [id]);
         await db.query('delete from repuestos where id_repuestos =?',[id]);
         return true;
     }

@@ -8,7 +8,9 @@ import Roles from './view/Roles'
 import Repuesto from './view/Repuesto'
 import Motos from './view/Motos'
 import Historial from './view/Historial'
-import Registrarse from './view/registar';
+import Registrarse from './view/registar'
+import Distribuidores from './view/Distribuidores'
+import EntradaRepuestos from './view/EntradaRepuestos';
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
             <Route path='/panel/roles' element={<Roles/>}></Route>
             <Route path='/panel/repuesto' element={<Repuesto/>}></Route>
             <Route path='/panel/motos' element={<Motos/>}></Route>
+            <Route path='/panel/distribuidores' element={<Distribuidores/>}></Route>
+            <Route path='/panel/entradaRepuestos' element={<EntradaRepuestos/>}></Route>
             <Route path='/panel/historial' element={<Historial/>}></Route>
            </Route>
       </Routes>

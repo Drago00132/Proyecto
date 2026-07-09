@@ -245,7 +245,7 @@ function Editar({datos,cerrarmodal}){
   useEffect (()=>{
     if(datos){
       setId_tecnico(datos.id_tecnico || "");
-      setNumero_identidad(datos.numero_identidad || "");
+      setNumero_identidad(String(datos.numero_identidad || ""));
       setReparaciones_asignadas(datos.reparaciones_asignadas || "");
     }
   },[datos]);
@@ -275,7 +275,7 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label">Numero de identidad</label>
-        <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
+        <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Reparaciones asignadas</label>

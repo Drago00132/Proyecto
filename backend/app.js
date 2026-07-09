@@ -7,6 +7,9 @@ const MotosRutas = require('./routes/motosRutas');
 const repuestoRutas = require('./routes/repuestosRutas');
 const tecnicoRutas = require('./routes/tecnicoRutas');
 const historialRutas = require('./routes/historialRepustos');
+const distribuidoresRutas = require('./routes/distribuidoresRutas');
+const entradaRepuestosRutas = require('./routes/entradaRepuestosRutas');
+const repuestoDistribuidorRutas = require('./routes/repuestoDistribuidorRutas');
 const login = require ('./routes/logion');
 const app = express();
 
@@ -21,6 +24,9 @@ app.use('/api/motos', MotosRutas);
 app.use('/api/repuestos', repuestoRutas);
 app.use('/api/tecnico', tecnicoRutas);
 app.use('/api/Historial', historialRutas);
+app.use('/api/distribuidores', distribuidoresRutas);
+app.use('/api/entradaRepuestos', entradaRepuestosRutas);
+app.use('/api/repuestoDistribuidor', repuestoDistribuidorRutas);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

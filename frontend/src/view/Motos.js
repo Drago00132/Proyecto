@@ -316,7 +316,7 @@ function Editar({datos,cerrarmodal}){
   useEffect (()=>{
     if(datos){
       setId_motos(datos.id_motos || "");
-      setNumero_identidad(datos.numero_identidad || "");
+      setNumero_identidad(String(datos.numero_identidad || ""));
       setMarca_moto(datos.marca_moto || "");
       setModelo_moto(datos.modelo_moto || "");
       setPlaca(datos.placa || "");
