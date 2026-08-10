@@ -6,11 +6,15 @@ import 'react-toastify/dist/ReactToastify.css';
 function Iniciarsesion() {
     const navigate = useNavigate();
 
+    const [paso, setPaso] = useState("credenciales");
+
     const [form, setForm] = useState({
         usuario: "",
         contrasena: ""
     });
 
+    const [codigo, setCodigo] = useState("");
+    const [enviando, setEnviando] = useState(false);
 
     const handleChange = (e) => {
         setForm ({
@@ -19,16 +23,24 @@ function Iniciarsesion() {
         });
     };
 
+    const guardarSesionYEntrar = (data) => {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("rol", data.rol);
+        localStorage.setItem("numero_identidad", data.numero_identidad);
+
+        toast.success("Inicio de sesión exitoso.");
+        navigate("/panel");
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        console.log("Datos del formulario:", form);
 
         if (form.usuario === "" || form.contrasena === "") {
             toast.error("Todos los campos son obligatorios");
             return;
         }
 
+        setEnviando(true);
         try {
             const response = await fetch("http://localhost:3100/api/login/login", { 
                 method: "POST",
@@ -44,22 +56,65 @@ function Iniciarsesion() {
             const data = await response.json();
 
             if (!response.ok) {
-                toast.error("Error al iniciar sesión");
+                toast.error(data.message || "Error al iniciar sesión");
                 return;
             }
 
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("rol", data.rol);
-            localStorage.setItem("numero_identidad", data.numero_identidad);
+            if (data.requiere2FA) {
+                toast.info(data.message || "Te enviamos un código de verificación a tu correo.");
+                setPaso("codigo");
+                return;
+            }
 
-            toast.success("Inicio de sesión exitoso.");
-
-            navigate("/panel");
+            guardarSesionYEntrar(data);
 
         } catch (error) {
             console.error(error);
-            alert("Error en el servidor");
+            toast.error("Error en el servidor");
+        } finally {
+            setEnviando(false);
         }
+    };
+
+    const handleVerificarCodigo = async (e) => {
+        e.preventDefault();
+
+        if (codigo.trim() === "") {
+            toast.error("Ingresa el código que te enviamos por correo");
+            return;
+        }
+
+        setEnviando(true);
+        try {
+            const response = await fetch("http://localhost:3100/api/login/verificar-2fa", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    correo_electronico: form.usuario,
+                    codigo: codigo.trim()
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                toast.error(data.message || "No se pudo verificar el código");
+                return;
+            }
+
+            guardarSesionYEntrar(data);
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Error en el servidor");
+        } finally {
+            setEnviando(false);
+        }
+    };
+
+    const volverACredenciales = () => {
+        setPaso("credenciales");
+        setCodigo("");
     };
 
     return (
@@ -69,28 +124,72 @@ function Iniciarsesion() {
                     <div className="col-lg-5 col-md-8 mx-auto">
                         <div className="card border-0 shadow-lg p-3 rounded-3" style={{top: '50%'}}>
                             <div className="card-body">
-                                <h2 className="tex-center md.4">Inicio de Sesión</h2>
 
-                                <form onSubmit={handleSubmit}>
-                                    <div className="md-3">
-                                        <label className="form-label">Usuario</label>
-                                        <input className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
-                                    </div>
+                                {paso === "credenciales" && (
+                                    <>
+                                        <h2 className="tex-center md.4">Inicio de Sesión</h2>
 
-                                    <div className="md-3">
-                                        <label className="form-label" >Contraseña</label>
-                                        <input className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
-                                    </div>
-                                    
-                                    <div className="d-grid gap-2" >
-                                        <button style={{margin: '20px'}} type="submit" className="btn btn-primary" >Iniciar sesión</button>
-                                    </div>  
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="md-3">
+                                                <label className="form-label">Usuario</label>
+                                                <input className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
+                                            </div>
 
-                                </form>
+                                            <div className="md-3">
+                                                <label className="form-label" >Contraseña</label>
+                                                <input className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
+                                            </div>
+                                            
+                                            <div className="d-grid gap-2" >
+                                                <button style={{margin: '20px'}} type="submit" className="btn btn-primary" disabled={enviando}>
+                                                    {enviando ? "Verificando..." : "Iniciar sesión"}
+                                                </button>
+                                            </div>  
 
-                                <div className="d-grid gap-2" >
-                                    <button className='btn btn-link' onClick={()=>navigate("/Registarse")}>Registrarse</button>
-                                </div> 
+                                        </form>
+
+                                        <div className="d-grid gap-2" >
+                                            <button className='btn btn-link' onClick={()=>navigate("/Registarse")}>Registrarse</button>
+                                        </div> 
+
+                                        <div className="d-grid gap-2" >
+                                            <button className='btn btn-link' onClick={()=>navigate("/recuperar-contrasena")}>¿Olvidaste tu contraseña?</button>
+                                        </div> 
+                                    </>
+                                )}
+
+                                {paso === "codigo" && (
+                                    <>
+                                        <h2 className="tex-center md.4">Verificación en dos pasos</h2>
+                                        <p className="text-muted">
+                                            Enviamos un código de 6 dígitos a tu correo. Ingrésalo para completar el inicio de sesión.
+                                        </p>
+
+                                        <form onSubmit={handleVerificarCodigo}>
+                                            <div className="md-3">
+                                                <label className="form-label">Código de verificación</label>
+                                                <input
+                                                    className="form-control"
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    maxLength={6}
+                                                    value={codigo}
+                                                    onChange={(e) => setCodigo(e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className="d-grid gap-2" >
+                                                <button style={{margin: '20px'}} type="submit" className="btn btn-primary" disabled={enviando}>
+                                                    {enviando ? "Verificando..." : "Verificar código"}
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        <div className="d-grid gap-2" >
+                                            <button className='btn btn-link' onClick={volverACredenciales}>Volver a intentar con otro usuario</button>
+                                        </div>
+                                    </>
+                                )}
 
                                 <ToastContainer position="top-right" autoClose={3000} />
 

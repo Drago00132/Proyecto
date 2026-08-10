@@ -716,7 +716,7 @@ function Editar({datos, cerrarmodal}){
         </select>
       </div>
       )}
-      {rol === 1 && (
+      {rol === 1 || rol ===2 && (
       <div className="mb-3">
         <label className="form-label">Descripción del trabajo</label>
         <input className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>

@@ -27,7 +27,13 @@ const roles ={
     delete: async (id)=>{
         await db.query('delete from roles where id_rol =?',[id]);
         return true;
+    },
+
+    contarUsuariosPorRol: async (id) => {
+        const [rows] = await db.query('SELECT COUNT(*) AS total FROM usuarios WHERE id_rol = ?', [id]);
+        return rows[0].total;
     }
+
 };
 
 module.exports = roles;

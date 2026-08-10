@@ -316,20 +316,29 @@ function Agregar({cerrarmodal}){
       correo_electronico: Correo_electronico,
       contrasena: Contrasena,
       id_rol: Id_rol
+    }, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
     })
     .then(()=>{
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error)=>{
+      console.error("Error al agregar: ", error);
+      toast.error(error.response?.data?.message || "No se pudo crear el usuario");
     });
   }
 
   useEffect(()=>{
-    axios.get("http://localhost:3100/api/roles/listar")
+    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+    })
     .then((res)=>{
-      setRoles(res.data.rol || []);
+      setRoles(res.data.roles || []);
     })
     .catch((error)=>{
-      console.error("error al odtener los roles ",error);
+      console.error("error al obtener los roles ",error);
+      toast.error("No se pudieron cargar los roles disponibles");
     });
   }, []);
 
@@ -490,19 +499,27 @@ function Editar({datos,cerrarmodal}){
       correo_electronico: Correo_electronico,
       contrasena: Contrasena,
       id_rol: Id_rol
+    }, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
     }).then(()=>{
       cerrarmodal();
       toast.success("Usuarios actualizado correctamente");
+    }).catch((error)=>{
+      console.error("Error al actualizar: ", error);
+      toast.error(error.response?.data?.message || "No se pudo actualizar el usuario");
     });
   };
 
   useEffect(()=>{
-    axios.get("http://localhost:3100/api/roles/listar")
+    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+    })
     .then((res)=>{
-      setRoles(res.data.rol || []);
+      setRoles(res.data.roles || []);
     })
     .catch((error)=>{
-      console.error("error al odtener los roles ",error);
+      console.error("error al obtener los roles ",error);
+      toast.error("No se pudieron cargar los roles disponibles");
     });
   }, []);
 

@@ -11,6 +11,8 @@ import Historial from './view/Historial'
 import Registrarse from './view/registar'
 import Distribuidores from './view/Distribuidores'
 import EntradaRepuestos from './view/EntradaRepuestos';
+import RecuperarContrasena from './view/RecuperarContrasena';
+import RestablecerContrasena from './view/RestablecerContrasena';
 
 function App() {
 
@@ -19,6 +21,8 @@ function App() {
       <Routes>
            <Route path="/" element={<Login/>}></Route>
            <Route path='/Registarse' element={<Registrarse/>}></Route>
+           <Route path='/recuperar-contrasena' element={<RecuperarContrasena/>}></Route>
+           <Route path='/restablecer-contrasena' element={<RestablecerContrasena/>}></Route>
            <Route path="/panel" element={<Dashboard/>}>
             <Route path='/panel/usuarios' element={<Usuarios/>}></Route>
             <Route path='/panel/tecnico' element={<Tecnico/>}></Route>
