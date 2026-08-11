@@ -27,13 +27,14 @@ function Roles() {
     });
   };
 
-    const obtenerRol = () => {
-      axios.get('http://localhost:3100/api/roles/listar?page=${page}&limit=${limite}').then((res)=>{
+    const obtenerRol = (page = 1) => {
+      axios.get(`http://localhost:3100/api/roles/listar?page=${page}&limit=${limite}`).then((res)=>{
         setRol(res.data.rol || []);
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
       }).catch((error)=>{
         console.error("Error al mostrar Rol: ",error);
+        toast.error("No se pudo cargar el listado de roles");
       });
     };
 
@@ -235,6 +236,10 @@ function Agregar({cerrarmodal}){
     .then(()=>{
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error)=>{
+      console.error("Error al agregar rol: ", error);
+      toast.error(error.response?.data?.message || "No se pudo registrar el rol");
     });
   }
 
@@ -276,6 +281,9 @@ function Editar({datos,cerrarmodal}){
     }).then(()=>{
       cerrarmodal();
       toast.success("Rol actualizado correctamente");
+    }).catch((error)=>{
+      console.error("Error al actualizar rol: ", error);
+      toast.error(error.response?.data?.message || "No se pudo actualizar el rol");
     });
   };
   return (

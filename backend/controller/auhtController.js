@@ -1,6 +1,7 @@
 const usuariosModelo = require('../model/auhtModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const manejarError = require('../utils/manejarError');
 const crypto = require('crypto');
 const { enviarCorreoRecuperacion, enviarCorreoCodigo2FA } = require('../config/mailer');
 
@@ -71,7 +72,7 @@ exports.login = async (req, res) => {
 
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -114,7 +115,7 @@ exports.verificarCodigo2FA = async (req, res) => {
 
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -144,7 +145,7 @@ exports.solicitarRecuperacion = async (req, res) => {
 
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -181,6 +182,6 @@ exports.restablecerContrasena = async (req, res) => {
 
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };

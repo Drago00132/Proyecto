@@ -170,10 +170,11 @@ function Agregar({ cerrarmodal }) {
   const [Cantidad_ingresada, setCantidad_ingresada] = useState("");
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Id_distribuidor, setId_distribuidor] = useState("");
-  const [Numero_identidad, setNumero_identidad] = useState("");
+  // El usuario que registra la entrada siempre es quien tiene la sesión abierta;
+  // ya no se elige de una lista.
+  const Numero_identidad = localStorage.getItem("numero_identidad") || "";
   const [repuestos, setRepuestos] = useState([]);
   const [distribuidores, setDistribuidores] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/repuestos/listar?limit=999999')
@@ -183,10 +184,6 @@ function Agregar({ cerrarmodal }) {
     axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
       .then((res) => setDistribuidores(res.data.distribuidores || []))
       .catch((error) => console.error("Error al mostrar distribuidores: ", error));
-
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999')
-      .then((res) => setUsuarios(res.data.usuarios || []))
-      .catch((error) => console.error("Error al mostrar usuarios: ", error));
   }, []);
 
   const add = (event) => {
@@ -207,6 +204,10 @@ function Agregar({ cerrarmodal }) {
     .then(() => {
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error) => {
+      console.error("Error al agregar entrada: ", error);
+      toast.error(error.response?.data?.message || "No se pudo registrar la entrada");
     });
   }
 
@@ -238,15 +239,6 @@ function Agregar({ cerrarmodal }) {
           ))}
         </select>
       </div>
-      <div className="mb-3">
-        <label className="form-label">Registrado por</label>
-        <select value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
-          <option value=''>seleccione un usuario</option>
-          {usuarios.map((u) => (
-            <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido}</option>
-          ))}
-        </select>
-      </div>
       <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
@@ -259,9 +251,9 @@ function Editar({ datos, cerrarmodal }) {
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Id_distribuidor, setId_distribuidor] = useState("");
   const [Numero_identidad, setNumero_identidad] = useState("");
+  const [usuarioNombreMostrado, setUsuarioNombreMostrado] = useState("");
   const [repuestos, setRepuestos] = useState([]);
   const [distribuidores, setDistribuidores] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/repuestos/listar?limit=999999')
@@ -271,10 +263,6 @@ function Editar({ datos, cerrarmodal }) {
     axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
       .then((res) => setDistribuidores(res.data.distribuidores || []))
       .catch((error) => console.error("Error al mostrar distribuidores: ", error));
-
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999')
-      .then((res) => setUsuarios(res.data.usuarios || []))
-      .catch((error) => console.error("Error al mostrar usuarios: ", error));
   }, []);
 
   useEffect(() => {
@@ -285,6 +273,7 @@ function Editar({ datos, cerrarmodal }) {
       setId_repuestos(String(datos.id_repuestos || ""));
       setId_distribuidor(String(datos.id_distribuidor || ""));
       setNumero_identidad(String(datos.numero_identidad || ""));
+      setUsuarioNombreMostrado(`${datos.nombre || ""} ${datos.apellido || ""}`.trim() || "—");
     }
   }, [datos]);
 
@@ -305,6 +294,9 @@ function Editar({ datos, cerrarmodal }) {
     }).then(() => {
       cerrarmodal();
       toast.success("Entrada actualizada correctamente");
+    }).catch((error) => {
+      console.error("Error al actualizar entrada: ", error);
+      toast.error(error.response?.data?.message || "No se pudo actualizar la entrada");
     });
   };
 
@@ -342,12 +334,7 @@ function Editar({ datos, cerrarmodal }) {
       </div>
       <div className="mb-3">
         <label className="form-label">Registrado por</label>
-        <select value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
-          <option value=''>seleccione un usuario</option>
-          {usuarios.map((u) => (
-            <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido}</option>
-          ))}
-        </select>
+        <input className="form-control" value={usuarioNombreMostrado} type='text' disabled></input>
       </div>
       <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
@@ -374,4 +361,5 @@ function Eliminar({ id, cerrarmodal }) {
   )
 }
 
+export { Agregar as AgregarEntradaRepuesto };
 export default EntradaRepuestos;

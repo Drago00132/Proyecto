@@ -1,4 +1,5 @@
 const motos_mo = require('../model/motosModelo');
+const manejarError = require('../utils/manejarError');
 
 exports.listarMotos = async (req, res) => {
     try {
@@ -6,8 +7,8 @@ exports.listarMotos = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
 
-        const esAdminOTecnico = req.usuario.rol === 1 || req.usuario.rol === 2;
-        const filtroIdentidad = esAdminOTecnico ? null : req.usuario.id;
+        const veTodasLasMotos = [1, 2, 16, 17].includes(req.usuario.rol);
+        const filtroIdentidad = veTodasLasMotos ? null : req.usuario.id;
 
         const motos = await motos_mo.findAll(filtroIdentidad);
 
@@ -22,8 +23,7 @@ exports.listarMotos = async (req, res) => {
             currentPage: page
         });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -33,8 +33,7 @@ exports.obtenerMotos = async (req, res) => {
         if (!motos) return res.status(404).json({ message: 'Moto no encontrada' });
         res.status(200).json(motos);
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -49,8 +48,7 @@ exports.crearMoto = async (req, res) => {
         const id = await motos_mo.create(req.body);
         res.status(201).json({ id_moto: id, ...req.body });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -68,8 +66,7 @@ exports.actualizarMoto = async (req, res) => {
         await motos_mo.update(req.params.id, req.body);
         res.status(200).json({ message: 'Moto actualizada correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -81,7 +78,6 @@ exports.eliminarMotos = async (req, res) => {
         await motos_mo.delete(req.params.id);
         res.status(200).json({ message: 'Moto eliminada correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };

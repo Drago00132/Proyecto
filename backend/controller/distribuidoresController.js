@@ -1,4 +1,5 @@
 const distribuidor_mo = require('../model/distribuidorModelo');
+const manejarError = require('../utils/manejarError');
 
 exports.listarDistribuidores = async (req, res) => {
     try {
@@ -16,8 +17,7 @@ exports.listarDistribuidores = async (req, res) => {
             currentPage: page
         });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -27,8 +27,7 @@ exports.obtenerDistribuidor = async (req, res) => {
         if (!distribuidor) return res.status(404).json({ message: 'Distribuidor no encontrado' });
         res.status(200).json(distribuidor);
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -43,8 +42,7 @@ exports.crearDistribuidor = async (req, res) => {
         const id = await distribuidor_mo.create(req.body);
         res.status(201).json({ id_distribuidor: id, ...req.body });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -62,8 +60,7 @@ exports.actualizarDistribuidor = async (req, res) => {
         await distribuidor_mo.update(req.params.id, req.body);
         res.status(200).json({ message: 'Distribuidor actualizado correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -75,7 +72,6 @@ exports.eliminarDistribuidor = async (req, res) => {
         await distribuidor_mo.delete(req.params.id);
         res.status(200).json({ message: 'Distribuidor eliminado correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };

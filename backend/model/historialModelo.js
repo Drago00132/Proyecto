@@ -35,8 +35,6 @@ const historial = {
         const params = [];
 
         if (numero_identidad) {
-            /* CORREGIDO: Filtra si el ID del usuario logueado coincide con el dueño de la moto 
-               O con el técnico encargado del trabajo */
             query += ` WHERE m.numero_identidad = ? OR t.numero_identidad = ?`;
             params.push(numero_identidad, numero_identidad);
         }
@@ -55,6 +53,7 @@ const historial = {
                 h.descripcion_prodlema,
                 h.estado,
                 h.descripcion_trabajo,
+                h.fotos,
                 h.fecha_inicio,
                 h.fecha_fin,
                 m.placa,
@@ -109,6 +108,14 @@ const historial = {
             [id_historial]
         );
         return rows;
+    },
+
+    tieneHistorialActivo: async (id_motos) => {
+        const [rows] = await db.query(
+            "SELECT COUNT(*) AS total FROM historial WHERE id_motos = ? AND (estado IS NULL OR estado <> 'Finalizado')",
+            [id_motos]
+        );
+        return rows[0].total > 0;
     },
 
     update: async (id, data) => {

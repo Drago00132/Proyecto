@@ -262,6 +262,10 @@ function Agregar({cerrarmodal}){
     .then(()=>{
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error)=>{
+      console.error("Error al agregar moto: ", error);
+      toast.error(error.response?.data?.message || "No se pudo registrar la moto");
     });
   }
 
@@ -340,6 +344,9 @@ function Editar({datos,cerrarmodal}){
     }).then(()=>{
       cerrarmodal();
       toast.success("Moto actualizado correctamente");
+    }).catch((error)=>{
+      console.error("Error al actualizar moto: ", error);
+      toast.error(error.response?.data?.message || "No se pudo actualizar la moto");
     });
   };
   return (

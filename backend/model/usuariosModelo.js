@@ -51,6 +51,15 @@ const usuarios = {
     delete: async (id) => {
         await db.query('DELETE FROM usuarios WHERE numero_identidad = ?', [id]);
         return true;
+    },
+
+    updatePerfilPropio: async (id, data) => {
+        const { nombre, apellido, correo_electronico, numero_celular } = data;
+        await db.query(
+            'UPDATE usuarios SET nombre = ?, apellido = ?, correo_electronico = ?, numero_celular = ? WHERE numero_identidad = ?',
+            [nombre, apellido, correo_electronico, numero_celular, id]
+        );
+        return true;
     }
 };
 

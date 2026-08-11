@@ -6,6 +6,8 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/registrar-publico', usuarioController.crearUsuario);
+router.get('/mi-perfil', verificarToken, usuarioController.obtenerMiPerfil);
+router.put('/mi-perfil', verificarToken, usuarioController.actualizarMiPerfil);
 router.post('/cargar-masiva', verificarToken, verificarRol(1,17), upload.single('archivo'), usuarioController.cargaMasiva);
 router.get('/roles-asignables', verificarToken, verificarRol(1,16,17), usuarioController.obtenerRolesAsignables);
 router.get('/listar', verificarToken, verificarRol(1,2,3,16,17), usuarioController.listarUsuarios);

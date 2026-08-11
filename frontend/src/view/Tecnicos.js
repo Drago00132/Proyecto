@@ -211,17 +211,20 @@ const subirArchivo = async () => {
   const formData = new FormData();
   formData.append('archivo', archivo);
 
+  setCargando(true);
   try {
-    await axios.post('http://localhost:3100/api/usuarios/cargar-masiva', formData, {
+    const res = await axios.post('http://localhost:3100/api/usuarios/cargar-masiva', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
-    
-    toast.success("Carga masiva exitosa");
-    
+
+    toast.success(res.data?.message || "Carga masiva de técnicos exitosa");
+
     cerrarmodal(false); 
     
   } catch (error) {
-    toast.error("Error al subir el archivo: " + error.message);
+    toast.error(error.response?.data?.message || "No se pudo procesar la carga masiva de técnicos");
+  } finally {
+    setCargando(false);
   }
 };
 

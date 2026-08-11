@@ -1,13 +1,13 @@
 const usuario_modelo = require('../model/usuariosModelo');
 const rolModelo = require('../model/RoleModelo');
 const xlsx = require('xlsx');
+const jwt = require('jsonwebtoken');
+const manejarError = require('../utils/manejarError');
 
-// RN-027 a RN-030: qué roles puede asignar cada rol al crear/editar un usuario.
-// 17 = Súper Administrador, 1 = Administrador, 16 = Recepcionista, 2 = Técnico, 3 = Cliente.
 const ROLES_ASIGNABLES = {
     17: [1, 2, 3, 16, 17], 
     1: [2, 3, 16],
-    16: [3],
+    16: [3], 
 };
 
 exports.listarUsuarios = async (req, res) => {
@@ -27,7 +27,7 @@ exports.listarUsuarios = async (req, res) => {
             currentPage: page
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -38,7 +38,7 @@ exports.obtenerUsuario = async (req, res) => {
         const { contrasena, ...usuarioSinContrasena } = usuario;
         res.status(200).json(usuarioSinContrasena);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -61,10 +61,27 @@ exports.crearUsuario = async (req, res) => {
 
     try {
         const id = await usuario_modelo.create({ ...req.body, id_rol: rolFinal });
+
+        // RF-M1.1: si es registro público (sin token), el usuario queda autenticado
+        // de una vez, igual que si hubiera iniciado sesión, para poder redirigirlo al panel.
+        if (!req.usuario) {
+            const token = jwt.sign(
+                { id, nombre, rol: rolFinal },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+            return res.status(201).json({
+                message: 'Usuario registrado exitosamente',
+                numero_identidad: id,
+                rol: rolFinal,
+                token
+            });
+        }
+
         res.status(201).json({ numero_identidad: id, ...req.body, id_rol: rolFinal });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -88,7 +105,7 @@ exports.actualizarUsuario = async (req, res) => {
         res.status(200).json({ message: 'Usuario actualizado correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -100,7 +117,7 @@ exports.obtenerRolesAsignables = async (req, res) => {
         res.status(200).json({ roles: rolesAsignables });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -113,7 +130,34 @@ exports.eliminarUsuario = async (req, res) => {
         res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
+    }
+};
+
+exports.obtenerMiPerfil = async (req, res) => {
+    try {
+        const usuario = await usuario_modelo.findById(req.usuario.id);
+        if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
+        const { contrasena, ...usuarioSinContrasena } = usuario;
+        res.status(200).json(usuarioSinContrasena);
+    } catch (error) {
+        manejarError(error, res);
+    }
+};
+
+exports.actualizarMiPerfil = async (req, res) => {
+    const { nombre, apellido, correo_electronico, numero_celular } = req.body;
+
+    if (!nombre || !correo_electronico) {
+        return res.status(400).json({ message: 'Nombre y correo electrónico son obligatorios' });
+    }
+
+    try {
+        await usuario_modelo.updatePerfilPropio(req.usuario.id, { nombre, apellido, correo_electronico, numero_celular });
+        res.status(200).json({ message: 'Perfil actualizado correctamente' });
+    } catch (error) {
+        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
+        manejarError(error, res);
     }
 };
 
@@ -134,12 +178,12 @@ exports.cargaMasiva = async (req, res) => {
         console.log("Datos procesados:", data);
 
         for (const usuario of data) {
-            await usuario_modelo.create(usuario);
+            await usuario_modelo.create({ ...usuario, id_rol: 2 });
         }
 
-        res.status(200).json({ message: 'Carga masiva realizada con éxito' });
+        res.status(200).json({ message: 'Carga masiva de técnicos realizada con éxito' });
     } catch (error) {
         console.error("ERROR CRÍTICO EN CARGA MASIVA:", error);
-        res.status(500).json({ message: 'Error interno al procesar el archivo', error: error.message });
+        manejarError(error, res, 'carga masiva de técnicos');
     }
 };

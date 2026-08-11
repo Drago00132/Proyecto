@@ -213,6 +213,10 @@ function Agregar({ cerrarmodal }) {
     .then(() => {
       cerrarmodal();
       toast.success("reguistro Exitoso");
+    })
+    .catch((error) => {
+      console.error("Error al agregar distribuidor: ", error);
+      toast.error(error.response?.data?.message || "No se pudo registrar el distribuidor");
     });
   }
 
@@ -279,6 +283,9 @@ function Editar({ datos, cerrarmodal }) {
     }).then(() => {
       cerrarmodal();
       toast.success("Distribuidor actualizado correctamente");
+    }).catch((error) => {
+      console.error("Error al actualizar distribuidor: ", error);
+      toast.error(error.response?.data?.message || "No se pudo actualizar el distribuidor");
     });
   };
 

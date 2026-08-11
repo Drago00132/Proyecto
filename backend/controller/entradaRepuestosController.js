@@ -1,4 +1,5 @@
 const entrada_mo = require('../model/entradaRepuestoModelo');
+const manejarError = require('../utils/manejarError');
 
 exports.listarEntradas = async (req, res) => {
     try {
@@ -17,7 +18,7 @@ exports.listarEntradas = async (req, res) => {
         });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -28,7 +29,7 @@ exports.obtenerEntrada = async (req, res) => {
         res.status(200).json(entrada);
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -39,12 +40,17 @@ exports.crearEntrada = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
+    const cantidadNum = Number(cantidad_ingresada);
+    if (isNaN(cantidadNum) || cantidadNum <= 0) {
+        return res.status(400).json({ message: 'La cantidad ingresada debe ser un número mayor a 0' });
+    }
+
     try {
         const id = await entrada_mo.create(req.body);
         res.status(201).json({ id_entrada: id, ...req.body });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -55,6 +61,11 @@ exports.actualizarEntrada = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
+    const cantidadNum = Number(cantidad_ingresada);
+    if (isNaN(cantidadNum) || cantidadNum <= 0) {
+        return res.status(400).json({ message: 'La cantidad ingresada debe ser un número mayor a 0' });
+    }
+
     try {
         const existe = await entrada_mo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Entrada no encontrada' });
@@ -63,7 +74,7 @@ exports.actualizarEntrada = async (req, res) => {
         res.status(200).json({ message: 'Entrada actualizada correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -76,6 +87,6 @@ exports.eliminarEntrada = async (req, res) => {
         res.status(200).json({ message: 'Entrada eliminada correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };

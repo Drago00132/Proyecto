@@ -11,6 +11,11 @@ const repuesto = {
         return rows[0];
     },
 
+    findByNombre: async(nombre) =>{
+        const [rows] = await db.query('select * from repuestos where nombre_repuesto LIKE ?',[`%${nombre}%`]);
+        return rows;
+    },
+
     create: async(data)=>{
         const { nombre_repuesto, cantidad}= data;
         const [result]= await db.query('insert into repuestos (nombre_repuesto, cantidad) values (?,?)',[nombre_repuesto, cantidad]);

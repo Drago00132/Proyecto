@@ -1,4 +1,5 @@
 const tecnico_mo = require('../model/tecnicoModelo');
+const manejarError = require('../utils/manejarError');
 
 exports.ListarTecnico = async (req, res) => {
     try {
@@ -16,8 +17,7 @@ exports.ListarTecnico = async (req, res) => {
             currentPage: page
         });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -27,8 +27,7 @@ exports.obtenerTecnico = async (req, res) => {
         if (!tecnico) return res.status(404).json({ message: 'Técnico no encontrado' });
         res.status(200).json(tecnico);
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -43,8 +42,7 @@ exports.agregarTecnico = async (req, res) => {
         const id = await tecnico_mo.create(req.body);
         res.status(201).json({ id_tecnico: id, ...req.body });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -62,8 +60,7 @@ exports.actializarTecnico = async (req, res) => {
         await tecnico_mo.update(req.params.id, req.body);
         res.status(200).json({ message: 'Técnico actualizado correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };
 
@@ -75,7 +72,6 @@ exports.eliminarTecnico = async (req, res) => {
         await tecnico_mo.delete(req.params.id);
         res.status(200).json({ message: 'Técnico eliminado correctamente' });
     } catch (error) {
-        if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
-        res.status(500).json({ error: error.message });
+        manejarError(error, res);
     }
 };

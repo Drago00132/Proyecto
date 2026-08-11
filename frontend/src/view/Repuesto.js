@@ -15,13 +15,23 @@ function Repuestos() {
   const limite = 5;
 
   const buscarRepuesto = () =>{
-    axios.get(`http://localhost:3100/api/repuestos/consultar/${busqueda}`)
+    if (busqueda.trim() === "") {
+      toast.error("Ingresa un nombre para buscar");
+      return;
+    }
+    axios.get(`http://localhost:3100/api/repuestos/buscar?nombre=${encodeURIComponent(busqueda)}`)
     .then((res) => {
-      setRepuestos(Array.isArray(res.data) ? res.data : [res.data]);
+      setRepuestos(res.data.repuesto || []);
       setTotalPaginas(1);
       setPaginaActual(1);
     }).catch((err)=>{
       console.error("Error en la busqueda",err);
+      if (err.response?.status === 404) {
+        setRepuestos([]);
+        toast.error("producto no encontrado");
+      } else {
+        toast.error(err.response?.data?.message || "No se pudo realizar la búsqueda");
+      }
     });
   };
 
@@ -58,7 +68,7 @@ function Repuestos() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Repuesto</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por nombre del repuesto' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button className="btn btn-outline-secondary" onClick={buscarRepuesto}>Buscar</button>

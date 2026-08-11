@@ -13,6 +13,8 @@ import Distribuidores from './view/Distribuidores'
 import EntradaRepuestos from './view/EntradaRepuestos';
 import RecuperarContrasena from './view/RecuperarContrasena';
 import RestablecerContrasena from './view/RestablecerContrasena';
+import MiPerfil from './view/MiPerfil';
+import AsignarTecnico from './view/AsignarTecnico';
 
 function App() {
 
@@ -24,6 +26,7 @@ function App() {
            <Route path='/recuperar-contrasena' element={<RecuperarContrasena/>}></Route>
            <Route path='/restablecer-contrasena' element={<RestablecerContrasena/>}></Route>
            <Route path="/panel" element={<Dashboard/>}>
+            <Route path='/panel/mi-perfil' element={<MiPerfil/>}></Route>
             <Route path='/panel/usuarios' element={<Usuarios/>}></Route>
             <Route path='/panel/tecnico' element={<Tecnico/>}></Route>
             <Route path='/panel/roles' element={<Roles/>}></Route>

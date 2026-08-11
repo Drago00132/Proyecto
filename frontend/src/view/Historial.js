@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +10,16 @@ function Historial() {
   const [busqueda, setBusqueda] = useState("");
   //modales y sus funciones 
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('nuevo') === '1') {
+      setMostrarAgregar(true);
+      searchParams.delete('nuevo');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, []);
+
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [HistorialSelecionado, setHistorialSelecionado] = useState(null);
@@ -66,8 +77,10 @@ function Historial() {
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
+            {(rol === 1 || rol === 16 || rol === 17) && (
           <button className='btn btn-primary mb-3' 
           onClick={()=> setMostrarAgregar(true)}>Agregar Historial</button>
+            )}
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
@@ -83,7 +96,7 @@ function Historial() {
             <table className="table table-hover">
               <thead className="table-dark">
                 <tr>
-                  {rol === 1 && (
+                  {(rol === 1 || rol === 16 || rol === 17) && (
                   <th scope="col">Id</th>
                   )}
                   {rol === 3 && (
@@ -91,7 +104,7 @@ function Historial() {
                   )}
                   <th scope="col">Moto (Placa)</th>
                   <th scope="col">Técnico</th>
-                  {rol === 1 && (
+                  {(rol === 1 || rol === 16 || rol === 17) && (
                   <th scope="col">Cliente</th>
                   )}
                   <th scope="col">Estado</th>
@@ -102,7 +115,7 @@ function Historial() {
               <tbody>
                 {Historial.map((historial, index) => (
                   <tr key={index}> 
-                    {rol === 1 && (
+                    {(rol === 1 || rol === 16 || rol === 17) && (
                     <td>{historial.id_historial}</td>
                     )}
                     {rol === 3 && (
@@ -110,7 +123,7 @@ function Historial() {
                     )}
                     <td>{historial.placa} ({historial.modelo_moto})</td>
                     <td>{historial.nombre_tecnico} {historial.apellido_tecnico}</td>
-                    {rol === 1 && (
+                    {(rol === 1 || rol === 16 || rol === 17) && (
                     <td>{historial.nombre_cliente} {historial.apellido_cliente}</td>
                     )}
                     <td>{historial.estado}</td>
@@ -122,12 +135,14 @@ function Historial() {
                       }}>
                         Ver Detalles
                       </button>
-                      <button className="btn btn-success btn-sm me-1" onClick={()=>{ 
-                        setHistorialSelecionado(historial);
-                        setMostrarEditar(true);}}>
-                        Editar
-                      </button>
-                      {(rol === 1 || rol === 3) && (
+                      {!(rol === 3 && historial.id_tecnico) && (
+                        <button className="btn btn-success btn-sm me-1" onClick={()=>{ 
+                          setHistorialSelecionado(historial);
+                          setMostrarEditar(true);}}>
+                          Editar
+                        </button>
+                      )}
+                      {(rol === 1 || rol === 3 || rol === 17) && !(rol === 3 && historial.id_tecnico) && (
                         <button className="btn btn-danger btn-sm" onClick={()=>{ 
                           setHistorialSelecionado(historial.id_historial);
                           setmostrarEliminar(true);}}>
@@ -293,7 +308,7 @@ function Agregar({cerrarmodal}){
     const token = localStorage.getItem("token");
     event.preventDefault();
 
-    if (Id_motos.trim() === "" || Descripcion_prodlema.trim() === "" || Fecha_inicio.trim() === "") {
+    if (Id_motos.trim() === "" || Descripcion_prodlema.trim() === "") {
       toast.error("faltan datos obligatorio");
       return; 
     }
@@ -318,7 +333,6 @@ function Agregar({cerrarmodal}){
     formData.append('descripcion_prodlema', Descripcion_prodlema);
     formData.append('estado', Estado || "En Asignacion");
     formData.append('descripcion_trabajo', Descripcion_trabajo || null);
-    formData.append('fecha_inicio', Fecha_inicio);
     formData.append('repuestos', JSON.stringify(repuestosSeleccionados));
     if (Fotos) {
       formData.append('fotos', Fotos); 
@@ -332,6 +346,10 @@ function Agregar({cerrarmodal}){
     .then(()=>{
       cerrarmodal();
       toast.success("Registro Exitoso");
+    })
+    .catch((error) => {
+      console.error("Error al agregar historial: ", error);
+      toast.error(error.response?.data?.message || "No se pudo registrar el historial");
     });
   }
 
@@ -384,7 +402,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
 
   return (
     <form onSubmit={add}>
-      {rol === 1 && (
+      {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Dueño de la moto (Cliente)</label>
         <select className="form-control" value={clienteSeleccionado} onChange={(e) => setClienteSeleccionado(e.target.value)}required>
@@ -410,7 +428,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
           ))}
         </select>
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Técnico Asignado</label>
         <select className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
@@ -427,7 +445,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
         <label className="form-label">Descripción del problema</label>
         <input className="form-control" onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' required></input>
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Estado</label>
         <select className="form-control" onChange={(event) => setEstado(event.target.value)} type='text'>
@@ -438,7 +456,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
         </select>
       </div>
       )}
-      {rol === 1 &&(
+      {(rol === 1 || rol === 17) &&(
       <div className="mb-3">
         <label className="form-label">Descripción del trabajo</label>
         <input className="form-control" onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
@@ -449,10 +467,9 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
         <input className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Fecha de inicio</label>
-        <input className="form-control" onChange={(event) => setFecha_inicio(event.target.value)} type='date' required></input>
+        <small className="text-muted">La fecha de ingreso se registra automáticamente al guardar.</small>
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17) && (
         <div className="mb-3">
   <label className="form-label fw-bold">Repuestos Utilizados</label>
   {repuestosSeleccionados.map((item, index) => (
@@ -520,9 +537,10 @@ function Editar({datos, cerrarmodal}){
     }
   }, [datos]);
 
-  const editar = (event) => {
+  const editar = (event, estadoForzado) => {
     event.preventDefault();
     const token = localStorage.getItem("token");
+    const estadoAEnviar = estadoForzado || Estado;
 
     const formData = new FormData();
     formData.append('id_historial', Id_historial);
@@ -530,7 +548,7 @@ function Editar({datos, cerrarmodal}){
     formData.append('id_tecnico', Id_tecnico || null);
     formData.append('id_historial_cliente', Id_historial_cliente || null);
     formData.append('descripcion_prodlema', Descripcion_prodlema);
-    formData.append('estado', Estado);
+    formData.append('estado', estadoAEnviar);
     formData.append('descripcion_trabajo', Descripcion_trabajo);
     formData.append('fecha_inicio', Fecha_inicio || null);
     formData.append('fecha_fin', Fecha_fin || null);
@@ -688,7 +706,7 @@ function Editar({datos, cerrarmodal}){
           ))}
         </select>
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Técnico Asignado</label>
         <select className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
@@ -703,9 +721,19 @@ function Editar({datos, cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label">Descripción del problema</label>
-        <input className="form-control" value={Descripcion_prodlema} onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' required></input>
+        <input
+          className="form-control"
+          value={Descripcion_prodlema}
+          onChange={(event) => setDescripcion_prodlema(event.target.value)}
+          type='text'
+          required
+          disabled={rol === 16}
+        />
+        {rol === 16 && (
+          <small className="text-muted">Como Recepcionista solo puedes gestionar la asignación de técnico; el diagnóstico lo edita Técnico o Administrador.</small>
+        )}
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Estado</label>
         <select className="form-control" value={Estado} onChange={(event) => setEstado(event.target.value)} type='text'>
@@ -716,7 +744,7 @@ function Editar({datos, cerrarmodal}){
         </select>
       </div>
       )}
-      {rol === 1 || rol ===2 && (
+      {(rol === 1 || rol === 2 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Descripción del trabajo</label>
         <input className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
@@ -730,15 +758,25 @@ function Editar({datos, cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label">Fecha de inicio</label>
-        <input className="form-control" value={Fecha_inicio} onChange={(event) => setFecha_inicio(event.target.value)} type='date' required></input>
+        <input
+          className="form-control"
+          value={Fecha_inicio}
+          onChange={(event) => setFecha_inicio(event.target.value)}
+          type='date'
+          required
+          disabled={rol !== 1 && rol !== 17}
+        />
+        {rol !== 1 && rol !== 17 && (
+          <small className="text-muted">Solo Administrador o Súper Administrador pueden corregir esta fecha.</small>
+        )}
       </div>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label">Fecha de Fin</label>
         <input className="form-control" value={Fecha_fin} onChange={(event) => setFecha_fin(event.target.value)} type='date'></input>
       </div>
       )}
-      {(rol === 1 || rol === 2) && (
+      {(rol === 1 || rol === 2 || rol === 17) && (
         <div className="mb-3">
   <label className="form-label fw-bold">Repuestos Utilizados</label>
   {repuestosSeleccionados.map((item, index) => (
@@ -776,7 +814,19 @@ function Editar({datos, cerrarmodal}){
       </button>
     </div>
       )}
-      <button className='btn btn-primary mb-3' type="submit">Guardar</button>
+      <div className="d-flex gap-2">
+        <button className='btn btn-primary mb-3' type="submit">Guardar</button>
+        {rol === 2 && (
+          <button
+            className='btn btn-success mb-3'
+            type="button"
+            onClick={(event) => editar(event, "Finalizado")}
+            title="Marca este historial como Finalizado y guarda los cambios"
+          >
+            Finalizar
+          </button>
+        )}
+      </div>
     </form>
   )
 }
