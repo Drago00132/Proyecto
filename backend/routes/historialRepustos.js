@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
 const EXTENSIONES_VALIDAS = ['.jpg', '.jpeg', '.png', '.webp'];
 const upload = multer({
   storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const extension = path.extname(file.originalname).toLowerCase();
     if (EXTENSIONES_VALIDAS.includes(extension)) {

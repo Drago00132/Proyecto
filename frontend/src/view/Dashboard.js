@@ -59,6 +59,7 @@ function Dashboard() {
 
       {rol === 3 && (
         <button
+          type="button"
           onClick={() => navigate('/panel/historial?nuevo=1')}
           className="btn btn-primary"
           style={estiloBotonFlotante('30px')}
@@ -69,6 +70,7 @@ function Dashboard() {
 
       {(rol === 1 || rol === 16 || rol === 17) && (
         <button
+          type="button"
           onClick={() => setMostrarAsignarTecnico(true)}
           className="btn btn-primary"
           style={estiloBotonFlotante('30px')}
@@ -79,6 +81,7 @@ function Dashboard() {
 
       {(rol === 1 || rol === 16 || rol === 17) && (
         <button
+          type="button"
           onClick={() => setMostrarRegistrarEntrada(true)}
           className="btn btn-success"
           style={estiloBotonFlotante('90px')}
@@ -94,7 +97,7 @@ function Dashboard() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Asignar técnico</h5>
-                  <button className="btn-close" onClick={() => setMostrarAsignarTecnico(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarAsignarTecnico(false)}></button>
                 </div>
                 <div className="modal-body">
                   <AsignarTecnico />
@@ -112,7 +115,7 @@ function Dashboard() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Registrar entrada de repuestos</h5>
-                  <button className="btn-close" onClick={() => setMostrarRegistrarEntrada(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarRegistrarEntrada(false)}></button>
                 </div>
                 <div className="modal-body">
                   <AgregarEntradaRepuesto cerrarmodal={() => setMostrarRegistrarEntrada(false)} />

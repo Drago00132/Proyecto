@@ -65,15 +65,15 @@ function Motos() {
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className='btn btn-primary mb-3' 
+          <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Motos</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
-              <button className="btn btn-outline-secondary" onClick={buscarMotos}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerMoto}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarMotos}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerMoto}>resetear</button>
             </div>
           </div>
 
@@ -100,11 +100,11 @@ function Motos() {
                   <td>{motos.marca_moto}</td>
                   <td>{motos.modelo_moto}</td>
                   <td>{motos.placa}</td>
-                  <td><button className="btn btn-success" onClick={()=>{ 
+                  <td><button type="button" className="btn btn-success" onClick={()=>{
                     setMotoselecionado(motos);
                     setMostrarEditar(true);}}>
                       Editar</button>
-                    <button className="btn btn-danger" onClick={()=>{ 
+                    <button type="button" className="btn btn-danger" onClick={()=>{
                     setMotoselecionado(motos.id_motos);
                     setmostrarEliminar(true);}}>
                       Eliminar</button></td>
@@ -113,9 +113,10 @@ function Motos() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === 1} 
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === 1}
               onClick={() => {
                 const paginaAnterior = paginaActual - 1;
                 obtenerMoto(paginaAnterior);
@@ -123,14 +124,15 @@ function Motos() {
             >
               Anterior
             </button>
-            
+
             <span className="fw-bold">
               Página {paginaActual} de {totalPaginas}
             </span>
-            
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === totalPaginas} 
+
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === totalPaginas}
               onClick={() => {
                 const paginaSiguiente = paginaActual + 1;
                 obtenerMoto(paginaSiguiente);
@@ -161,7 +163,7 @@ function Motos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nueva Moto </h5>
-                  <button className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal}/>
@@ -190,7 +192,7 @@ function Motos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar una Moto</h5>
-                  <button className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={Motoselecionado}/>
@@ -219,7 +221,7 @@ function Motos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar a una Moto </h5>
-                  <button className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={Motoselecionado} cerrarmodal={cerrarModal}/>
@@ -283,8 +285,8 @@ function Agregar({cerrarmodal}){
     <form>
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label">Numero_identidad</label>
-        <select value={Numero_identidad} className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} >
+        <label className="form-label" htmlFor="moto-agregar-identidad">Numero_identidad</label>
+        <select id="moto-agregar-identidad" value={Numero_identidad} className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} >
         <option value=''>seleccione un usuario</option>
           {usuarios.filter((u) => Number(u.id_rol) === 3).map((u) => (
             <option key={u.numero_identidad} value={u.numero_identidad}> {u.nombre} {u.apellido}</option>
@@ -292,18 +294,18 @@ function Agregar({cerrarmodal}){
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Marca de la moto</label>
-        <input className="form-control" onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-agregar-marca">Marca de la moto</label>
+        <input id="moto-agregar-marca" className="form-control" onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Modelo de la moto</label>
-        <input className="form-control" onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-agregar-modelo">Modelo de la moto</label>
+        <input id="moto-agregar-modelo" className="form-control" onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Placa</label>
-        <input className="form-control" onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-agregar-placa">Placa</label>
+        <input id="moto-agregar-placa" className="form-control" onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
 }
@@ -353,29 +355,29 @@ function Editar({datos,cerrarmodal}){
     <form>
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label">Id Moto</label>
-        <input className="form-control"value={Id_motos} onChange={(event) => {setId_motos(event.target.value);}} type='number' disabled></input>
+        <label className="form-label" htmlFor="moto-editar-id">Id Moto</label>
+        <input id="moto-editar-id" className="form-control" value={Id_motos} onChange={(event) => {setId_motos(event.target.value);}} type='number' disabled></input>
       </div>
       )}
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label">Numero_identidad</label>
-        <input className="form-control" value={Numero_identidad} type='number' disabled />
+        <label className="form-label" htmlFor="moto-editar-identidad">Numero_identidad</label>
+        <input id="moto-editar-identidad" className="form-control" value={Numero_identidad} type='number' disabled />
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Marca de la moto</label>
-        <input className="form-control" value={Marca_moto} onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-editar-marca">Marca de la moto</label>
+        <input id="moto-editar-marca" className="form-control" value={Marca_moto} onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Modelo de la moto</label>
-        <input className="form-control" value={Modelo_moto} onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-editar-modelo">Modelo de la moto</label>
+        <input id="moto-editar-modelo" className="form-control" value={Modelo_moto} onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Placa</label>
-        <input className="form-control" value={Placa} onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="moto-editar-placa">Placa</label>
+        <input id="moto-editar-placa" className="form-control" value={Placa} onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -395,7 +397,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>seguro que quieres eliminar esta Moto</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
     </div>
   )
 }

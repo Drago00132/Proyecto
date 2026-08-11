@@ -76,8 +76,8 @@ function AsignarTecnico() {
 
       <form onSubmit={asignar}>
         <div className="mb-3">
-          <label className="form-label">Técnico</label>
-          <select className="form-control" value={idTecnico} onChange={(e) => setIdTecnico(e.target.value)}>
+          <label className="form-label" htmlFor="asignar-tecnico">Técnico</label>
+          <select id="asignar-tecnico" className="form-control" value={idTecnico} onChange={(e) => setIdTecnico(e.target.value)}>
             <option value="">Seleccione un técnico</option>
             {tecnicos.map((tec) => (
               <option key={tec.id_tecnico} value={tec.id_tecnico}>
@@ -88,8 +88,8 @@ function AsignarTecnico() {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Historial sin técnico asignado</label>
-          <select className="form-control" value={idHistorial} onChange={(e) => setIdHistorial(e.target.value)} disabled={historialesSinAsignar.length === 0}>
+          <label className="form-label" htmlFor="asignar-historial">Historial sin técnico asignado</label>
+          <select id="asignar-historial" className="form-control" value={idHistorial} onChange={(e) => setIdHistorial(e.target.value)} disabled={historialesSinAsignar.length === 0}>
             <option value="">Seleccione un historial</option>
             {historialesSinAsignar.map((h) => (
               <option key={h.id_historial} value={h.id_historial}>

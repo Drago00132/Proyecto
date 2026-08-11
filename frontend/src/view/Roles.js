@@ -58,15 +58,15 @@ function Roles() {
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className='btn btn-primary mb-3' 
+          <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Roles</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
-              <button className="btn btn-outline-secondary" onClick={buscarRol}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerRol}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarRol}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerRol}>resetear</button>
             </div>
           </div>
 
@@ -85,11 +85,11 @@ function Roles() {
                 <tr key={index}> 
                   <td>{roles.id_rol}</td>
                   <td>{roles.rol}</td>
-                  <td><button className="btn btn-success" onClick={()=>{ 
+                  <td><button type="button" className="btn btn-success" onClick={()=>{
                     setRolselecionado(roles);
                     setMostrarEditar(true);}}>
                       Editar</button>
-                    <button className="btn btn-danger" onClick={()=>{ 
+                    <button type="button" className="btn btn-danger" onClick={()=>{
                     setRolselecionado(roles.id_rol);
                     setmostrarEliminar(true);}}>
                       Eliminar</button></td>
@@ -98,9 +98,10 @@ function Roles() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === 1} 
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === 1}
               onClick={() => {
                 const paginaAnterior = paginaActual - 1;
                 obtenerRol(paginaAnterior);
@@ -108,14 +109,15 @@ function Roles() {
             >
               Anterior
             </button>
-            
+
             <span className="fw-bold">
               Página {paginaActual} de {totalPaginas}
             </span>
-            
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === totalPaginas} 
+
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === totalPaginas}
               onClick={() => {
                 const paginaSiguiente = paginaActual + 1;
                 obtenerRol(paginaSiguiente);
@@ -146,7 +148,7 @@ function Roles() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nuevo Rol </h5>
-                  <button className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal}/>
@@ -175,7 +177,7 @@ function Roles() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar un Rol</h5>
-                  <button className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={Rolselecionado}/>
@@ -204,7 +206,7 @@ function Roles() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar a un Rol </h5>
-                  <button className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={Rolselecionado} cerrarmodal={cerrarModal}/>
@@ -247,10 +249,10 @@ function Agregar({cerrarmodal}){
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Rol</label>
-        <input className="form-control" onChange={(event) => {setRol(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="rol-agregar-nombre">Rol</label>
+        <input id="rol-agregar-nombre" className="form-control" onChange={(event) => {setRol(event.target.value);}} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
 }
@@ -289,14 +291,14 @@ function Editar({datos,cerrarmodal}){
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Id Rol</label>
-        <input className="form-control" value={Id_rol} onChange={(event) => {setId_rol(event.target.value);}} type='number' disabled></input>
+        <label className="form-label" htmlFor="rol-editar-id">Id Rol</label>
+        <input id="rol-editar-id" className="form-control" value={Id_rol} onChange={(event) => {setId_rol(event.target.value);}} type='number' disabled></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Rol</label>
-        <input className="form-control" value={Rol} onChange={(event) => {setRol(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="rol-editar-nombre">Rol</label>
+        <input id="rol-editar-nombre" className="form-control" value={Rol} onChange={(event) => {setRol(event.target.value);}} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -316,7 +318,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>seguro que quieres eliminar este Rol</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
     </div>
   )
 }

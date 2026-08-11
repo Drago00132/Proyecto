@@ -54,14 +54,14 @@ function EntradaRepuestos() {
           <h2 className="text-center mb-4">Entrada de Repuestos</h2>
 
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <button className='btn btn-primary mb-3'
+            <button type="button" className='btn btn-primary mb-3'
               onClick={() => setMostrarAgregar(true)}>Agregar Entrada</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por id'
                 value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />
-              <button className="btn btn-outline-secondary" onClick={buscarEntrada}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerEntrada}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarEntrada}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerEntrada}>resetear</button>
             </div>
           </div>
 
@@ -87,11 +87,11 @@ function EntradaRepuestos() {
                   <td>{entrada.nombre_distribuidor}</td>
                   <td>{entrada.nombre}, {entrada.apellido}</td>
                   <td>
-                    <button className="btn btn-success" onClick={() => {
+                    <button type="button" className="btn btn-success" onClick={() => {
                       setEntradaSelecionada(entrada);
                       setMostrarEditar(true);
                     }}>Editar</button>
-                    <button className="btn btn-danger" onClick={() => {
+                    <button type="button" className="btn btn-danger" onClick={() => {
                       setEntradaSelecionada(entrada.id_entrada);
                       setmostrarEliminar(true);
                     }}>Eliminar</button>
@@ -101,10 +101,10 @@ function EntradaRepuestos() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button className="btn btn-outline-primary" disabled={paginaActual === 1}
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === 1}
               onClick={() => obtenerEntrada(paginaActual - 1)}>Anterior</button>
             <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
-            <button className="btn btn-outline-primary" disabled={paginaActual === totalPaginas}
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === totalPaginas}
               onClick={() => obtenerEntrada(paginaActual + 1)}>Siguiente</button>
           </div>
         </div>
@@ -117,7 +117,7 @@ function EntradaRepuestos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nueva Entrada</h5>
-                  <button className="btn-close" onClick={() => setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal} />
@@ -134,7 +134,7 @@ function EntradaRepuestos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar Entrada</h5>
-                  <button className="btn-close" onClick={() => setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={EntradaSelecionada} />
@@ -151,7 +151,7 @@ function EntradaRepuestos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar Entrada</h5>
-                  <button className="btn-close" onClick={() => setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={EntradaSelecionada} cerrarmodal={cerrarModal} />
@@ -214,16 +214,16 @@ function Agregar({ cerrarmodal }) {
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Fecha de entrada</label>
-        <input className="form-control" onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
+        <label className="form-label" htmlFor="entrada-agregar-fecha">Fecha de entrada</label>
+        <input id="entrada-agregar-fecha" className="form-control" onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Cantidad ingresada</label>
-        <input className="form-control" onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
+        <label className="form-label" htmlFor="entrada-agregar-cantidad">Cantidad ingresada</label>
+        <input id="entrada-agregar-cantidad" className="form-control" onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Repuesto</label>
-        <select value={Id_repuestos} className="form-control" onChange={(event) => { setId_repuestos(event.target.value); }}>
+        <label className="form-label" htmlFor="entrada-agregar-repuesto">Repuesto</label>
+        <select id="entrada-agregar-repuesto" value={Id_repuestos} className="form-control" onChange={(event) => { setId_repuestos(event.target.value); }}>
           <option value=''>seleccione un repuesto</option>
           {repuestos.map((r) => (
             <option key={r.id_repuestos} value={r.id_repuestos}>{r.nombre_repuesto}</option>
@@ -231,15 +231,15 @@ function Agregar({ cerrarmodal }) {
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label">Distribuidor</label>
-        <select value={Id_distribuidor} className="form-control" onChange={(event) => { setId_distribuidor(event.target.value); }}>
+        <label className="form-label" htmlFor="entrada-agregar-distribuidor">Distribuidor</label>
+        <select id="entrada-agregar-distribuidor" value={Id_distribuidor} className="form-control" onChange={(event) => { setId_distribuidor(event.target.value); }}>
           <option value=''>seleccione un distribuidor</option>
           {distribuidores.map((d) => (
             <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
           ))}
         </select>
       </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
 }
@@ -303,20 +303,20 @@ function Editar({ datos, cerrarmodal }) {
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Id Entrada</label>
-        <input className="form-control" value={Id_entrada} type='number' disabled></input>
+        <label className="form-label" htmlFor="entrada-editar-id">Id Entrada</label>
+        <input id="entrada-editar-id" className="form-control" value={Id_entrada} type='number' disabled></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Fecha de entrada</label>
-        <input className="form-control" value={Fecha_entrada} onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
+        <label className="form-label" htmlFor="entrada-editar-fecha">Fecha de entrada</label>
+        <input id="entrada-editar-fecha" className="form-control" value={Fecha_entrada} onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Cantidad ingresada</label>
-        <input className="form-control" value={Cantidad_ingresada} onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
+        <label className="form-label" htmlFor="entrada-editar-cantidad">Cantidad ingresada</label>
+        <input id="entrada-editar-cantidad" className="form-control" value={Cantidad_ingresada} onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Repuesto</label>
-        <select value={Id_repuestos} className="form-control" onChange={(event) => { setId_repuestos(event.target.value); }}>
+        <label className="form-label" htmlFor="entrada-editar-repuesto">Repuesto</label>
+        <select id="entrada-editar-repuesto" value={Id_repuestos} className="form-control" onChange={(event) => { setId_repuestos(event.target.value); }}>
           <option value=''>seleccione un repuesto</option>
           {repuestos.map((r) => (
             <option key={r.id_repuestos} value={r.id_repuestos}>{r.nombre_repuesto}</option>
@@ -324,8 +324,8 @@ function Editar({ datos, cerrarmodal }) {
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label">Distribuidor</label>
-        <select value={Id_distribuidor} className="form-control" onChange={(event) => { setId_distribuidor(event.target.value); }}>
+        <label className="form-label" htmlFor="entrada-editar-distribuidor">Distribuidor</label>
+        <select id="entrada-editar-distribuidor" value={Id_distribuidor} className="form-control" onChange={(event) => { setId_distribuidor(event.target.value); }}>
           <option value=''>seleccione un distribuidor</option>
           {distribuidores.map((d) => (
             <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
@@ -333,10 +333,10 @@ function Editar({ datos, cerrarmodal }) {
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label">Registrado por</label>
-        <input className="form-control" value={usuarioNombreMostrado} type='text' disabled></input>
+        <label className="form-label" htmlFor="entrada-editar-registrado-por">Registrado por</label>
+        <input id="entrada-editar-registrado-por" className="form-control" value={usuarioNombreMostrado} type='text' disabled></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -356,7 +356,7 @@ function Eliminar({ id, cerrarmodal }) {
   return (
     <div>
       <h5>seguro que quieres eliminar esta Entrada</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar}>eliminar</button>
     </div>
   )
 }

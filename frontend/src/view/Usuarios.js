@@ -61,15 +61,15 @@ function Usuario() {
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className='btn btn-primary mb-3' 
+          <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar usuarios</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
-              <button className="btn btn-outline-secondary" onClick={buscarUsuario}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerUsuarios}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarUsuario}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerUsuarios}>resetear</button>
             </div>
           </div>
 
@@ -96,11 +96,11 @@ function Usuario() {
                   <td>{usuario.fecha_nacimiento}</td>
                   <td>{usuario.numero_celular}</td>
                   <td>{usuario.correo_electronico}</td>
-                  <td><button className="btn btn-success" onClick={()=>{ 
+                  <td><button type="button" className="btn btn-success" onClick={()=>{
                     setUsuarioSelecionado(usuario);
                     setMostrarEditar(true);}}>
                       Editar</button>
-                    <button className="btn btn-danger" onClick={()=>{ 
+                    <button type="button" className="btn btn-danger" onClick={()=>{
                     setUsuarioSelecionado(usuario.numero_identidad);
                     setmostrarEliminar(true);}}>
                       Eliminar</button></td>
@@ -109,9 +109,10 @@ function Usuario() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === 1} 
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === 1}
               onClick={() => {
                 const paginaAnterior = paginaActual - 1;
                 obtenerUsuarios(paginaAnterior);
@@ -119,14 +120,15 @@ function Usuario() {
             >
               Anterior
             </button>
-            
+
             <span className="fw-bold">
               Página {paginaActual} de {totalPaginas}
             </span>
-            
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === totalPaginas} 
+
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === totalPaginas}
               onClick={() => {
                 const paginaSiguiente = paginaActual + 1;
                 obtenerUsuarios(paginaSiguiente);
@@ -157,7 +159,7 @@ function Usuario() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nuevo Usuario </h5>
-                  <button className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal}/>
@@ -186,7 +188,7 @@ function Usuario() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar un Usuario</h5>
-                  <button className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={usuarioSelecionado}/>
@@ -215,7 +217,7 @@ function Usuario() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar a un Usuario </h5>
-                  <button className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={usuarioSelecionado} cerrarmodal={cerrarModal}/>
@@ -346,12 +348,12 @@ function Agregar({cerrarmodal}){
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Numero de identidad</label>
-        <input className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
+        <label className="form-label" htmlFor="usuario-agregar-identidad">Numero de identidad</label>
+        <input id="usuario-agregar-identidad" className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
       </div>
       <div className="mb-3">
-        <label>Tipo de documento</label>
-        <select className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
+        <label htmlFor="usuario-agregar-tipo-documento">Tipo de documento</label>
+        <select id="usuario-agregar-tipo-documento" className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
           <option value=''>seleccione un tipo de documento</option>
           <option value='Cedula de Ciudadania'>Cedula de Ciudadania</option>
           <option value='Cedula de Extranjeria'>Cedula de Extranjeria</option>
@@ -359,32 +361,32 @@ function Agregar({cerrarmodal}){
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label">Nombre</label>
-        <input className="form-control" onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="usuario-agregar-nombre">Nombre</label>
+        <input id="usuario-agregar-nombre" className="form-control" onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Apellido</label>
-        <input className="form-control" onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="usuario-agregar-apellido">Apellido</label>
+        <input id="usuario-agregar-apellido" className="form-control" onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Fecha de nacimiento</label>
-        <input className="form-control" onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
+        <label className="form-label" htmlFor="usuario-agregar-fecha-nacimiento">Fecha de nacimiento</label>
+        <input id="usuario-agregar-fecha-nacimiento" className="form-control" onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Numero celular</label>
-        <input className="form-control" onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
+        <label className="form-label" htmlFor="usuario-agregar-celular">Numero celular</label>
+        <input id="usuario-agregar-celular" className="form-control" onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Email</label>
-        <input className="form-control" onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+        <label className="form-label" htmlFor="usuario-agregar-email">Email</label>
+        <input id="usuario-agregar-email" className="form-control" onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">contraseña</label>
-        <input className="form-control" onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+        <label className="form-label" htmlFor="usuario-agregar-contrasena">contraseña</label>
+        <input id="usuario-agregar-contrasena" className="form-control" onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Rol</label>
-        <select className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
+        <label className="form-label" htmlFor="usuario-agregar-rol">Rol</label>
+        <select id="usuario-agregar-rol" className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
           <option value=''>seleccione un rol</option>
           {roles.map((r) => (
           <option value={r.id_rol}>
@@ -393,7 +395,7 @@ function Agregar({cerrarmodal}){
         ))}
         </select>
       </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
 }
@@ -526,12 +528,12 @@ function Editar({datos,cerrarmodal}){
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Numero de identidad</label>
-        <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
+        <label className="form-label" htmlFor="usuario-editar-identidad">Numero de identidad</label>
+        <input id="usuario-editar-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Tipo de documento</label>
-        <select className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
+        <label className="form-label" htmlFor="usuario-editar-tipo-documento">Tipo de documento</label>
+        <select id="usuario-editar-tipo-documento" className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
           <option value=''>seleccione un tipo de documento</option>
           <option value='Cedula de Ciudadania'>Cedula de Ciudadania</option>
           <option value='Cedula de Extranjeria'>Cedula de Extranjeria</option>
@@ -539,32 +541,32 @@ function Editar({datos,cerrarmodal}){
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label">Nombre</label>
-        <input className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="usuario-editar-nombre">Nombre</label>
+        <input id="usuario-editar-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Apellido</label>
-        <input className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="usuario-editar-apellido">Apellido</label>
+        <input id="usuario-editar-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Fecha de nacimiento</label>
-        <input className="form-control" value={Fecha_nacimiento} onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
+        <label className="form-label" htmlFor="usuario-editar-fecha-nacimiento">Fecha de nacimiento</label>
+        <input id="usuario-editar-fecha-nacimiento" className="form-control" value={Fecha_nacimiento} onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Numero celular</label>
-        <input className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
+        <label className="form-label" htmlFor="usuario-editar-celular">Numero celular</label>
+        <input id="usuario-editar-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Email</label>
-        <input className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+        <label className="form-label" htmlFor="usuario-editar-email">Email</label>
+        <input id="usuario-editar-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">contraseña</label>
-        <input className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+        <label className="form-label" htmlFor="usuario-editar-contrasena">contraseña</label>
+        <input id="usuario-editar-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Rol</label>
-        <select className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
+        <label className="form-label" htmlFor="usuario-editar-rol">Rol</label>
+        <select id="usuario-editar-rol" className="form-select" value={Id_rol} onChange={(event) => setId_rol(event.target.value)}>
           <option value=''>seleccione un rol</option>
           {roles.map((r) => (
           <option value={r.id_rol}>
@@ -573,7 +575,7 @@ function Editar({datos,cerrarmodal}){
         ))}
         </select>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -593,7 +595,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>seguro que quieres eliminar a este usuarios</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_usuario}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_usuario}>eliminar</button>
     </div>
   )
 }

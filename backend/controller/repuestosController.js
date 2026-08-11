@@ -3,8 +3,8 @@ const manejarError = require('../utils/manejarError');
 
 exports.listarRepuest = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const page = Number.parseInt(req.query.page) || 1;
+        const limit = Number.parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
         const repuesto = await repuesto_mo.findAll();
         const totalItems = repuesto.length;

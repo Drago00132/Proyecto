@@ -56,14 +56,14 @@ function Distribuidores() {
           <h2 className="text-center mb-4">Distribuidores</h2>
 
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <button className='btn btn-primary mb-3'
+            <button type="button" className='btn btn-primary mb-3'
               onClick={() => setMostrarAgregar(true)}>Agregar Distribuidor</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por id'
                 value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />
-              <button className="btn btn-outline-secondary" onClick={buscarDistribuidor}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerDistribuidor}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarDistribuidor}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerDistribuidor}>resetear</button>
             </div>
           </div>
 
@@ -89,15 +89,15 @@ function Distribuidores() {
                   <td>{distribuidor.direccion}</td>
                   <td>{distribuidor.contacto}</td>
                   <td>
-                    <button className="btn btn-success" onClick={() => {
+                    <button type="button" className="btn btn-success" onClick={() => {
                       setDistribuidorSelecionado(distribuidor);
                       setMostrarEditar(true);
                     }}>Editar</button>
-                    <button className="btn btn-info" onClick={() => {
+                    <button type="button" className="btn btn-info" onClick={() => {
                       setDistribuidorSelecionado(distribuidor);
                       setMostrarGestionar(true);
                     }}>Gestionar repuestos</button>
-                    <button className="btn btn-danger" onClick={() => {
+                    <button type="button" className="btn btn-danger" onClick={() => {
                       setDistribuidorSelecionado(distribuidor.id_distribuidor);
                       setmostrarEliminar(true);
                     }}>Eliminar</button>
@@ -107,10 +107,10 @@ function Distribuidores() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button className="btn btn-outline-primary" disabled={paginaActual === 1}
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === 1}
               onClick={() => obtenerDistribuidor(paginaActual - 1)}>Anterior</button>
             <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
-            <button className="btn btn-outline-primary" disabled={paginaActual === totalPaginas}
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === totalPaginas}
               onClick={() => obtenerDistribuidor(paginaActual + 1)}>Siguiente</button>
           </div>
         </div>
@@ -123,7 +123,7 @@ function Distribuidores() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nuevo Distribuidor</h5>
-                  <button className="btn-close" onClick={() => setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal} />
@@ -140,7 +140,7 @@ function Distribuidores() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar Distribuidor</h5>
-                  <button className="btn-close" onClick={() => setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={DistribuidorSelecionado} />
@@ -157,7 +157,7 @@ function Distribuidores() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar Distribuidor</h5>
-                  <button className="btn-close" onClick={() => setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={DistribuidorSelecionado} cerrarmodal={cerrarModal} />
@@ -174,7 +174,7 @@ function Distribuidores() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Repuestos de {DistribuidorSelecionado?.nombre_distribuidor}</h5>
-                  <button className="btn-close" onClick={() => setMostrarGestionar(false)}></button>
+                  <button type="button" className="btn-close" onClick={() => setMostrarGestionar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <GestionarRepuestos id={DistribuidorSelecionado?.id_distribuidor} />
@@ -242,7 +242,7 @@ function Agregar({ cerrarmodal }) {
         <label className="form-label">Contacto</label>
         <input className="form-control" onChange={(event) => { setContacto(event.target.value); }} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={add}>Agregar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
 }
@@ -315,7 +315,7 @@ function Editar({ datos, cerrarmodal }) {
         <label className="form-label">Contacto</label>
         <input className="form-control" value={Contacto} onChange={(event) => { setContacto(event.target.value); }} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -335,7 +335,7 @@ function Eliminar({ id, cerrarmodal }) {
   return (
     <div>
       <h5>seguro que quieres eliminar este Distribuidor</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar}>eliminar</button>
     </div>
   )
 }

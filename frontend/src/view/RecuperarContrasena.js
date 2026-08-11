@@ -54,8 +54,9 @@ function RecuperarContrasena() {
 
                                 <form onSubmit={handleSubmit}>
                                     <div className="md-3">
-                                        <label className="form-label">Correo electrónico</label>
+                                        <label className="form-label" htmlFor="recuperar-correo">Correo electrónico</label>
                                         <input
+                                            id="recuperar-correo"
                                             className="form-control"
                                             type="email"
                                             value={correo}
@@ -76,7 +77,7 @@ function RecuperarContrasena() {
                                 </form>
 
                                 <div className="d-grid gap-2">
-                                    <button className='btn btn-link' onClick={() => navigate("/")}>Volver a iniciar sesión</button>
+                                    <button type="button" className='btn btn-link' onClick={() => navigate("/")}>Volver a iniciar sesión</button>
                                 </div>
 
                                 <ToastContainer position="top-right" autoClose={3000} />

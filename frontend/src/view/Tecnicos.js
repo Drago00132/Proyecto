@@ -57,15 +57,15 @@ function Tecnicos() {
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className='btn btn-primary mb-3' 
+          <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>subir Tecnico</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
-              <button className="btn btn-outline-secondary" onClick={buscarTecnico}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerTecnicos}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarTecnico}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerTecnicos}>resetear</button>
             </div>
           </div>
 
@@ -88,11 +88,11 @@ function Tecnicos() {
                   <td>{tecnicos.numero_identidad}</td>
                   <td>{tecnicos.nombre}, {tecnicos.apellido}</td>
                   <td>{tecnicos.reparaciones_asignadas}</td>
-                  <td><button className="btn btn-success" onClick={()=>{ 
+                  <td><button type="button" className="btn btn-success" onClick={()=>{
                     setTecnicoSelecionado(tecnicos);
                     setMostrarEditar(true);}}>
                       Editar</button>
-                    <button className="btn btn-danger" onClick={()=>{ 
+                    <button type="button" className="btn btn-danger" onClick={()=>{
                     setTecnicoSelecionado(tecnicos.id_tecnico);
                     setmostrarEliminar(true);}}>
                       Eliminar</button></td>
@@ -101,11 +101,11 @@ function Tecnicos() {
             </tbody>
           </table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <button className="btn btn-outline-primary" disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
-            
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
+
             <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
-            
-            <button className="btn btn-outline-primary" disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
+
+            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ function Tecnicos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nuevo Tecnico </h5>
-                  <button className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal}/>
@@ -158,7 +158,7 @@ function Tecnicos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar un Tecnico</h5>
-                  <button className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={TecnicoSelecionado}/>
@@ -187,7 +187,7 @@ function Tecnicos() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar a un Tecnico </h5>
-                  <button className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={TecnicoSelecionado} cerrarmodal={cerrarModal}/>
@@ -234,7 +234,7 @@ const subirArchivo = async () => {
       {archivo ? archivo.name : "Seleccionar archivo Excel"}
       <input type="file" hidden accept=".xlsx, .xls" onChange={(e) => setArchivo(e.target.files[0])} />
     </label>
-    <button className="btn btn-success w-100 mt-3" onClick={subirArchivo} disabled={!archivo} >{cargando ? "Procesando..." : "Subir Técnicos"}</button>
+    <button type="button" className="btn btn-success w-100 mt-3" onClick={subirArchivo} disabled={!archivo} >{cargando ? "Procesando..." : "Subir Técnicos"}</button>
   </div>
   )
 }
@@ -273,18 +273,18 @@ function Editar({datos,cerrarmodal}){
   return (
     <form>
       <div className="mb-3">
-        <label className="form-label">Id del tecnico</label>
-        <input className="form-control" value={Id_tecnico} onChange={(event) => {setId_tecnico(event.target.value);}} type='number' disabled></input>
+        <label className="form-label" htmlFor="tecnico-editar-id">Id del tecnico</label>
+        <input id="tecnico-editar-id" className="form-control" value={Id_tecnico} onChange={(event) => {setId_tecnico(event.target.value);}} type='number' disabled></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Numero de identidad</label>
-        <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
+        <label className="form-label" htmlFor="tecnico-editar-identidad">Numero de identidad</label>
+        <input id="tecnico-editar-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
       </div>
       <div className="mb-3">
-        <label className="form-label">Reparaciones asignadas</label>
-        <input className="form-control" value={Reparaciones_asignadas} onChange={(event) => {setReparaciones_asignadas(event.target.value);}} type='text'></input>
+        <label className="form-label" htmlFor="tecnico-editar-reparaciones">Reparaciones asignadas</label>
+        <input id="tecnico-editar-reparaciones" className="form-control" value={Reparaciones_asignadas} onChange={(event) => {setReparaciones_asignadas(event.target.value);}} type='text'></input>
       </div>
-      <button className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
+      <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
   )
 }
@@ -304,7 +304,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>seguro que quieres eliminar este Tecnico</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Tecnico}>eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Tecnico}>eliminar</button>
     </div>
   )
 }

@@ -13,7 +13,11 @@ const repuestoDistribuidorRutas = require('./routes/repuestoDistribuidorRutas');
 const login = require ('./routes/logion');
 const app = express();
 
-app.use(cors());
+app.disable('x-powered-by');
+
+const allowedOrigins = ['http://localhost:3000']; 
+
+app.use(cors({ origin: allowedOrigins })); 
 app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -86,8 +86,9 @@ function RestablecerContrasena() {
 
                                 <form onSubmit={handleSubmit}>
                                     <div className="md-3">
-                                        <label className="form-label">Nueva contraseña</label>
+                                        <label className="form-label" htmlFor="restablecer-nueva-contrasena">Nueva contraseña</label>
                                         <input
+                                            id="restablecer-nueva-contrasena"
                                             className="form-control"
                                             type="password"
                                             value={nuevaContrasena}
@@ -96,8 +97,9 @@ function RestablecerContrasena() {
                                     </div>
 
                                     <div className="md-3">
-                                        <label className="form-label">Confirmar contraseña</label>
+                                        <label className="form-label" htmlFor="restablecer-confirmar-contrasena">Confirmar contraseña</label>
                                         <input
+                                            id="restablecer-confirmar-contrasena"
                                             className="form-control"
                                             type="password"
                                             value={confirmarContrasena}

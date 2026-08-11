@@ -5,8 +5,8 @@ const ROLES_BASE = ['administrador', 'tecnico', 'cliente', 'recepcionista', 'sup
 
 exports.ListarRol = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const page = Number.parseInt(req.query.page) || 1;
+        const limit = Number.parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
         const rol = await Rol_modelo.findAll();
         const totalItems = rol.length;

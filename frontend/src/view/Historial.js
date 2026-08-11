@@ -78,7 +78,7 @@ function Historial() {
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
             {(rol === 1 || rol === 16 || rol === 17) && (
-          <button className='btn btn-primary mb-3' 
+          <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Historial</button>
             )}
 
@@ -86,8 +86,8 @@ function Historial() {
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
-              <button className="btn btn-outline-secondary" onClick={buscarHistorial}>Buscar</button>
-              <button className="btn btn-outline-secondary" onClick={obtenerHistorial}>resetear</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={buscarHistorial}>Buscar</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={obtenerHistorial}>resetear</button>
             </div>
           </div>
 
@@ -129,21 +129,21 @@ function Historial() {
                     <td>{historial.estado}</td>
                     <td>{historial.fecha_inicio ? historial.fecha_inicio.split('T')[0] : ""}</td>
                     <td>
-                      <button className="btn btn-info btn-sm me-1 text-white" onClick={() => { 
+                      <button type="button" className="btn btn-info btn-sm me-1 text-white" onClick={() => {
                         setDetalleSeleccionado(historial);
                         setMostrarDetalle(true);
                       }}>
                         Ver Detalles
                       </button>
                       {!(rol === 3 && historial.id_tecnico) && (
-                        <button className="btn btn-success btn-sm me-1" onClick={()=>{ 
+                        <button type="button" className="btn btn-success btn-sm me-1" onClick={()=>{
                           setHistorialSelecionado(historial);
                           setMostrarEditar(true);}}>
                           Editar
                         </button>
                       )}
                       {(rol === 1 || rol === 3 || rol === 17) && !(rol === 3 && historial.id_tecnico) && (
-                        <button className="btn btn-danger btn-sm" onClick={()=>{ 
+                        <button type="button" className="btn btn-danger btn-sm" onClick={()=>{
                           setHistorialSelecionado(historial.id_historial);
                           setmostrarEliminar(true);}}>
                           Eliminar
@@ -155,9 +155,10 @@ function Historial() {
               </tbody>
             </table>
             <div className="d-flex justify-content-between align-items-center mt-3">
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === 1} 
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === 1}
               onClick={() => {
                 const paginaAnterior = paginaActual - 1;
                 obtenerHistorial(paginaAnterior);
@@ -165,14 +166,15 @@ function Historial() {
             >
               Anterior
             </button>
-            
+
             <span className="fw-bold">
               Página {paginaActual} de {totalPaginas}
             </span>
-            
-            <button 
-              className="btn btn-outline-primary" 
-              disabled={paginaActual === totalPaginas} 
+
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              disabled={paginaActual === totalPaginas}
               onClick={() => {
                 const paginaSiguiente = paginaActual + 1;
                 obtenerHistorial(paginaSiguiente);
@@ -197,7 +199,7 @@ function Historial() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Agregar Nuevo Historial </h5>
-                  <button className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Agregar cerrarmodal={cerrarModal}/>
@@ -220,7 +222,7 @@ function Historial() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Editar un Historial</h5>
-                  <button className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Editar cerrarmodal={cerrarModal} datos={HistorialSelecionado}/>
@@ -243,7 +245,7 @@ function Historial() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Eliminar a un Historial </h5>
-                  <button className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
+                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Eliminar id={HistorialSelecionado} cerrarmodal={cerrarModal}/>
@@ -266,7 +268,7 @@ function Historial() {
               <div className="modal-content">
                 <div className="modal-header bg-info text-white">
                   <h5 className="modal-title">Detalles Completos del Historial</h5>
-                  <button className="btn-close btn-close-white" onClick={() => setMostrarDetalle(false)}></button>
+                  <button type="button" className="btn-close btn-close-white" onClick={() => setMostrarDetalle(false)}></button>
                 </div>
                 <div className="modal-body">
                   <Detalle datos={detalleSeleccionado} cerrarmodal={cerrarModal}/>
@@ -404,8 +406,8 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
     <form onSubmit={add}>
       {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Dueño de la moto (Cliente)</label>
-        <select className="form-control" value={clienteSeleccionado} onChange={(e) => setClienteSeleccionado(e.target.value)}required>
+        <label className="form-label" htmlFor="historial-agregar-cliente">Dueño de la moto (Cliente)</label>
+        <select id="historial-agregar-cliente" className="form-control" value={clienteSeleccionado} onChange={(e) => setClienteSeleccionado(e.target.value)}required>
           <option value="">Seleccione un cliente</option>
           {Usuarios.filter((usr) => Number(usr.id_rol) === 3).map((usr) => (
             <option key={usr.numero_identidad} value={usr.numero_identidad}>
@@ -416,8 +418,8 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Moto asociada</label>
-        <select className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={!clienteSeleccionado} required>
+        <label className="form-label" htmlFor="historial-agregar-moto">Moto asociada</label>
+        <select id="historial-agregar-moto" className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={!clienteSeleccionado} required>
           <option value="">
             {clienteSeleccionado ? "Seleccione una moto" : "Primero seleccione un dueño"}
           </option>
@@ -430,8 +432,8 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       </div>
       {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Técnico Asignado</label>
-        <select className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
+        <label className="form-label" htmlFor="historial-agregar-tecnico">Técnico Asignado</label>
+        <select id="historial-agregar-tecnico" className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
           <option value="">Seleccione un Técnico</option>
           {Tecnico.map((tec) => (
             <option key={tec.id_tecnico} value={tec.id_tecnico}>
@@ -442,13 +444,13 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       </div>
         )}
       <div className="mb-3">
-        <label className="form-label">Descripción del problema</label>
-        <input className="form-control" onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' required></input>
+        <label className="form-label" htmlFor="historial-agregar-descripcion-problema">Descripción del problema</label>
+        <input id="historial-agregar-descripcion-problema" className="form-control" onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' required></input>
       </div>
       {(rol === 1 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Estado</label>
-        <select className="form-control" onChange={(event) => setEstado(event.target.value)} type='text'>
+        <label className="form-label" htmlFor="historial-agregar-estado">Estado</label>
+        <select id="historial-agregar-estado" className="form-control" onChange={(event) => setEstado(event.target.value)} type='text'>
           <option value="">Selecione un estado</option>
           <option value="En Asignacion">En Asignacion </option>
           <option value="En Proceso">En Proceso </option>
@@ -458,20 +460,20 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       )}
       {(rol === 1 || rol === 17) &&(
       <div className="mb-3">
-        <label className="form-label">Descripción del trabajo</label>
-        <input className="form-control" onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
+        <label className="form-label" htmlFor="historial-agregar-descripcion-trabajo">Descripción del trabajo</label>
+        <input id="historial-agregar-descripcion-trabajo" className="form-control" onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Fotos</label>
-        <input className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
+        <label className="form-label" htmlFor="historial-agregar-fotos">Fotos</label>
+        <input id="historial-agregar-fotos" className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
       </div>
       <div className="mb-3">
         <small className="text-muted">La fecha de ingreso se registra automáticamente al guardar.</small>
       </div>
       {(rol === 1 || rol === 17) && (
         <div className="mb-3">
-  <label className="form-label fw-bold">Repuestos Utilizados</label>
+  <span className="form-label fw-bold d-block">Repuestos Utilizados</span>
   {repuestosSeleccionados.map((item, index) => (
     <div key={index} className="d-flex mb-2 align-items-center">
       <select className="form-control me-2" value={item.id_repuestos} onChange={(e) => cambiarValoresRepuesto(index, 'id_repuestos', e.target.value)}>
@@ -670,20 +672,20 @@ function Editar({datos, cerrarmodal}){
     <form onSubmit={editar}>
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label">Id Historial</label>
-        <input className="form-control" value={Id_historial} type='number' disabled></input>
+        <label className="form-label" htmlFor="historial-editar-id">Id Historial</label>
+        <input id="historial-editar-id" className="form-control" value={Id_historial} type='number' disabled></input>
       </div>
       )}
       {rol === 3 && (
         <div className="mb-3">
-          <label className="form-label">Id Historial</label>
-          <input className="form-control" value={Id_historial_cliente} type='number' disabled></input>
+          <label className="form-label" htmlFor="historial-editar-id-cliente">Id Historial</label>
+          <input id="historial-editar-id-cliente" className="form-control" value={Id_historial_cliente} type='number' disabled></input>
         </div>
       )}
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label">Dueño de la moto (Cliente)</label>
-        <select className="form-control" value={clienteSeleccionado} onChange={(e) => {setClienteSeleccionado(e.target.value); setId_motos("");}}required>
+        <label className="form-label" htmlFor="historial-editar-cliente">Dueño de la moto (Cliente)</label>
+        <select id="historial-editar-cliente" className="form-control" value={clienteSeleccionado} onChange={(e) => {setClienteSeleccionado(e.target.value); setId_motos("");}}required>
           <option value="">Seleccione un cliente</option>
           {Usuarios.filter((usr) => Number(usr.id_rol) === 3).map((usr) => (
             <option key={usr.numero_identidad} value={usr.numero_identidad}>
@@ -694,8 +696,8 @@ function Editar({datos, cerrarmodal}){
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Moto </label>
-        <select className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={rol === 2 || !clienteSeleccionado} required>
+        <label className="form-label" htmlFor="historial-editar-moto">Moto </label>
+        <select id="historial-editar-moto" className="form-control" value={Id_motos} onChange={(event) => setId_motos(event.target.value)} disabled={rol === 2 || !clienteSeleccionado} required>
           <option value="">
             {clienteSeleccionado ? "Seleccione una moto" : "Primero seleccione un dueño"}
           </option>
@@ -708,8 +710,8 @@ function Editar({datos, cerrarmodal}){
       </div>
       {(rol === 1 || rol === 16 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Técnico Asignado</label>
-        <select className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
+        <label className="form-label" htmlFor="historial-editar-tecnico">Técnico Asignado</label>
+        <select id="historial-editar-tecnico" className="form-control" value={Id_tecnico} onChange={(event) => setId_tecnico(event.target.value)}>
           <option value="">Seleccione un Técnico</option>
           {Tecnico.map((tec) => (
             <option key={tec.id_tecnico} value={tec.id_tecnico}>
@@ -720,8 +722,9 @@ function Editar({datos, cerrarmodal}){
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Descripción del problema</label>
+        <label className="form-label" htmlFor="historial-editar-descripcion-problema">Descripción del problema</label>
         <input
+          id="historial-editar-descripcion-problema"
           className="form-control"
           value={Descripcion_prodlema}
           onChange={(event) => setDescripcion_prodlema(event.target.value)}
@@ -735,8 +738,8 @@ function Editar({datos, cerrarmodal}){
       </div>
       {(rol === 1 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Estado</label>
-        <select className="form-control" value={Estado} onChange={(event) => setEstado(event.target.value)} type='text'>
+        <label className="form-label" htmlFor="historial-editar-estado">Estado</label>
+        <select id="historial-editar-estado" className="form-control" value={Estado} onChange={(event) => setEstado(event.target.value)} type='text'>
           <option value="">Selecione un estado</option>
           <option value="En Asignacion">En Asignacion </option>
           <option value="En Proceso">En Proceso </option>
@@ -746,19 +749,20 @@ function Editar({datos, cerrarmodal}){
       )}
       {(rol === 1 || rol === 2 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Descripción del trabajo</label>
-        <input className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
+        <label className="form-label" htmlFor="historial-editar-descripcion-trabajo">Descripción del trabajo</label>
+        <input id="historial-editar-descripcion-trabajo" className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
       </div>
       )}
       {(rol === 1 || rol === 3) && (
       <div className="mb-3">
-        <label className="form-label">Fotos</label>
-        <input className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
+        <label className="form-label" htmlFor="historial-editar-fotos">Fotos</label>
+        <input id="historial-editar-fotos" className="form-control" onChange={(event) => setFotos(event.target.files[0])} type='file'></input>
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label">Fecha de inicio</label>
+        <label className="form-label" htmlFor="historial-editar-fecha-inicio">Fecha de inicio</label>
         <input
+          id="historial-editar-fecha-inicio"
           className="form-control"
           value={Fecha_inicio}
           onChange={(event) => setFecha_inicio(event.target.value)}
@@ -772,13 +776,13 @@ function Editar({datos, cerrarmodal}){
       </div>
       {(rol === 1 || rol === 17) && (
       <div className="mb-3">
-        <label className="form-label">Fecha de Fin</label>
-        <input className="form-control" value={Fecha_fin} onChange={(event) => setFecha_fin(event.target.value)} type='date'></input>
+        <label className="form-label" htmlFor="historial-editar-fecha-fin">Fecha de Fin</label>
+        <input id="historial-editar-fecha-fin" className="form-control" value={Fecha_fin} onChange={(event) => setFecha_fin(event.target.value)} type='date'></input>
       </div>
       )}
       {(rol === 1 || rol === 2 || rol === 17) && (
         <div className="mb-3">
-  <label className="form-label fw-bold">Repuestos Utilizados</label>
+  <span className="form-label fw-bold d-block">Repuestos Utilizados</span>
   {repuestosSeleccionados.map((item, index) => (
     <div key={index} className="d-flex mb-2 align-items-center">
       <select 
@@ -846,7 +850,7 @@ function Eliminar ({id, cerrarmodal}){
   return(
     <div>
       <h5>¿Seguro que quieres eliminar este Historial?</h5>
-      <button className='btn btn-danger mb-3' onClick={eliminar_Historial}>Eliminar</button>
+      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Historial}>Eliminar</button>
     </div>
   )
 }
@@ -928,7 +932,7 @@ function Detalle({ datos, cerrarmodal }) {
       )}
 
       <div className="text-end">
-        <button className="btn btn-secondary" onClick={cerrarmodal}>Cerrar Detalles</button>
+        <button type="button" className="btn btn-secondary" onClick={cerrarmodal}>Cerrar Detalles</button>
       </div>
 
     </div>

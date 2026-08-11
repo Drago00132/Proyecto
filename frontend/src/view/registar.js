@@ -131,12 +131,12 @@ function Registrarse(){
                             <h2 className="tex-center md.4">Registarse</h2>
                             <form onSubmit={add}>
                                 <div className="mb-3">
-                                    <label className="form-label">Numero de identidad</label>
-                                    <input className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric'></input>
+                                    <label className="form-label" htmlFor="registro-identidad">Numero de identidad</label>
+                                    <input id="registro-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label>Tipo de documento</label>
-                                    <select className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
+                                    <label htmlFor="registro-tipo-documento">Tipo de documento</label>
+                                    <select id="registro-tipo-documento" className="form-select" value={Tipo_documento} onChange={(event) => setTipo_documento(event.target.value)}>
                                     <option value=''>seleccione un tipo de documento</option>
                                     <option value='Cedula de Ciudadania'>Cedula de Ciudadania</option>
                                     <option value='Cedula de Extranjeria'>Cedula de Extranjeria</option>
@@ -144,34 +144,34 @@ function Registrarse(){
                                     </select>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Nombre</label>
-                                    <input className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+                                    <label className="form-label" htmlFor="registro-nombre">Nombre</label>
+                                    <input id="registro-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Apellido</label>
-                                    <input className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+                                    <label className="form-label" htmlFor="registro-apellido">Apellido</label>
+                                    <input id="registro-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Fecha de nacimiento</label>
-                                    <input className="form-control" value={Fecha_nacimiento} onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
+                                    <label className="form-label" htmlFor="registro-fecha-nacimiento">Fecha de nacimiento</label>
+                                    <input id="registro-fecha-nacimiento" className="form-control" value={Fecha_nacimiento} onChange={(event) => {setFecha_nacimiento(event.target.value);}} type='date'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Numero celular</label>
-                                    <input className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric'></input>
+                                    <label className="form-label" htmlFor="registro-celular">Numero celular</label>
+                                    <input id="registro-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Email</label>
-                                    <input className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+                                    <label className="form-label" htmlFor="registro-email">Email</label>
+                                    <input id="registro-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">contraseña</label>
-                                    <input className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+                                    <label className="form-label" htmlFor="registro-contrasena">contraseña</label>
+                                    <input id="registro-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
                                 </div>
                                 <button className='btn btn-primary mb-3' type="submit" disabled={enviando}>
                                     {enviando ? "Registrando..." : "Registrarse"}
                                 </button>
                             </form>
-                            <button className='btn btn-link' onClick={()=>navigate("/")}>Iniciar sesion</button>
+                            <button type="button" className='btn btn-link' onClick={()=>navigate("/")}>Iniciar sesion</button>
                         </div>
                     </div>
                 </div>

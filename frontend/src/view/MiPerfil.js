@@ -88,16 +88,16 @@ function MiPerfil() {
           </p>
 
           <div className="mb-3">
-            <label className="form-label">Número de identidad</label>
-            <input className="form-control" value={numeroIdentidad} type='text' disabled />
+            <label className="form-label" htmlFor="miperfil-identidad">Número de identidad</label>
+            <input id="miperfil-identidad" className="form-control" value={numeroIdentidad} type='text' disabled />
           </div>
           <div className="mb-3">
-            <label className="form-label">Tipo de documento</label>
-            <input className="form-control" value={tipoDocumento} type='text' disabled />
+            <label className="form-label" htmlFor="miperfil-tipo-documento">Tipo de documento</label>
+            <input id="miperfil-tipo-documento" className="form-control" value={tipoDocumento} type='text' disabled />
           </div>
           <div className="mb-3">
-            <label className="form-label">Fecha de nacimiento</label>
-            <input className="form-control" value={fechaNacimiento} type='date' disabled />
+            <label className="form-label" htmlFor="miperfil-fecha-nacimiento">Fecha de nacimiento</label>
+            <input id="miperfil-fecha-nacimiento" className="form-control" value={fechaNacimiento} type='date' disabled />
           </div>
 
           <hr />
@@ -105,20 +105,20 @@ function MiPerfil() {
 
           <form onSubmit={guardar}>
             <div className="mb-3">
-              <label className="form-label">Nombre</label>
-              <input className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' required />
+              <label className="form-label" htmlFor="miperfil-nombre">Nombre</label>
+              <input id="miperfil-nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' required />
             </div>
             <div className="mb-3">
-              <label className="form-label">Apellido</label>
-              <input className="form-control" value={apellido} onChange={(e) => setApellido(e.target.value)} type='text' />
+              <label className="form-label" htmlFor="miperfil-apellido">Apellido</label>
+              <input id="miperfil-apellido" className="form-control" value={apellido} onChange={(e) => setApellido(e.target.value)} type='text' />
             </div>
             <div className="mb-3">
-              <label className="form-label">Correo electrónico</label>
-              <input className="form-control" value={correo} onChange={(e) => setCorreo(e.target.value)} type='email' required />
+              <label className="form-label" htmlFor="miperfil-correo">Correo electrónico</label>
+              <input id="miperfil-correo" className="form-control" value={correo} onChange={(e) => setCorreo(e.target.value)} type='email' required />
             </div>
             <div className="mb-3">
-              <label className="form-label">Número celular</label>
-              <input className="form-control" value={celular} onChange={(e) => setCelular(e.target.value)} type='text' />
+              <label className="form-label" htmlFor="miperfil-celular">Número celular</label>
+              <input id="miperfil-celular" className="form-control" value={celular} onChange={(e) => setCelular(e.target.value)} type='text' />
             </div>
 
             <div className="d-grid gap-2">

@@ -131,13 +131,13 @@ function Iniciarsesion() {
 
                                         <form onSubmit={handleSubmit}>
                                             <div className="md-3">
-                                                <label className="form-label">Usuario</label>
-                                                <input className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
+                                                <label className="form-label" htmlFor="login-usuario">Usuario</label>
+                                                <input id="login-usuario" className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
                                             </div>
 
                                             <div className="md-3">
-                                                <label className="form-label" >Contraseña</label>
-                                                <input className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
+                                                <label className="form-label" htmlFor="login-contrasena">Contraseña</label>
+                                                <input id="login-contrasena" className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
                                             </div>
                                             
                                             <div className="d-grid gap-2" >
@@ -149,11 +149,11 @@ function Iniciarsesion() {
                                         </form>
 
                                         <div className="d-grid gap-2" >
-                                            <button className='btn btn-link' onClick={()=>navigate("/Registarse")}>Registrarse</button>
-                                        </div> 
+                                            <button type="button" className='btn btn-link' onClick={()=>navigate("/Registarse")}>Registrarse</button>
+                                        </div>
 
                                         <div className="d-grid gap-2" >
-                                            <button className='btn btn-link' onClick={()=>navigate("/recuperar-contrasena")}>¿Olvidaste tu contraseña?</button>
+                                            <button type="button" className='btn btn-link' onClick={()=>navigate("/recuperar-contrasena")}>¿Olvidaste tu contraseña?</button>
                                         </div> 
                                     </>
                                 )}
@@ -167,8 +167,9 @@ function Iniciarsesion() {
 
                                         <form onSubmit={handleVerificarCodigo}>
                                             <div className="md-3">
-                                                <label className="form-label">Código de verificación</label>
+                                                <label className="form-label" htmlFor="login-codigo-verificacion">Código de verificación</label>
                                                 <input
+                                                    id="login-codigo-verificacion"
                                                     className="form-control"
                                                     type="text"
                                                     inputMode="numeric"
@@ -186,7 +187,7 @@ function Iniciarsesion() {
                                         </form>
 
                                         <div className="d-grid gap-2" >
-                                            <button className='btn btn-link' onClick={volverACredenciales}>Volver a intentar con otro usuario</button>
+                                            <button type="button" className='btn btn-link' onClick={volverACredenciales}>Volver a intentar con otro usuario</button>
                                         </div>
                                     </>
                                 )}
