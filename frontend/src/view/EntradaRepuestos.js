@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function EntradaRepuestos() {
   const [Entradas, setEntradas] = useState([]);
@@ -100,66 +103,24 @@ function EntradaRepuestos() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === 1}
-              onClick={() => obtenerEntrada(paginaActual - 1)}>Anterior</button>
-            <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
-            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === totalPaginas}
-              onClick={() => obtenerEntrada(paginaActual + 1)}>Siguiente</button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerEntrada} />
         </div>
       </div>
 
       {mostrarAgregar && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nueva Entrada</h5>
-                  <button type="button" className="btn-close" onClick={() => setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ModalOverlay titulo="Agregar Nueva Entrada" onClose={() => setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal} />
+        </ModalOverlay>
       )}
       {mostrarEditar && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar Entrada</h5>
-                  <button type="button" className="btn-close" onClick={() => setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={EntradaSelecionada} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ModalOverlay titulo="Editar Entrada" onClose={() => setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={EntradaSelecionada} />
+        </ModalOverlay>
       )}
       {mostrarEliminar && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar Entrada</h5>
-                  <button type="button" className="btn-close" onClick={() => setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={EntradaSelecionada} cerrarmodal={cerrarModal} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ModalOverlay titulo="Eliminar Entrada" onClose={() => setmostrarEliminar(false)}>
+          <Eliminar id={EntradaSelecionada} cerrarmodal={cerrarModal} />
+        </ModalOverlay>
       )}
     </div>
   );
@@ -353,12 +314,7 @@ function Eliminar({ id, cerrarmodal }) {
     });
   }
 
-  return (
-    <div>
-      <h5>seguro que quieres eliminar esta Entrada</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar esta Entrada" onConfirmar={eliminar} />;
 }
 
 export { Agregar as AgregarEntradaRepuesto };

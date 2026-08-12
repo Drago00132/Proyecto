@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Tecnicos() {
   const [Tecnico, setTecnico] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
+  //modales y sus funciones
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [TecnicoSelecionado, setTecnicoSelecionado] = useState(null);
-  //paginador 
+  //paginador
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -50,7 +53,7 @@ function Tecnicos() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Tecnicos</h2>
@@ -61,7 +64,7 @@ function Tecnicos() {
           onClick={()=> setMostrarAgregar(true)}>subir Tecnico</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarTecnico}>Buscar</button>
@@ -83,7 +86,7 @@ function Tecnicos() {
             </thead>
             <tbody>
               {Tecnico.map((tecnicos, index) => (
-                <tr key={index}> 
+                <tr key={index}>
                   <td>{tecnicos.id_tecnico}</td>
                   <td>{tecnicos.numero_identidad}</td>
                   <td>{tecnicos.nombre}, {tecnicos.apellido}</td>
@@ -100,102 +103,24 @@ function Tecnicos() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
-
-            <span className="fw-bold">Página {paginaActual} de {totalPaginas}</span>
-
-            <button type="button" className="btn btn-outline-primary" disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={setPaginaActual} />
         </div>
       </div>
 
-      {/*modal de agregar*/}
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nuevo Tecnico </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nuevo Tecnico" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
-      {/*modales de editar*/}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar un Tecnico</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={TecnicoSelecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar un Tecnico" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={TecnicoSelecionado}/>
+        </ModalOverlay>
       )}
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a un Tecnico </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={TecnicoSelecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a un Tecnico" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={TecnicoSelecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -219,8 +144,8 @@ const subirArchivo = async () => {
 
     toast.success(res.data?.message || "Carga masiva de técnicos exitosa");
 
-    cerrarmodal(false); 
-    
+    cerrarmodal(false);
+
   } catch (error) {
     toast.error(error.response?.data?.message || "No se pudo procesar la carga masiva de técnicos");
   } finally {
@@ -301,12 +226,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>seguro que quieres eliminar este Tecnico</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Tecnico}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Tecnico" onConfirmar={eliminar_Tecnico} />;
 }
 
 export default Tecnicos;

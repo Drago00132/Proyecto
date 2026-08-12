@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Usuario() {
   const [usuarios, setUsuarios] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
+  //modales y sus funciones
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  //paginador 
+  //paginador
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -54,7 +57,7 @@ function Usuario() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Usuarios</h2>
@@ -65,7 +68,7 @@ function Usuario() {
           onClick={()=> setMostrarAgregar(true)}>Agregar usuarios</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarUsuario}>Buscar</button>
@@ -89,7 +92,7 @@ function Usuario() {
             </thead>
             <tbody>
               {usuarios.map((usuario, index) => (
-                <tr key={index}> 
+                <tr key={index}>
                   <td>{usuario.numero_identidad}</td>
                   <td>{usuario.nombre}</td>
                   <td>{usuario.apellido}</td>
@@ -108,124 +111,24 @@ function Usuario() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === 1}
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerUsuarios(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
-
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerUsuarios(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerUsuarios} />
 
         </div>
       </div>
-      {/*modal de agregar*/}
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nuevo Usuario </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nuevo Usuario" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
-      {/*modales de editar*/}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar un Usuario</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={usuarioSelecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar un Usuario" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={usuarioSelecionado}/>
+        </ModalOverlay>
       )}
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a un Usuario </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={usuarioSelecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a un Usuario" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={usuarioSelecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -256,7 +159,7 @@ function Agregar({cerrarmodal}){
 
     const fechaNacimiento = new Date(Fecha_nacimiento);
     const hoy = new Date();
-    
+
     let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
     const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
 
@@ -305,7 +208,7 @@ function Agregar({cerrarmodal}){
     };
 
     if (!validarFormulario()) {
-    return; 
+    return;
     }
 
     axios.post("http://localhost:3100/api/usuarios/agregar",{
@@ -439,7 +342,7 @@ function Editar({datos,cerrarmodal}){
 
     const fechaNacimiento = new Date(Fecha_nacimiento);
     const hoy = new Date();
-    
+
     let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
     const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
 
@@ -488,7 +391,7 @@ function Editar({datos,cerrarmodal}){
     };
 
     if (!validarFormulario()) {
-    return; 
+    return;
     }
 
     axios.put(`http://localhost:3100/api/usuarios/actualizar/${datos.numero_identidad}`,{
@@ -592,12 +495,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>seguro que quieres eliminar a este usuarios</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_usuario}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar a este usuarios" onConfirmar={eliminar_usuario} />;
 }
 
 export default Usuario;

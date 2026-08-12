@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Repuestos() {
   const [Repuesto, setRepuestos] = useState([]);
@@ -58,7 +61,7 @@ function Repuestos() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Repuestos</h2>
@@ -68,7 +71,7 @@ function Repuestos() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Repuesto</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por nombre del repuesto' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por nombre del repuesto'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarRepuesto}>Buscar</button>
@@ -87,7 +90,7 @@ function Repuestos() {
             </thead>
             <tbody>
               {Repuesto.map((repuesto, index) => (
-                <tr key={index}> 
+                <tr key={index}>
                   <td>{repuesto.id_repuestos}</td>
                   <td>{repuesto.nombre_repuesto}</td>
                   <td>{repuesto.cantidad}</td>
@@ -103,100 +106,24 @@ function Repuestos() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === 1}
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerRepuesto(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
-
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerRepuesto(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerRepuesto} />
         </div>
       </div>
 
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nuevo Repuesto </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nuevo Repuesto" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar un Repuesto</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={RepuestoSelecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar un Repuesto" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={RepuestoSelecionado}/>
+        </ModalOverlay>
       )}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a un Repuesto </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={RepuestoSelecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a un Repuesto" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={RepuestoSelecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -233,7 +160,7 @@ function Agregar({cerrarmodal}){
     };
 
     if (!validarFormulario()) {
-      return; 
+      return;
     }
 
     axios.post("http://localhost:3100/api/repuestos/agregar",{
@@ -378,12 +305,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>seguro que quieres eliminar este Repuesto</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Repuesto" onConfirmar={eliminar_Rol} />;
 }
 
 export default Repuestos;

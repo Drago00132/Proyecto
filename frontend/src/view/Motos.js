@@ -2,17 +2,20 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Motos() {
   const rol = Number(localStorage.getItem("rol"));
   const [Motos, setMotos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
+  //modales y sus funciones
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [Motoselecionado, setMotoselecionado] = useState(null);
-  //paginador 
+  //paginador
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -56,7 +59,7 @@ function Motos() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
 
           <ToastContainer position="top-right" autoClose={3000}/>
@@ -69,7 +72,7 @@ function Motos() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Motos</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarMotos}>Buscar</button>
@@ -93,7 +96,7 @@ function Motos() {
             </thead>
             <tbody>
               {Motos.map((motos, index) => (
-                <tr key={index}> 
+                <tr key={index}>
                   { rol === 1 && (<td>{motos.id_motos}</td>)}
                   { rol === 1 && (<td>{motos.numero_identidad}</td>)}
                   { rol === 1 && (<td>{motos.nombre}, {motos.apellido}</td>)}
@@ -112,124 +115,24 @@ function Motos() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === 1}
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerMoto(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
-
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerMoto(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerMoto} />
         </div>
       </div>
 
-      {/*modal de agregar*/}
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nueva Moto </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nueva Moto" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
-      {/*modales de editar*/}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar una Moto</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={Motoselecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar una Moto" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={Motoselecionado}/>
+        </ModalOverlay>
       )}
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a una Moto </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={Motoselecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a una Moto" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={Motoselecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -394,12 +297,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>seguro que quieres eliminar esta Moto</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar esta Moto" onConfirmar={eliminar_Rol} />;
 }
 
 export default Motos;

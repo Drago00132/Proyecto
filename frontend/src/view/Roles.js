@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Roles() {
   const [Rol, setRol] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
+  //modales y sus funciones
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
   const [Rolselecionado, setRolselecionado] = useState(null);
-  //paginador 
+  //paginador
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -51,7 +54,7 @@ function Roles() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Roles</h2>
@@ -62,7 +65,7 @@ function Roles() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Roles</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarRol}>Buscar</button>
@@ -82,7 +85,7 @@ function Roles() {
             </thead>
             <tbody>
               {Rol.map((roles, index) => (
-                <tr key={index}> 
+                <tr key={index}>
                   <td>{roles.id_rol}</td>
                   <td>{roles.rol}</td>
                   <td><button type="button" className="btn btn-success" onClick={()=>{
@@ -97,124 +100,24 @@ function Roles() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === 1}
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerRol(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
-
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerRol(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
-          </div>
+          <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerRol} />
         </div>
       </div>
 
-      {/*modal de agregar*/}
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nuevo Rol </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nuevo Rol" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
-      {/*modales de editar*/}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar un Rol</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={Rolselecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar un Rol" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={Rolselecionado}/>
+        </ModalOverlay>
       )}
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a un Rol </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={Rolselecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a un Rol" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={Rolselecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -315,12 +218,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>seguro que quieres eliminar este Rol</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Rol}>eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Rol" onConfirmar={eliminar_Rol} />;
 }
 
 export default Roles;

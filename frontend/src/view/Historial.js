@@ -3,12 +3,15 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalOverlay from '../components/ModalOverlay';
+import Paginador from '../components/Paginador';
+import ConfirmarEliminar from '../components/ConfirmarEliminar';
 
 function Historial() {
   const rol = Number(localStorage.getItem("rol"));
   const [Historial, setHistorial] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  //modales y sus funciones 
+  //modales y sus funciones
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -25,7 +28,7 @@ function Historial() {
   const [HistorialSelecionado, setHistorialSelecionado] = useState(null);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
   const [detalleSeleccionado, setDetalleSeleccionado] = useState(null);
-  //paginador 
+  //paginador
   const [paginaActual, setPaginaActual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
@@ -70,7 +73,7 @@ function Historial() {
 
   return (
     <div className="App">
-      <div className="container mt-5"> 
+      <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Historial de Reparaciones</h2>
@@ -83,7 +86,7 @@ function Historial() {
             )}
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad' 
+              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarHistorial}>Buscar</button>
@@ -114,7 +117,7 @@ function Historial() {
               </thead>
               <tbody>
                 {Historial.map((historial, index) => (
-                  <tr key={index}> 
+                  <tr key={index}>
                     {(rol === 1 || rol === 16 || rol === 17) && (
                     <td>{historial.id_historial}</td>
                     )}
@@ -154,129 +157,33 @@ function Historial() {
                 ))}
               </tbody>
             </table>
-            <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === 1}
-              onClick={() => {
-                const paginaAnterior = paginaActual - 1;
-                obtenerHistorial(paginaAnterior);
-              }}
-            >
-              Anterior
-            </button>
-
-            <span className="fw-bold">
-              Página {paginaActual} de {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => {
-                const paginaSiguiente = paginaActual + 1;
-                obtenerHistorial(paginaSiguiente);
-              }}
-            >
-              Siguiente
-            </button>
-          </div>
+            <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerHistorial} />
           </div>
         </div>
       </div>
 
-      {/*modal de agregar*/}
       {mostrarAgregar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Agregar Nuevo Historial </h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarAgregar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Agregar cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Agregar Nuevo Historial" onClose={()=> setMostrarAgregar(false)}>
+          <Agregar cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
 
-      {/*modales de editar*/}
       {mostrarEditar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Editar un Historial</h5>
-                  <button type="button" className="btn-close" onClick={()=> setMostrarEditar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Editar cerrarmodal={cerrarModal} datos={HistorialSelecionado}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Editar un Historial" onClose={()=> setMostrarEditar(false)}>
+          <Editar cerrarmodal={cerrarModal} datos={HistorialSelecionado}/>
+        </ModalOverlay>
       )}
 
-      {/*modal de eliminar*/}
       {mostrarEliminar && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Eliminar a un Historial </h5>
-                  <button type="button" className="btn-close" onClick={()=> setmostrarEliminar(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Eliminar id={HistorialSelecionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Eliminar a un Historial" onClose={()=> setmostrarEliminar(false)}>
+          <Eliminar id={HistorialSelecionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
 
-      {/*modal de ver detalles*/}
       {mostrarDetalle && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
-        }}>
-          <div className="modal d-block">
-            <div className="modal-dialog modal-lg"> {/* modal-lg da más espacio */}
-              <div className="modal-content">
-                <div className="modal-header bg-info text-white">
-                  <h5 className="modal-title">Detalles Completos del Historial</h5>
-                  <button type="button" className="btn-close btn-close-white" onClick={() => setMostrarDetalle(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <Detalle datos={detalleSeleccionado} cerrarmodal={cerrarModal}/>
-                </div>
-              </div>
-            </div>
-          </div>  
-        </div>
+        <ModalOverlay titulo="Detalles Completos del Historial" onClose={() => setMostrarDetalle(false)} large headerClassName="bg-info text-white">
+          <Detalle datos={detalleSeleccionado} cerrarmodal={cerrarModal}/>
+        </ModalOverlay>
       )}
     </div>
   );
@@ -312,7 +219,7 @@ function Agregar({cerrarmodal}){
 
     if (Id_motos.trim() === "" || Descripcion_prodlema.trim() === "") {
       toast.error("faltan datos obligatorio");
-      return; 
+      return;
     }
 
     const validarFormulario = () => {
@@ -326,7 +233,7 @@ function Agregar({cerrarmodal}){
     };
 
     if (!validarFormulario()) {
-    return; 
+    return;
     }
 
     const formData = new FormData();
@@ -337,7 +244,7 @@ function Agregar({cerrarmodal}){
     formData.append('descripcion_trabajo', Descripcion_trabajo || null);
     formData.append('repuestos', JSON.stringify(repuestosSeleccionados));
     if (Fotos) {
-      formData.append('fotos', Fotos); 
+      formData.append('fotos', Fotos);
     }
 
     axios.post("http://localhost:3100/api/historial/agregar",formData,{
@@ -484,9 +391,9 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
           </option>
         ))}
       </select>
-      
+
       <input type="number" className="form-control me-2" style={{ width: '100px' }}min="1"value={item.cantidad} onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}placeholder="Cant."/>
-      
+
       {repuestosSeleccionados.length > 1 && (
         <button type="button" className="btn btn-danger btn-sm" onClick={() => eliminarFilaRepuesto(index)}>X</button>
       )}
@@ -561,7 +468,7 @@ function Editar({datos, cerrarmodal}){
 
     if (Id_motos.trim() === "" || Descripcion_prodlema.trim() === "" || Fecha_inicio.trim() === "") {
       toast.error("faltan datos obligatorio");
-      return; 
+      return;
     }
 
     const validarFormulario = () => {
@@ -570,7 +477,7 @@ function Editar({datos, cerrarmodal}){
       toast.error("El problema debe tener entre 10 y 1000 caracteres.");
       return false;
     }
-    
+
     if (Descripcion_trabajo.length< 10 || Descripcion_trabajo.length > 1000) {
       toast.error("El solucion debe tener entre 10 y 1000 caracteres.");
       return false;
@@ -580,7 +487,7 @@ function Editar({datos, cerrarmodal}){
     };
 
     if (!validarFormulario()) {
-    return; 
+    return;
     }
 
     axios.put(`http://localhost:3100/api/historial/actualizar/${datos.id_historial}`, formData, {
@@ -649,7 +556,7 @@ function Editar({datos, cerrarmodal}){
         }
       })
       .catch((err) => console.error(err));
-      
+
   }, [datos]);
 
   const agregarFilaRepuesto = () => {
@@ -785,9 +692,9 @@ function Editar({datos, cerrarmodal}){
   <span className="form-label fw-bold d-block">Repuestos Utilizados</span>
   {repuestosSeleccionados.map((item, index) => (
     <div key={index} className="d-flex mb-2 align-items-center">
-      <select 
-        className="form-control me-2" 
-        value={item.id_repuestos} 
+      <select
+        className="form-control me-2"
+        value={item.id_repuestos}
         onChange={(e) => cambiarValoresRepuesto(index, 'id_repuestos', e.target.value)}
       >
         <option value="">Seleccione un repuesto...</option>
@@ -797,17 +704,17 @@ function Editar({datos, cerrarmodal}){
           </option>
         ))}
       </select>
-      
-      <input 
-        type="number" 
-        className="form-control me-2" 
+
+      <input
+        type="number"
+        className="form-control me-2"
         style={{ width: '100px' }}
         min="1"
-        value={item.cantidad} 
+        value={item.cantidad}
         onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}
         placeholder="Cant."
       />
-      
+
       {repuestosSeleccionados.length > 1 && (
         <button type="button" className="btn btn-danger btn-sm" onClick={() => eliminarFilaRepuesto(index)}>X</button>
       )}
@@ -847,12 +754,7 @@ function Eliminar ({id, cerrarmodal}){
       });
     }
 
-  return(
-    <div>
-      <h5>¿Seguro que quieres eliminar este Historial?</h5>
-      <button type="button" className='btn btn-danger mb-3' onClick={eliminar_Historial}>Eliminar</button>
-    </div>
-  )
+  return <ConfirmarEliminar mensaje="¿Seguro que quieres eliminar este Historial?" onConfirmar={eliminar_Historial} />;
 }
 
 function Detalle({ datos, cerrarmodal }) {
@@ -869,7 +771,7 @@ function Detalle({ datos, cerrarmodal }) {
           <strong>Estado:</strong> <span className="badge bg-secondary">{datos.estado}</span>
         </div>
       </div>
-      
+
       <div className="row mb-3">
         <div className="col-md-6">
           <strong>Técnico:</strong> {datos.nombre_tecnico} {datos.apellido_tecnico}
@@ -880,7 +782,7 @@ function Detalle({ datos, cerrarmodal }) {
           </div>
         )}
       </div>
-      
+
 
       <div className="mb-3">
         <strong>Problema:</strong>
@@ -921,11 +823,11 @@ function Detalle({ datos, cerrarmodal }) {
         <div className="mb-3 text-center">
           <strong>Evidencia Fotográfica:</strong>
           <div className="mt-2">
-            <img 
-              src={`http://localhost:3100/uploads/${datos.fotos}`} 
-              alt="Evidencia" 
-              className="img-thumbnail" 
-              style={{ maxHeight: '300px', objectFit: 'contain' }} 
+            <img
+              src={`http://localhost:3100/uploads/${datos.fotos}`}
+              alt="Evidencia"
+              className="img-thumbnail"
+              style={{ maxHeight: '300px', objectFit: 'contain' }}
             />
           </div>
         </div>
