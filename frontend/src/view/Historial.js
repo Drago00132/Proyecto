@@ -190,6 +190,33 @@ function Historial() {
   );
 }
 
+// Carga de usuarios, técnicos y motos compartida entre Agregar y Editar
+// (antes estaba duplicada en ambas funciones).
+function useUsuariosTecnicoMotos() {
+  const [Usuarios, setUsuarios] = useState([]);
+  const [Motos, setMotos] = useState([]);
+  const [Tecnico, setTecnico] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const config = { headers: { 'Authorization': `Bearer ${token}` } };
+
+    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
+      .then((res) => setUsuarios(res.data.usuarios || res.data || []))
+      .catch((err) => console.error("Error al traer usuarios: ", err));
+
+    axios.get('http://localhost:3100/api/tecnico/listar?limit=999999', config)
+      .then((res) => setTecnico(res.data.tecnico || res.data || []))
+      .catch((err) => console.error("Error al traer técnicos: ", err));
+
+    axios.get('http://localhost:3100/api/motos/listar?limit=999999', config)
+      .then((res) => setMotos(res.data.motos || res.data || []))
+      .catch((err) => console.error("Error al traer motos: ", err));
+  }, []);
+
+  return { Usuarios, Motos, Tecnico };
+}
+
 function Agregar({cerrarmodal}){
   const rol = Number(localStorage.getItem("rol"));
   const [Id_motos, setId_motos] = useState("");
@@ -200,9 +227,7 @@ function Agregar({cerrarmodal}){
   const [Fotos, setFotos] = useState(null);
   const [Fecha_inicio, setFecha_inicio] = useState("");
 
-  const [Usuarios, setUsuarios] = useState([]);
-  const [Motos, setMotos] = useState([]);
-  const [Tecnico, setTecnico] = useState([]);
+  const { Usuarios, Motos, Tecnico } = useUsuariosTecnicoMotos();
 
   const [repuestosDisponibles, setRepuestosDisponibles] = useState([]);
   const [repuestosSeleccionados, setRepuestosSeleccionados] = useState([{ id_repuestos: "", cantidad: 1 }]);
@@ -266,18 +291,6 @@ function Agregar({cerrarmodal}){
   useEffect(() => {
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
-
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
-      .then((res) => setUsuarios(res.data.usuarios || res.data || []))
-      .catch((err) => console.error("Error al traer usuarios: ", err));
-
-    axios.get('http://localhost:3100/api/tecnico/listar?limit=999999', config)
-      .then((res) => setTecnico(res.data.tecnico || res.data || []))
-      .catch((err) => console.error("Error al traer técnicos: ", err));
-
-    axios.get('http://localhost:3100/api/motos/listar?limit=999999', config)
-      .then((res) => setMotos(res.data.motos || res.data || []))
-      .catch((err) => console.error("Error al traer motos: ", err));
 
     axios.get('http://localhost:3100/api/repuestos/listar', config)
     .then((res) => setRepuestosDisponibles(res.data.repuesto || res.data || []))
@@ -423,9 +436,7 @@ function Editar({datos, cerrarmodal}){
   const [Fecha_inicio, setFecha_inicio] = useState("");
   const [Fecha_fin, setFecha_fin] = useState("");
 
-  const [Usuarios, setUsuarios] = useState([]);
-  const [Motos, setMotos] = useState([]);
-  const [Tecnico, setTecnico] = useState([]);
+  const { Usuarios, Motos, Tecnico } = useUsuariosTecnicoMotos();
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState("");
   const [motosFiltradas, setMotosFiltradas] = useState([]);
@@ -501,24 +512,6 @@ function Editar({datos, cerrarmodal}){
       toast.error("No se pudo actualizar el historial");
     });
   };
-
-    useEffect(() => {
-    const token = localStorage.getItem("token");
-    const config = { headers: { 'Authorization': `Bearer ${token}` } };
-
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
-      .then((res) => setUsuarios(res.data.usuarios || res.data || []))
-      .catch((err) => console.error("Error al traer usuarios: ", err));
-
-    axios.get('http://localhost:3100/api/tecnico/listar?limit=999999', config)
-      .then((res) => setTecnico(res.data.tecnico || res.data || []))
-      .catch((err) => console.error("Error al traer técnicos: ", err));
-
-    axios.get('http://localhost:3100/api/motos/listar?limit=999999', config)
-      .then((res) => setMotos(res.data.motos || res.data || []))
-      .catch((err) => console.error("Error al traer motos: ", err));
-
-  }, []);
 
   useEffect(() => {
     if (datos && Motos.length > 0) {

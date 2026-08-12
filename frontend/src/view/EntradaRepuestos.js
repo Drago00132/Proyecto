@@ -127,14 +127,9 @@ function EntradaRepuestos() {
   );
 }
 
-function Agregar({ cerrarmodal }) {
-  const [Fecha_entrada, setFecha_entrada] = useState("");
-  const [Cantidad_ingresada, setCantidad_ingresada] = useState("");
-  const [Id_repuestos, setId_repuestos] = useState("");
-  const [Id_distribuidor, setId_distribuidor] = useState("");
-  // El usuario que registra la entrada siempre es quien tiene la sesión abierta;
-  // ya no se elige de una lista.
-  const Numero_identidad = localStorage.getItem("numero_identidad") || "";
+// Carga de listas de repuestos y distribuidores compartida entre Agregar y Editar
+// (antes estaba duplicada en ambas funciones).
+function useRepuestosYDistribuidores() {
   const [repuestos, setRepuestos] = useState([]);
   const [distribuidores, setDistribuidores] = useState([]);
 
@@ -147,6 +142,19 @@ function Agregar({ cerrarmodal }) {
       .then((res) => setDistribuidores(res.data.distribuidores || []))
       .catch((error) => console.error("Error al mostrar distribuidores: ", error));
   }, []);
+
+  return { repuestos, distribuidores };
+}
+
+function Agregar({ cerrarmodal }) {
+  const [Fecha_entrada, setFecha_entrada] = useState("");
+  const [Cantidad_ingresada, setCantidad_ingresada] = useState("");
+  const [Id_repuestos, setId_repuestos] = useState("");
+  const [Id_distribuidor, setId_distribuidor] = useState("");
+  // El usuario que registra la entrada siempre es quien tiene la sesión abierta;
+  // ya no se elige de una lista.
+  const Numero_identidad = localStorage.getItem("numero_identidad") || "";
+  const { repuestos, distribuidores } = useRepuestosYDistribuidores();
 
   const add = (event) => {
     event.preventDefault();
@@ -214,18 +222,7 @@ function Editar({ datos, cerrarmodal }) {
   const [Id_distribuidor, setId_distribuidor] = useState("");
   const [Numero_identidad, setNumero_identidad] = useState("");
   const [usuarioNombreMostrado, setUsuarioNombreMostrado] = useState("");
-  const [repuestos, setRepuestos] = useState([]);
-  const [distribuidores, setDistribuidores] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://localhost:3100/api/repuestos/listar?limit=999999')
-      .then((res) => setRepuestos(res.data.repuesto || []))
-      .catch((error) => console.error("Error al mostrar repuestos: ", error));
-
-    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
-      .then((res) => setDistribuidores(res.data.distribuidores || []))
-      .catch((error) => console.error("Error al mostrar distribuidores: ", error));
-  }, []);
+  const { repuestos, distribuidores } = useRepuestosYDistribuidores();
 
   useEffect(() => {
     if (datos) {
