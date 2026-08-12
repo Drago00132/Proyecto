@@ -3,8 +3,6 @@ const router = express.Router();
 const usuarioController = require('../controller/usuariosController');
 const { verificarToken, verificarRol } = require('../Middlewares/authMiddleware');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-
 const upload = multer({
   dest: 'uploads/',
   limits: { fileSize: 20 * 1024 * 1024 } 
