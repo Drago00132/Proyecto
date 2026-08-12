@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function Usuario() {
   const [usuarios, setUsuarios] = useState([]);
@@ -134,8 +135,61 @@ function Usuario() {
   );
 }
 
-function Agregar({cerrarmodal}){
+// Validaciones compartidas entre Agregar y Editar (antes estaban duplicadas en ambas funciones).
+function validarUsuario({ Fecha_nacimiento, Contrasena, Numero_identidad, Numero_celular, Nombre, Apellido, Correo_electronico }) {
+  const fechaNacimiento = new Date(Fecha_nacimiento);
+  const hoy = new Date();
 
+  let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+  const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
+
+  if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+    edad--;
+  }
+
+  if (edad < 18) {
+    toast.error("El usuario debe ser mayor de 18 años.");
+    return false;
+  }
+
+  if (Contrasena.length < 8 || Contrasena.length > 20) {
+    toast.error("La contraseña debe tener entre 8 y 20 caracteres.");
+    return false;
+  }
+
+  if (Numero_identidad.length < 10 || Numero_identidad.length > 10) {
+    toast.error("El numero de identidad debe tener 10 caracteres.");
+    return false;
+  }
+
+  if (Numero_celular.length < 10 || Numero_celular.length > 10) {
+    toast.error("El numero de celular debe tener 10 caracteres.");
+    return false;
+  }
+
+  const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+  if (!soloLetras.test(Nombre)) {
+    toast.error("El nombre no debe contener números ni caracteres especiales.");
+    return false;
+  }
+
+  if (!soloLetras.test(Apellido)) {
+    toast.error("El apellido no debe contener números ni caracteres especiales.");
+    return false;
+  }
+
+  const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
+  if (!regexCorreo.test(Correo_electronico)) {
+    toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
+    return false;
+  }
+  return true;
+}
+
+// Estado de formulario + carga de roles compartidos entre Agregar y Editar
+// (antes estaban duplicados en ambas funciones).
+function useUsuarioFormState() {
   const [Numero_identidad, setNumero_identidad] = useState("");
   const [Tipo_documento, setTipo_documento] = useState("");
   const [Nombre, setNombre] = useState("");
@@ -147,6 +201,47 @@ function Agregar({cerrarmodal}){
   const [Id_rol, setId_rol] = useState("");
   const [roles, setRoles] = useState([]);
 
+  useEffect(()=>{
+    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+    })
+    .then((res)=>{
+      setRoles(res.data.roles || []);
+    })
+    .catch((error)=>{
+      console.error("error al obtener los roles ",error);
+      toast.error("No se pudieron cargar los roles disponibles");
+    });
+  }, []);
+
+  return {
+    Numero_identidad, setNumero_identidad,
+    Tipo_documento, setTipo_documento,
+    Nombre, setNombre,
+    Apellido, setApellido,
+    Fecha_nacimiento, setFecha_nacimiento,
+    Numero_celular, setNumero_celular,
+    Correo_electronico, setCorreo_electrico,
+    Contrasena, setContrasena,
+    Id_rol, setId_rol,
+    roles
+  };
+}
+
+function Agregar({cerrarmodal}){
+  const {
+    Numero_identidad, setNumero_identidad,
+    Tipo_documento, setTipo_documento,
+    Nombre, setNombre,
+    Apellido, setApellido,
+    Fecha_nacimiento, setFecha_nacimiento,
+    Numero_celular, setNumero_celular,
+    Correo_electronico, setCorreo_electrico,
+    Contrasena, setContrasena,
+    Id_rol, setId_rol,
+    roles
+  } = useUsuarioFormState();
+
   const add = (event) =>{
     event.preventDefault();
 
@@ -155,60 +250,8 @@ function Agregar({cerrarmodal}){
       return;
     }
 
-    const validarFormulario = () => {
-
-    const fechaNacimiento = new Date(Fecha_nacimiento);
-    const hoy = new Date();
-
-    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-    const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
-
-    if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-      edad--;
-    }
-
-    if (edad < 18) {
-      toast.error("El usuario debe ser mayor de 18 años.");
-      return false;
-    }
-
-    if (Contrasena.length < 8 || Contrasena.length > 20) {
-      toast.error("La contraseña debe tener entre 8 y 20 caracteres.");
-      return false;
-    }
-
-    if (Numero_identidad.length< 10 || Numero_identidad.length > 10) {
-      toast.error("El numero de identidad debe tener 10 caracteres.");
-      return false;
-    }
-
-    if (Numero_celular.length< 10 || Numero_celular.length > 10) {
-      toast.error("El numero de celular debe tener 10 caracteres.");
-      return false;
-    }
-
-    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
-    if (!soloLetras.test(Nombre)) {
-      toast.error("El nombre no debe contener números ni caracteres especiales.");
-      return false;
-    }
-
-    if (!soloLetras.test(Apellido)) {
-      toast.error("El apellido no debe contener números ni caracteres especiales.");
-      return false;
-    }
-
-    const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
-    if (!regexCorreo.test(Correo_electronico)) {
-      toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
-      return false;
-    }
-    return true;
-    };
-
-    if (!validarFormulario()) {
-    return;
+    if (!validarUsuario({ Fecha_nacimiento, Contrasena, Numero_identidad, Numero_celular, Nombre, Apellido, Correo_electronico })) {
+      return;
     }
 
     axios.post("http://localhost:3100/api/usuarios/agregar",{
@@ -233,20 +276,6 @@ function Agregar({cerrarmodal}){
       toast.error(error.response?.data?.message || "No se pudo crear el usuario");
     });
   }
-
-  useEffect(()=>{
-    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-    })
-    .then((res)=>{
-      setRoles(res.data.roles || []);
-    })
-    .catch((error)=>{
-      console.error("error al obtener los roles ",error);
-      toast.error("No se pudieron cargar los roles disponibles");
-    });
-  }, []);
-
 
   return (
     <form>
@@ -304,17 +333,18 @@ function Agregar({cerrarmodal}){
 }
 
 function Editar({datos,cerrarmodal}){
-
-  const [Numero_identidad, setNumero_identidad] = useState("");
-  const [Tipo_documento, setTipo_documento] = useState("");
-  const [Nombre, setNombre] = useState("");
-  const [Apellido, setApellido] = useState("");
-  const [Fecha_nacimiento, setFecha_nacimiento] = useState("");
-  const [Numero_celular, setNumero_celular] = useState("");
-  const [Correo_electronico, setCorreo_electrico] = useState("");
-  const [Contrasena, setContrasena] = useState("");
-  const [Id_rol, setId_rol] = useState("");
-  const [roles, setRoles] = useState([]);
+  const {
+    Numero_identidad, setNumero_identidad,
+    Tipo_documento, setTipo_documento,
+    Nombre, setNombre,
+    Apellido, setApellido,
+    Fecha_nacimiento, setFecha_nacimiento,
+    Numero_celular, setNumero_celular,
+    Correo_electronico, setCorreo_electrico,
+    Contrasena, setContrasena,
+    Id_rol, setId_rol,
+    roles
+  } = useUsuarioFormState();
 
   useEffect (()=>{
     if(datos){
@@ -338,60 +368,8 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    const validarFormulario = () => {
-
-    const fechaNacimiento = new Date(Fecha_nacimiento);
-    const hoy = new Date();
-
-    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-    const mesDiferencia = hoy.getMonth() - fechaNacimiento.getMonth();
-
-    if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-      edad--;
-    }
-
-    if (edad < 18) {
-      toast.error("El usuario debe ser mayor de 18 años.");
-      return false;
-    }
-
-    if (Contrasena.length < 8 || Contrasena.length > 20) {
-      toast.error("La contraseña debe tener entre 8 y 20 caracteres.");
-      return false;
-    }
-
-    if (Numero_identidad.length< 10 || Numero_identidad.length > 10) {
-      toast.error("El numero de identidad debe tener 10 caracteres.");
-      return false;
-    }
-
-    if (Numero_celular.length< 10 || Numero_celular.length > 10) {
-      toast.error("El numero de celular debe tener 10 caracteres.");
-      return false;
-    }
-
-    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
-    if (!soloLetras.test(Nombre)) {
-      toast.error("El nombre no debe contener números ni caracteres especiales.");
-      return false;
-    }
-
-    if (!soloLetras.test(Apellido)) {
-      toast.error("El apellido no debe contener números ni caracteres especiales.");
-      return false;
-    }
-
-    const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
-    if (!regexCorreo.test(Correo_electronico)) {
-      toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
-      return false;
-    }
-    return true;
-    };
-
-    if (!validarFormulario()) {
-    return;
+    if (!validarUsuario({ Fecha_nacimiento, Contrasena, Numero_identidad, Numero_celular, Nombre, Apellido, Correo_electronico })) {
+      return;
     }
 
     axios.put(`http://localhost:3100/api/usuarios/actualizar/${datos.numero_identidad}`,{
@@ -414,19 +392,6 @@ function Editar({datos,cerrarmodal}){
       toast.error(error.response?.data?.message || "No se pudo actualizar el usuario");
     });
   };
-
-  useEffect(()=>{
-    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
-    })
-    .then((res)=>{
-      setRoles(res.data.roles || []);
-    })
-    .catch((error)=>{
-      console.error("error al obtener los roles ",error);
-      toast.error("No se pudieron cargar los roles disponibles");
-    });
-  }, []);
 
   return (
     <form>
@@ -485,15 +450,13 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_usuario = ()=>{
-      axios.delete(`http://localhost:3100/api/usuarios/eliminar/${id}`).then(()=>{
-        toast.success("usuario eliminado");
-        cerrarmodal();
-      }).catch((error)=>{
-        console.error("Error al eliminar: ",error);
-        toast.error("el usuario no fue eliminado");
-        cerrarmodal();
-      });
-    }
+    eliminarRecurso({
+      url: `http://localhost:3100/api/usuarios/eliminar/${id}`,
+      mensajeExito: "usuario eliminado",
+      mensajeError: "el usuario no fue eliminado",
+      cerrarmodal
+    });
+  }
 
   return <ConfirmarEliminar mensaje="seguro que quieres eliminar a este usuarios" onConfirmar={eliminar_usuario} />;
 }

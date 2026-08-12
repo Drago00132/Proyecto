@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function EntradaRepuestos() {
   const [Entradas, setEntradas] = useState([]);
@@ -304,13 +305,11 @@ function Editar({ datos, cerrarmodal }) {
 
 function Eliminar({ id, cerrarmodal }) {
   const eliminar = () => {
-    axios.delete(`http://localhost:3100/api/entradaRepuestos/eliminar/${id}`).then(() => {
-      toast.success("Entrada eliminada");
-      cerrarmodal();
-    }).catch((error) => {
-      console.error("Error al eliminar: ", error);
-      toast.error("la Entrada no fue eliminada");
-      cerrarmodal();
+    eliminarRecurso({
+      url: `http://localhost:3100/api/entradaRepuestos/eliminar/${id}`,
+      mensajeExito: "Entrada eliminada",
+      mensajeError: "la Entrada no fue eliminada",
+      cerrarmodal
     });
   }
 

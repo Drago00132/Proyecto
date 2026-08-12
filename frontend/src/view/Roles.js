@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function Roles() {
   const [Rol, setRol] = useState([]);
@@ -208,15 +209,13 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-      axios.delete(`http://localhost:3100/api/roles/eliminar/${id}`).then(()=>{
-        toast.success("Rol eliminado");
-        cerrarmodal();
-      }).catch((error)=>{
-        console.error("Error al eliminar: ",error);
-        toast.error("el Rol no fue eliminado");
-        cerrarmodal();
-      });
-    }
+    eliminarRecurso({
+      url: `http://localhost:3100/api/roles/eliminar/${id}`,
+      mensajeExito: "Rol eliminado",
+      mensajeError: "el Rol no fue eliminado",
+      cerrarmodal
+    });
+  }
 
   return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Rol" onConfirmar={eliminar_Rol} />;
 }

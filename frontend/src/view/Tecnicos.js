@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function Tecnicos() {
   const [Tecnico, setTecnico] = useState([]);
@@ -216,15 +217,13 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Tecnico = ()=>{
-      axios.delete(`http://localhost:3100/api/tecnico/eliminar/${id}`).then(()=>{
-        toast.success("Tecnico eliminado");
-        cerrarmodal();
-      }).catch((error)=>{
-        console.error("Error al eliminar: ",error);
-        toast.error("el Tecnico no fue eliminado");
-        cerrarmodal();
-      });
-    }
+    eliminarRecurso({
+      url: `http://localhost:3100/api/tecnico/eliminar/${id}`,
+      mensajeExito: "Tecnico eliminado",
+      mensajeError: "el Tecnico no fue eliminado",
+      cerrarmodal
+    });
+  }
 
   return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Tecnico" onConfirmar={eliminar_Tecnico} />;
 }

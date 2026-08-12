@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function Repuestos() {
   const [Repuesto, setRepuestos] = useState([]);
@@ -295,15 +296,13 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-      axios.delete(`http://localhost:3100/api/repuestos/eliminar/${id}`).then(()=>{
-        toast.success("Repuesto eliminado");
-        cerrarmodal();
-      }).catch((error)=>{
-        console.error("Error al eliminar: ",error);
-        toast.error("el Repuesto no fue eliminado");
-        cerrarmodal();
-      });
-    }
+    eliminarRecurso({
+      url: `http://localhost:3100/api/repuestos/eliminar/${id}`,
+      mensajeExito: "Repuesto eliminado",
+      mensajeError: "el Repuesto no fue eliminado",
+      cerrarmodal
+    });
+  }
 
   return <ConfirmarEliminar mensaje="seguro que quieres eliminar este Repuesto" onConfirmar={eliminar_Rol} />;
 }

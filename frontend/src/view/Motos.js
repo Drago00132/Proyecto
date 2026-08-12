@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
+import eliminarRecurso from '../utils/eliminarRecurso';
 
 function Motos() {
   const rol = Number(localStorage.getItem("rol"));
@@ -287,15 +288,13 @@ function Editar({datos,cerrarmodal}){
 
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
-      axios.delete(`http://localhost:3100/api/motos/eliminar/${id}`).then(()=>{
-        toast.success("Moto eliminado");
-        cerrarmodal();
-      }).catch((error)=>{
-        console.error("Error al eliminar: ",error);
-        toast.error("la Moto no fue eliminado");
-        cerrarmodal();
-      });
-    }
+    eliminarRecurso({
+      url: `http://localhost:3100/api/motos/eliminar/${id}`,
+      mensajeExito: "Moto eliminado",
+      mensajeError: "la Moto no fue eliminado",
+      cerrarmodal
+    });
+  }
 
   return <ConfirmarEliminar mensaje="seguro que quieres eliminar esta Moto" onConfirmar={eliminar_Rol} />;
 }
