@@ -7,7 +7,7 @@ import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
 
-function Motos() {
+function Motos() {  
   const rol = Number(localStorage.getItem("rol"));
   const [Motos, setMotos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -187,7 +187,7 @@ function Agregar({cerrarmodal}){
 
   return (
     <form>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-agregar-identidad">Numero_identidad</label>
         <select id="moto-agregar-identidad" value={Numero_identidad} className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} >

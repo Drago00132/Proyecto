@@ -132,12 +132,12 @@ function Iniciarsesion() {
                                         <form onSubmit={handleSubmit}>
                                             <div className="md-3">
                                                 <label className="form-label" htmlFor="login-usuario">Usuario</label>
-                                                <input id="login-usuario" className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
+                                                <input placeholder='usuario' id="login-usuario" className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
                                             </div>
 
                                             <div className="md-3">
                                                 <label className="form-label" htmlFor="login-contrasena">Contraseña</label>
-                                                <input id="login-contrasena" className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
+                                                <input placeholder='contraseña' id="login-contrasena" className="form-control" type="password" name="contrasena" value={form.contrasena} onChange={handleChange} />
                                             </div>
                                             
                                             <div className="d-grid gap-2" >

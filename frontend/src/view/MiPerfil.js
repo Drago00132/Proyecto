@@ -106,7 +106,7 @@ function MiPerfil() {
           <form onSubmit={guardar}>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-nombre">Nombre</label>
-              <input id="miperfil-nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' required />
+              <input id="miperfil-nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' />
             </div>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-apellido">Apellido</label>

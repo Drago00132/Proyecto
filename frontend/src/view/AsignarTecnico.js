@@ -88,9 +88,9 @@ function AsignarTecnico() {
         </div>
 
         <div className="mb-3">
-          <label className="form-label" htmlFor="asignar-historial">Historial sin técnico asignado</label>
+          <label className="form-label" htmlFor="asignar-historial">Servicio sin técnico asignado</label>
           <select id="asignar-historial" className="form-control" value={idHistorial} onChange={(e) => setIdHistorial(e.target.value)} disabled={historialesSinAsignar.length === 0}>
-            <option value="">Seleccione un historial</option>
+            <option value="">Seleccione un Servicio</option>
             {historialesSinAsignar.map((h) => (
               <option key={h.id_historial} value={h.id_historial}>
                 #{h.id_historial} — Placa {h.placa || "s/d"} — {h.nombre_cliente || ""} {h.apellido_cliente || ""}

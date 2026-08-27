@@ -77,13 +77,13 @@ function Historial() {
       <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
-          <h2 className="text-center mb-4">Historial de Reparaciones</h2>
+          <h2 className="text-center mb-4">historial</h2>
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
             {(rol === 1 || rol === 16 || rol === 17) && (
           <button type="button" className='btn btn-primary mb-3'
-          onClick={()=> setMostrarAgregar(true)}>Agregar Historial</button>
+          onClick={()=> setMostrarAgregar(true)}>Agregar historial</button>
             )}
 
             <div className="d-flex">
@@ -95,7 +95,7 @@ function Historial() {
             </div>
           </div>
 
-          {/* tabla de Historial*/}
+          {/* tabla de Servicio*/}
           <div className="table-responsive">
             <table className="table table-hover">
               <thead className="table-dark">
@@ -164,25 +164,25 @@ function Historial() {
       </div>
 
       {mostrarAgregar && (
-        <ModalOverlay titulo="Agregar Nuevo Historial" onClose={()=> setMostrarAgregar(false)}>
+        <ModalOverlay titulo="Agregar Nuevo Servicio" onClose={()=> setMostrarAgregar(false)}>
           <Agregar cerrarmodal={cerrarModal}/>
         </ModalOverlay>
       )}
 
       {mostrarEditar && (
-        <ModalOverlay titulo="Editar un Historial" onClose={()=> setMostrarEditar(false)}>
+        <ModalOverlay titulo="Editar un historial" onClose={()=> setMostrarEditar(false)}>
           <Editar cerrarmodal={cerrarModal} datos={HistorialSelecionado}/>
         </ModalOverlay>
       )}
 
       {mostrarEliminar && (
-        <ModalOverlay titulo="Eliminar a un Historial" onClose={()=> setmostrarEliminar(false)}>
+        <ModalOverlay titulo="Eliminar a un historial" onClose={()=> setmostrarEliminar(false)}>
           <Eliminar id={HistorialSelecionado} cerrarmodal={cerrarModal}/>
         </ModalOverlay>
       )}
 
       {mostrarDetalle && (
-        <ModalOverlay titulo="Detalles Completos del Historial" onClose={() => setMostrarDetalle(false)} large headerClassName="bg-info text-white">
+        <ModalOverlay titulo="Detalles Completos del historial" onClose={() => setMostrarDetalle(false)} large headerClassName="bg-info text-white">
           <Detalle datos={detalleSeleccionado} cerrarmodal={cerrarModal}/>
         </ModalOverlay>
       )}
@@ -190,8 +190,6 @@ function Historial() {
   );
 }
 
-// Carga de usuarios, técnicos y motos compartida entre Agregar y Editar
-// (antes estaba duplicada en ambas funciones).
 function useUsuariosTecnicoMotos() {
   const [Usuarios, setUsuarios] = useState([]);
   const [Motos, setMotos] = useState([]);
@@ -393,17 +391,17 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
         <small className="text-muted">La fecha de ingreso se registra automáticamente al guardar.</small>
       </div>
       {(rol === 1 || rol === 17) && (
-        <div className="mb-3">
-  <span className="form-label fw-bold d-block">Repuestos Utilizados</span>
-  {repuestosSeleccionados.map((item, index) => (
-    <div key={index} className="d-flex mb-2 align-items-center">
+      <div className="mb-3">
+        <span className="form-label fw-bold d-block">Repuestos Utilizados</span>
+        {repuestosSeleccionados.map((item, index) => (
+      <div key={index} className="d-flex mb-2 align-items-center">
       <select className="form-control me-2" value={item.id_repuestos} onChange={(e) => cambiarValoresRepuesto(index, 'id_repuestos', e.target.value)}>
         <option value="">Seleccione un repuesto...</option>
         {repuestosDisponibles.map((rep) => (
-          <option key={rep.id_repuestos} value={rep.id_repuestos}>
-            {rep.nombre_repuesto}
-          </option>
-        ))}
+        <option key={rep.id_repuestos} value={rep.id_repuestos}>
+          {rep.nombre_repuesto}
+        </option>
+      ))}
       </select>
 
       <input type="number" className="form-control me-2" style={{ width: '100px' }}min="1"value={item.cantidad} onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}placeholder="Cant."/>
@@ -573,13 +571,13 @@ function Editar({datos, cerrarmodal}){
     <form onSubmit={editar}>
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label" htmlFor="historial-editar-id">Id Historial</label>
+        <label className="form-label" htmlFor="historial-editar-id">Id historial</label>
         <input id="historial-editar-id" className="form-control" value={Id_historial} type='number' disabled></input>
       </div>
       )}
       {rol === 3 && (
         <div className="mb-3">
-          <label className="form-label" htmlFor="historial-editar-id-cliente">Id Historial</label>
+          <label className="form-label" htmlFor="historial-editar-id-cliente">Id historial</label>
           <input id="historial-editar-id-cliente" className="form-control" value={Id_historial_cliente} type='number' disabled></input>
         </div>
       )}
@@ -623,15 +621,14 @@ function Editar({datos, cerrarmodal}){
       </div>
       )}
       <div className="mb-3">
-        <label className="form-label" htmlFor="historial-editar-descripcion-problema">Descripción del problema</label>
-        <input
+        <label className="form-label" htmlFor="historial-editar-descripcion-problema" >Descripción del problema</label>
+        <input disabled={!clienteSeleccionado || !(rol === 1 || rol === 17)}
           id="historial-editar-descripcion-problema"
           className="form-control"
           value={Descripcion_prodlema}
           onChange={(event) => setDescripcion_prodlema(event.target.value)}
           type='text'
           required
-          disabled={rol === 16}
         />
         {rol === 16 && (
           <small className="text-muted">Como Recepcionista solo puedes gestionar la asignación de técnico; el diagnóstico lo edita Técnico o Administrador.</small>
@@ -746,7 +743,7 @@ function Eliminar ({id, cerrarmodal}){
     });
   }
 
-  return <ConfirmarEliminar mensaje="¿Seguro que quieres eliminar este Historial?" onConfirmar={eliminar_Historial} />;
+  return <ConfirmarEliminar mensaje="¿Seguro que quieres eliminar este Servicio?" onConfirmar={eliminar_Historial} />;
 }
 
 function Detalle({ datos, cerrarmodal }) {
