@@ -66,7 +66,7 @@ function Roles() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Roles</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
+              <input className="form-control me-2" type='text' placeholder='Buscar por ID de rol'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarRol}>Buscar</button>

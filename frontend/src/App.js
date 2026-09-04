@@ -14,7 +14,7 @@ import EntradaRepuestos from './view/EntradaRepuestos';
 import RecuperarContrasena from './view/RecuperarContrasena';
 import RestablecerContrasena from './view/RestablecerContrasena';
 import MiPerfil from './view/MiPerfil';
-import AsignarTecnico from './view/AsignarTecnico';
+import Auditoria from './view/auditoria';
 
 function App() {
 
@@ -35,6 +35,7 @@ function App() {
             <Route path='/panel/distribuidores' element={<Distribuidores/>}></Route>
             <Route path='/panel/entradaRepuestos' element={<EntradaRepuestos/>}></Route>
             <Route path='/panel/historial' element={<Historial/>}></Route>
+            <Route path='/panel/auditoria' element={<Auditoria/>}></Route>
            </Route>
       </Routes>
     </Router>  

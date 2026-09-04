@@ -49,8 +49,13 @@ exports.crearRelacion = async (req, res) => {
     }
 
     try {
-        const id = await rd_mo.create(req.body);
-        res.status(201).json({ id_repuesto_distribuidor: id, ...req.body });
+        // RF-28: unificado con asignarDistribuidor. Antes esta vía usaba rd_mo.create(),
+        // que no liberaba una asignación previa del repuesto y permitía que quedara
+        // vinculado a más de un distribuidor a la vez. Ahora usa siempre la misma
+        // lógica de "asignar" (única vía oficial), que garantiza que un repuesto
+        // tenga un único distribuidor en todo momento.
+        const id = await rd_mo.asignar(id_repuestos, id_distribuidor);
+        res.status(201).json({ id_repuesto_distribuidor: id, id_repuestos, id_distribuidor });
     } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: 'Ese repuesto ya está vinculado a ese distribuidor' });
         manejarError(error, res);

@@ -21,14 +21,25 @@ function Motos() {
   const [totalPaginas, setTotalPaginas] = useState(1);
   const limite = 5;
 
+  // RF-21: la búsqueda es por placa (texto, opcional), no por el id interno de
+  // la moto. Como el backend solo expone /motos/consultar/:id (búsqueda exacta
+  // por id), se trae el listado completo y se filtra por placa en el cliente.
   const buscarMotos = () =>{
-    axios.get(`http://localhost:3100/api/motos/consultar/${busqueda}`)
+    const token = localStorage.getItem("token");
+    axios.get(`http://localhost:3100/api/motos/listar?limit=999999`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
     .then((res) => {
-      setMotos(Array.isArray(res.data) ? res.data : [res.data]);
+      const todas = res.data.motos || [];
+      const filtradas = busqueda.trim() === ""
+        ? todas
+        : todas.filter((m) => (m.placa || "").toLowerCase().includes(busqueda.trim().toLowerCase()));
+      setMotos(filtradas);
       setTotalPaginas(1);
       setPaginaActual(1);
     }).catch((err)=>{
-      toast.error("Error en la busqueda",err);
+      console.error("Error en la busqueda", err);
+      toast.error("Error en la búsqueda");
     });
   };
 
@@ -73,7 +84,7 @@ function Motos() {
           onClick={()=> setMostrarAgregar(true)}>Agregar Motos</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
+              <input className="form-control me-2" type='text' placeholder='Buscar por placa'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarMotos}>Buscar</button>
@@ -86,9 +97,9 @@ function Motos() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                {rol === 1 && (<th scope="col">Id del la Motos</th>)}
-                {rol === 1 && (<th scope="col">Numero de identidad</th>)}
-                {rol === 1 && (<th scope="col">Nombre y apellido</th>)}
+                {(rol === 1 || rol === 17 || rol === 16) && (<th scope="col">Id del la Motos</th>)}
+                {(rol === 1 || rol === 17 || rol === 16) && (<th scope="col">Numero de identidad</th>)}
+                {(rol === 1 || rol === 17 || rol === 16) && (<th scope="col">Nombre y apellido</th>)}
                 <th scope="col">Marca de la moto</th>
                 <th scope="col">Modelo de la moto</th>
                 <th scope="col">Placa</th>
@@ -98,9 +109,9 @@ function Motos() {
             <tbody>
               {Motos.map((motos, index) => (
                 <tr key={index}>
-                  { rol === 1 && (<td>{motos.id_motos}</td>)}
-                  { rol === 1 && (<td>{motos.numero_identidad}</td>)}
-                  { rol === 1 && (<td>{motos.nombre}, {motos.apellido}</td>)}
+                  {(rol === 1 || rol === 17 || rol === 16) && (<td>{motos.id_motos}</td>)}
+                  {(rol === 1 || rol === 17 || rol === 16) && (<td>{motos.numero_identidad}</td>)}
+                  {(rol === 1 || rol === 17 || rol === 16) && (<td>{motos.nombre}, {motos.apellido}</td>)}
                   <td>{motos.marca_moto}</td>
                   <td>{motos.modelo_moto}</td>
                   <td>{motos.placa}</td>
@@ -187,7 +198,7 @@ function Agregar({cerrarmodal}){
 
   return (
     <form>
-      {(rol === 1 || rol === 17) && (
+      {(rol === 1 || rol === 17 || rol === 16) && (
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-agregar-identidad">Numero_identidad</label>
         <select id="moto-agregar-identidad" value={Numero_identidad} className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} >
@@ -257,13 +268,13 @@ function Editar({datos,cerrarmodal}){
   };
   return (
     <form>
-      {rol === 1 && (
+      {(rol === 1 || rol === 17 || rol === 16) && (
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-editar-id">Id Moto</label>
         <input id="moto-editar-id" className="form-control" value={Id_motos} onChange={(event) => {setId_motos(event.target.value);}} type='number' disabled></input>
       </div>
       )}
-      {rol === 1 && (
+      {(rol === 1 || rol === 17 || rol === 16) && (
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-editar-identidad">Numero_identidad</label>
         <input id="moto-editar-identidad" className="form-control" value={Numero_identidad} type='number' disabled />

@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { verificarToken, verificarRol } = require('../Middlewares/authMiddleware');
 
+router.get('/auditoria', verificarToken, verificarRol(1,17), repuesto.listarAuditoria);
 router.get('/listar', verificarToken, verificarRol(1,2,16,17), repuesto.listarRepuest);
 router.get('/buscar', verificarToken, verificarRol(1,2,16,17), repuesto.buscarPorNombre);
 router.get('/consultar/:id', verificarToken, verificarRol(1,2,16,17), repuesto.obtenerRepuestos);

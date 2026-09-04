@@ -1,2 +1,5 @@
 node_modules/
 .env
+backup_credenciales.cnf
+respaldo.bat
+uploads/

@@ -7,6 +7,8 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function Historial() {
   const rol = Number(localStorage.getItem("rol"));
@@ -77,13 +79,13 @@ function Historial() {
       <div className="container mt-5">
         <div className="card p-4">
           <ToastContainer position="top-right" autoClose={3000} />
-          <h2 className="text-center mb-4">historial</h2>
+          <h2 className="text-center mb-4">Servicio</h2>
 
           {/*agregar, buscar y resetear*/}
           <div className="d-flex justify-content-between align-items-center mb-3">
             {(rol === 1 || rol === 16 || rol === 17) && (
           <button type="button" className='btn btn-primary mb-3'
-          onClick={()=> setMostrarAgregar(true)}>Agregar historial</button>
+          onClick={()=> setMostrarAgregar(true)}>Agregar Servicio</button>
             )}
 
             <div className="d-flex">
@@ -143,7 +145,7 @@ function Historial() {
                         <button type="button" className="btn btn-success btn-sm me-1" onClick={()=>{
                           setHistorialSelecionado(historial);
                           setMostrarEditar(true);}}>
-                          Editar
+                          Actualizar
                         </button>
                       )}
                       {(rol === 1 || rol === 3 || rol === 17) && !(rol === 3 && historial.id_tecnico) && (
@@ -170,19 +172,19 @@ function Historial() {
       )}
 
       {mostrarEditar && (
-        <ModalOverlay titulo="Editar un historial" onClose={()=> setMostrarEditar(false)}>
+        <ModalOverlay titulo="Editar un Servicio" onClose={()=> setMostrarEditar(false)}>
           <Editar cerrarmodal={cerrarModal} datos={HistorialSelecionado}/>
         </ModalOverlay>
       )}
 
       {mostrarEliminar && (
-        <ModalOverlay titulo="Eliminar a un historial" onClose={()=> setmostrarEliminar(false)}>
+        <ModalOverlay titulo="Eliminar a un Servicio" onClose={()=> setmostrarEliminar(false)}>
           <Eliminar id={HistorialSelecionado} cerrarmodal={cerrarModal}/>
         </ModalOverlay>
       )}
 
       {mostrarDetalle && (
-        <ModalOverlay titulo="Detalles Completos del historial" onClose={() => setMostrarDetalle(false)} large headerClassName="bg-info text-white">
+        <ModalOverlay titulo="Detalles Completos del Servicio" onClose={() => setMostrarDetalle(false)} large headerClassName="bg-info text-white">
           <Detalle datos={detalleSeleccionado} cerrarmodal={cerrarModal}/>
         </ModalOverlay>
       )}
@@ -248,8 +250,8 @@ function Agregar({cerrarmodal}){
 
     const validarFormulario = () => {
 
-    if (Descripcion_prodlema.length< 10 || Descripcion_prodlema.length > 1000) {
-      toast.error("El problema debe tener entre 10 y 1000 caracteres.");
+    if (Descripcion_prodlema.length > 1000) {
+      toast.error("El problema no debe superar los 1000 caracteres.");
       return false;
     }
 
@@ -483,16 +485,10 @@ function Editar({datos, cerrarmodal}){
 
     const validarFormulario = () => {
 
-    if (Descripcion_prodlema.length< 10 || Descripcion_prodlema.length > 1000) {
-      toast.error("El problema debe tener entre 10 y 1000 caracteres.");
+    if (Descripcion_prodlema.length > 1000) {
+      toast.error("El problema no debe superar los 1000 caracteres.");
       return false;
     }
-
-    if (Descripcion_trabajo.length< 10 || Descripcion_trabajo.length > 1000) {
-      toast.error("El solucion debe tener entre 10 y 1000 caracteres.");
-      return false;
-    }
-
     return true;
     };
 
@@ -571,13 +567,13 @@ function Editar({datos, cerrarmodal}){
     <form onSubmit={editar}>
       {rol === 1 && (
       <div className="mb-3">
-        <label className="form-label" htmlFor="historial-editar-id">Id historial</label>
+        <label className="form-label" htmlFor="historial-editar-id">Id Servicio</label>
         <input id="historial-editar-id" className="form-control" value={Id_historial} type='number' disabled></input>
       </div>
       )}
       {rol === 3 && (
         <div className="mb-3">
-          <label className="form-label" htmlFor="historial-editar-id-cliente">Id historial</label>
+          <label className="form-label" htmlFor="historial-editar-id-cliente">Id Servicio</label>
           <input id="historial-editar-id-cliente" className="form-control" value={Id_historial_cliente} type='number' disabled></input>
         </div>
       )}
@@ -622,7 +618,7 @@ function Editar({datos, cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label" htmlFor="historial-editar-descripcion-problema" >Descripción del problema</label>
-        <input disabled={!clienteSeleccionado || !(rol === 1 || rol === 17)}
+        <input disabled={!clienteSeleccionado || (rol === 16 || rol === 2)}
           id="historial-editar-descripcion-problema"
           className="form-control"
           value={Descripcion_prodlema}
@@ -750,6 +746,136 @@ function Detalle({ datos, cerrarmodal }) {
   const rol = Number(localStorage.getItem("rol"));
   if (!datos) return null;
 
+  const descargarPDF = async () => {
+  const doc = new jsPDF();
+  const COL_IZQ = 14;
+  const COL_DER = 110;
+  const AZUL = [13, 110, 253]; // mismo azul de btn-primary
+
+  // --- Título ---
+  doc.setFontSize(18);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...AZUL);
+  doc.text(`Servicio #${datos.id_historial}`, 14, 20);
+  doc.setDrawColor(...AZUL);
+  doc.setLineWidth(0.8);
+  doc.line(14, 24, 196, 24);
+  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, 'normal');
+
+  let y = 34;
+
+  const etiqueta = (texto, x, yPos) => {
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(...AZUL);
+    doc.text(texto, x, yPos);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(undefined, 'normal');
+  };
+
+  // --- Fila 1: Moto | Estado (con "badge") ---
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'bold');
+  doc.text('Moto (Placa):', COL_IZQ, y);
+  doc.setFont(undefined, 'normal');
+  doc.text(`${datos.placa} (${datos.modelo_moto})`, COL_IZQ, y + 6);
+
+  doc.setFont(undefined, 'bold');
+  doc.text('Estado:', COL_DER, y);
+  doc.setFillColor(90, 98, 104); // gris, como el badge "bg-secondary"
+  const anchoBadge = doc.getTextWidth(datos.estado) + 8;
+  doc.roundedRect(COL_DER, y + 2, anchoBadge, 7, 2, 2, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont(undefined, 'normal');
+  doc.text(datos.estado, COL_DER + 4, y + 7);
+  doc.setTextColor(0, 0, 0);
+
+  y += 18;
+
+  // --- Fila 2: Técnico | Cliente ---
+  doc.setFont(undefined, 'bold');
+  doc.text('Técnico:', COL_IZQ, y);
+  doc.setFont(undefined, 'normal');
+  doc.text(`${datos.nombre_tecnico || ''} ${datos.apellido_tecnico || ''}`.trim() || '-', COL_IZQ, y + 6);
+
+  if ((rol === 1 || rol === 2) && datos.nombre_cliente) {
+    doc.setFont(undefined, 'bold');
+    doc.text('Cliente:', COL_DER, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${datos.nombre_cliente || ''} ${datos.apellido_cliente || ''}`.trim(), COL_DER, y + 6);
+  }
+
+  y += 18;
+
+  // --- Caja "Problema" (como el bg-light de tu modal) ---
+  const cajaTexto = (etiqueta, texto) => {
+    doc.setFont(undefined, 'bold');
+    doc.text(`${etiqueta}:`, COL_IZQ, y);
+    y += 6;
+    const lineas = doc.splitTextToSize(texto || '-', 175);
+    const alturaCaja = lineas.length * 5 + 6;
+    doc.setFillColor(248, 249, 250); // bg-light
+    doc.setDrawColor(222, 226, 230);
+    doc.roundedRect(COL_IZQ, y - 4, 182, alturaCaja, 1, 1, 'FD');
+    doc.setFont(undefined, 'normal');
+    doc.text(lineas, COL_IZQ + 3, y + 1);
+    y += alturaCaja + 6;
+  };
+
+  cajaTexto('Problema', datos.descripcion_prodlema);
+  cajaTexto('Solución', datos.descripcion_trabajo || 'Sin descripción');
+
+  // --- Fila: Fecha Inicio | Fecha Fin ---
+  doc.setFont(undefined, 'bold');
+  doc.text('Fecha Inicio:', COL_IZQ, y);
+  doc.setFont(undefined, 'normal');
+  doc.text(datos.fecha_inicio ? datos.fecha_inicio.split('T')[0] : 'N/A', COL_IZQ, y + 6);
+
+  doc.setFont(undefined, 'bold');
+  doc.text('Fecha Fin:', COL_DER, y);
+  doc.setFont(undefined, 'normal');
+  doc.text(datos.fecha_fin ? datos.fecha_fin.split('T')[0] : 'En proceso', COL_DER, y + 6);
+
+  y += 18;
+
+  // --- Tabla de repuestos ---
+  doc.setFont(undefined, 'bold');
+  doc.text('Repuestos Utilizados:', COL_IZQ, y);
+  y += 4;
+
+  if (datos.repuestos && datos.repuestos.length > 0) {
+    autoTable(doc, {
+      startY: y,
+      head: [['Repuesto', 'Cantidad']],
+      body: datos.repuestos.map((rep) => [rep.nombre_repuesto || rep.nombre, rep.cantidad]),
+      theme: 'grid',
+      headStyles: { fillColor: [13, 110, 253] }, // azul, como btn-primary
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  } else {
+    doc.setFont(undefined, 'normal');
+    doc.text('Ningún repuesto utilizado.', COL_IZQ, y + 6);
+    y += 16;
+  }
+
+  // --- Foto de evidencia (si existe) ---
+  if (datos.fotos) {
+    try {
+      const base64 = await cargarImagenComoBase64(`http://localhost:3100/uploads/${datos.fotos}`);
+      doc.setFont(undefined, 'bold');
+      doc.text('Evidencia Fotográfica:', COL_IZQ, y);
+      y += 6;
+      doc.addImage(base64, 'JPEG', COL_IZQ, y, 80, 60);
+    } catch (error) {
+      console.error('No se pudo cargar la foto para el PDF:', error);
+      doc.setFont(undefined, 'italic');
+      doc.text('(No se pudo cargar la foto de evidencia)', COL_IZQ, y);
+    }
+  }
+
+  doc.save(`servicio-${datos.id_historial}.pdf`);
+};
+
   return (
     <div className="container">
       <div className="row mb-3">
@@ -823,11 +949,31 @@ function Detalle({ datos, cerrarmodal }) {
       )}
 
       <div className="text-end">
-        <button type="button" className="btn btn-secondary" onClick={cerrarmodal}>Cerrar Detalles</button>
-      </div>
+      {datos.estado === 'Finalizado' && (
+        <button type="button" className="btn btn-outline-primary me-2" onClick={descargarPDF}>Descargar PDF</button>
+      )}
+      <button type="button" className="btn btn-secondary" onClick={cerrarmodal}>Cerrar Detalles</button>
+    </div>
 
     </div>
   );
 }
 
-export default Historial;
+const cargarImagenComoBase64 = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg'));
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
+export { Agregar as AgregarHistorial };
+export default Historial; 

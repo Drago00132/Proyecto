@@ -182,8 +182,13 @@ function Editar({datos,cerrarmodal}){
   const editar= (event)=>{
     event.preventDefault();
 
-    if (Numero_identidad.trim() === "" || Reparaciones_asignadas.trim() === "") {
+    if (Numero_identidad.trim() === "" || String(Reparaciones_asignadas).trim() === "") {
       toast.error("Faltan datos obligatorio");
+      return;
+    }
+
+    if (isNaN(Number(Reparaciones_asignadas))) {
+      toast.error("Reparaciones asignadas debe ser un número");
       return;
     }
 
@@ -208,7 +213,7 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="tecnico-editar-reparaciones">Reparaciones asignadas</label>
-        <input id="tecnico-editar-reparaciones" className="form-control" value={Reparaciones_asignadas} onChange={(event) => {setReparaciones_asignadas(event.target.value);}} type='text'></input>
+        <input id="tecnico-editar-reparaciones" className="form-control" value={Reparaciones_asignadas} onChange={(event) => {setReparaciones_asignadas(event.target.value);}} type='number'></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

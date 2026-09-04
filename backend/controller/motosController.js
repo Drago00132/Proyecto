@@ -1,4 +1,5 @@
 const motos_mo = require('../model/motosModelo');
+const historial_mo = require('../model/historialModelo');
 const manejarError = require('../utils/manejarError');
 
 exports.listarMotos = async (req, res) => {
@@ -74,6 +75,14 @@ exports.eliminarMotos = async (req, res) => {
     try {
         const existe = await motos_mo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Moto no encontrada' });
+
+        // RF-23: no se permite eliminar una moto con historial de servicio activo
+        // asociado, igual que HistorialController impide un segundo historial
+        // activo para la misma moto (RN-010).
+        const tieneHistorialActivo = await historial_mo.tieneHistorialActivo(req.params.id);
+        if (tieneHistorialActivo) {
+            return res.status(409).json({ message: 'No se puede eliminar: esta moto tiene un historial de servicio activo.' });
+        }
 
         await motos_mo.delete(req.params.id);
         res.status(200).json({ message: 'Moto eliminada correctamente' });

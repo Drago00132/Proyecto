@@ -7,6 +7,11 @@ import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
 
+// RF-5: el filtro de búsqueda debe aceptar nombre, apellido, rol o documento
+// (no solo el numero_identidad exacto). El listado no trae el nombre del rol,
+// solo id_rol, así que se resuelve con el mismo mapa usado en la app móvil.
+const NOMBRES_ROLES = { 1: "Administrador", 2: "Técnico", 3: "Cliente", 16: "Recepcionista", 17: "Super Administrador" };
+
 function Usuario() {
   const [usuarios, setUsuarios] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -21,13 +26,31 @@ function Usuario() {
   const limite = 5;
 
   const buscarUsuario = () =>{
-    axios.get(`http://localhost:3100/api/usuarios/consultar/${busqueda}`)
+    if (busqueda.trim() === "") {
+      obtenerUsuarios();
+      return;
+    }
+
+    axios.get(`http://localhost:3100/api/usuarios/listar?limit=999999`)
     .then((res) => {
-      setUsuarios(Array.isArray(res.data) ? res.data : [res.data]);
+      const texto = busqueda.trim().toLowerCase();
+      const todos = res.data.usuarios || [];
+      const filtrados = todos.filter((u) =>
+        (u.nombre || "").toLowerCase().includes(texto) ||
+        (u.apellido || "").toLowerCase().includes(texto) ||
+        String(u.numero_identidad ?? "").toLowerCase().includes(texto) ||
+        (NOMBRES_ROLES[Number(u.id_rol)] || "").toLowerCase().includes(texto)
+      );
+
+      if (filtrados.length === 0) {
+        toast.error("No se encontraron usuarios registrados.");
+      }
+      setUsuarios(filtrados);
       setTotalPaginas(1);
       setPaginaActual(1);
     }).catch((err)=>{
       console.error("Error en la busqueda",err);
+      toast.error("No se pudo cargar la información. Intente más tarde.");
     });
   };
 
@@ -69,7 +92,7 @@ function Usuario() {
           onClick={()=> setMostrarAgregar(true)}>Agregar usuarios</button>
 
             <div className="d-flex">
-              <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
+              <input className="form-control me-2" type='text' placeholder='Buscar por nombre, apellido, rol o documento'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
               <button type="button" className="btn btn-outline-secondary" onClick={buscarUsuario}>Buscar</button>
@@ -157,13 +180,16 @@ function validarUsuario({ Fecha_nacimiento, Contrasena, Numero_identidad, Numero
     return false;
   }
 
-  if (Numero_identidad.length < 10 || Numero_identidad.length > 10) {
-    toast.error("El numero de identidad debe tener 10 caracteres.");
+  // RF-9: numero de identidad obligatorio, solo dígitos, exactamente 10 caracteres.
+  if (!/^\d{10}$/.test(Numero_identidad)) {
+    toast.error("El numero de identidad debe tener exactamente 10 dígitos.");
     return false;
   }
 
-  if (Numero_celular.length < 10 || Numero_celular.length > 10) {
-    toast.error("El numero de celular debe tener 10 caracteres.");
+  // RF-9: numero celular es opcional (Obligatorio: No); si se diligencia, solo
+  // dígitos y exactamente 10 caracteres. Antes se exigía siempre, incluso vacío.
+  if (Numero_celular.trim() !== "" && !/^\d{10}$/.test(Numero_celular)) {
+    toast.error("El numero de celular debe tener exactamente 10 dígitos.");
     return false;
   }
 
@@ -174,14 +200,18 @@ function validarUsuario({ Fecha_nacimiento, Contrasena, Numero_identidad, Numero
     return false;
   }
 
-  if (!soloLetras.test(Apellido)) {
+  // RF-9: apellido es opcional (Obligatorio: No); antes la regex rechazaba el
+  // apellido vacío porque exigía al menos un carácter.
+  if (Apellido.trim() !== "" && !soloLetras.test(Apellido)) {
     toast.error("El apellido no debe contener números ni caracteres especiales.");
     return false;
   }
 
-  const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.(com|es)$/;
+  // RF-9/RF-1/RF-4: dominios permitidos son exactamente gmail.com, hotmail.com
+  // y outlook.es (antes se aceptaban también gmail.es, hotmail.es y outlook.com).
+  const regexCorreo = /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.es)$/;
   if (!regexCorreo.test(Correo_electronico)) {
-    toast.error("El correo debe ser de @gmail.com, @hotmail.com, @outlook.com o sus versiones .es");
+    toast.error("El correo debe ser de @gmail.com, @hotmail.com o @outlook.es");
     return false;
   }
   return true;

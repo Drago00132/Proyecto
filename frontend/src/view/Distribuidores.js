@@ -100,7 +100,7 @@ function Distribuidores() {
                     <button type="button" className="btn btn-info" onClick={() => {
                       setDistribuidorSelecionado(distribuidor);
                       setMostrarGestionar(true);
-                    }}>Gestionar repuestos</button>
+                    }}>Repuestos del distribuidor</button>
                     <button type="button" className="btn btn-danger" onClick={() => {
                       setDistribuidorSelecionado(distribuidor.id_distribuidor);
                       setmostrarEliminar(true);

@@ -134,33 +134,15 @@ function Agregar({cerrarmodal}){
 
   const [Nombre_repuesto, setNombre_repuesto] = useState("");
   const [Cantidad, setCantidad] = useState("");
-  const [Id_distribuidor, setId_distribuidor] = useState("");
-  const [distribuidores, setDistribuidores] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
-      .then((res) => setDistribuidores(res.data.distribuidores || []))
-      .catch((error) => console.error("Error al mostrar distribuidores: ", error));
-  }, []);
-
+  // RF-10: las Entradas del RF solo son "Nombre del repuesto" y "Cantidad" (obligatorios).
+  // La asociación con un distribuidor no es parte de este RF — se gestiona aparte,
+  // desde "Repuestos del distribuidor" en Distribuidores.js (RF-28).
   const add = (event) =>{
     event.preventDefault();
 
-    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "" || Id_distribuidor === "") {
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
       toast.error("Faltan datos obligatorio");
-      return;
-    }
-
-    const validarFormulario = () => {
-      const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-      if (!soloLetras.test(Nombre_repuesto)) {
-        toast.error("El nombre no debe contener números ni caracteres especiales.");
-        return false;
-      }
-      return true;
-    };
-
-    if (!validarFormulario()) {
       return;
     }
 
@@ -168,20 +150,13 @@ function Agregar({cerrarmodal}){
       nombre_repuesto:Nombre_repuesto,
       cantidad:Cantidad
     })
-    .then((res)=>{
-      const id_repuestos = res.data.id_repuestos;
-      return axios.post("http://localhost:3100/api/repuestoDistribuidor/asignar", {
-        id_repuestos,
-        id_distribuidor: Id_distribuidor
-      });
-    })
     .then(()=>{
       cerrarmodal();
       toast.success("reguistro Exitoso");
     })
     .catch((error)=>{
       console.error("Error al agregar: ", error);
-      toast.error("No se pudo completar el registro");
+      toast.error(error.response?.data?.message || "No se pudo completar el registro");
     });
   }
 
@@ -196,15 +171,6 @@ function Agregar({cerrarmodal}){
         <label className="form-label" htmlFor="repuesto-agregar-cantidad">Cantidad</label>
         <input id="repuesto-agregar-cantidad" className="form-control" onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
       </div>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="repuesto-agregar-distribuidor">Distribuidor</label>
-        <select id="repuesto-agregar-distribuidor" className="form-control" value={Id_distribuidor} onChange={(event) => {setId_distribuidor(event.target.value);}}>
-          <option value=''>seleccione un distribuidor</option>
-          {distribuidores.map((d) => (
-            <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
-          ))}
-        </select>
-      </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
@@ -215,33 +181,22 @@ function Editar({datos,cerrarmodal}){
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Nombre_repuesto, setNombre_repuesto] = useState("");
   const [Cantidad, setCantidad] = useState("");
-  const [Id_distribuidor, setId_distribuidor] = useState("");
-  const [distribuidores, setDistribuidores] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
-      .then((res) => setDistribuidores(res.data.distribuidores || []))
-      .catch((error) => console.error("Error al mostrar distribuidores: ", error));
-  }, []);
-
+  // RF-12 (Editar repuesto): las Entradas del RF solo son "Nombre del repuesto"
+  // y "Cantidad" — el distribuidor tampoco es parte de este RF, se gestiona
+  // aparte desde Distribuidores.js (RF-28).
   useEffect (()=>{
     if(datos){
       setId_repuestos(datos.id_repuestos || "");
       setNombre_repuesto(datos.nombre_repuesto || "");
       setCantidad(datos.cantidad || "");
-
-      axios.get(`http://localhost:3100/api/repuestoDistribuidor/porRepuesto/${datos.id_repuestos}`)
-        .then((res) => {
-          setId_distribuidor(res.data ? String(res.data.id_distribuidor) : "");
-        })
-        .catch((error) => console.error("Error al obtener distribuidor asignado: ", error));
     }
   },[datos]);
 
   const editar= (event)=>{
     event.preventDefault();
 
-    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "" || Id_distribuidor === "") {
+    if (Nombre_repuesto.trim() === "" || Cantidad.trim() === "") {
       toast.error("Faltan datos obligatorio");
       return;
     }
@@ -252,18 +207,12 @@ function Editar({datos,cerrarmodal}){
       cantidad: Cantidad
     })
     .then(()=>{
-      return axios.post("http://localhost:3100/api/repuestoDistribuidor/asignar", {
-        id_repuestos: Id_repuestos,
-        id_distribuidor: Id_distribuidor
-      });
-    })
-    .then(()=>{
       cerrarmodal();
       toast.success("Repuesto actualizado correctamente");
     })
     .catch((error)=>{
       console.error("Error al actualizar: ", error);
-      toast.error("No se pudo completar la actualización");
+      toast.error(error.response?.data?.message || "No se pudo completar la actualización");
     });
   };
   return (
@@ -279,15 +228,6 @@ function Editar({datos,cerrarmodal}){
       <div className="mb-3">
         <label className="form-label" htmlFor="repuesto-editar-cantidad">Cantidad</label>
         <input id="repuesto-editar-cantidad" className="form-control" value={Cantidad} onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
-      </div>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="repuesto-editar-distribuidor">Distribuidor</label>
-        <select id="repuesto-editar-distribuidor" className="form-control" value={Id_distribuidor} onChange={(event) => {setId_distribuidor(event.target.value);}}>
-          <option value=''>seleccione un distribuidor</option>
-          {distribuidores.map((d) => (
-            <option key={d.id_distribuidor} value={d.id_distribuidor}>{d.nombre_distribuidor}</option>
-          ))}
-        </select>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

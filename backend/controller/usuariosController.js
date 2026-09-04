@@ -49,6 +49,15 @@ exports.crearUsuario = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
+    // RNF-5: la política de longitud de contraseña (8-20 caracteres) antes solo se
+    // validaba en el cliente (registar.js, Usuarios.js) y en el flujo de
+    // restablecerContrasena. Se aplica aquí también, en el propio punto de creación
+    // de la cuenta, para que quede garantizada sin importar el cliente que la use
+    // (web, móvil o una llamada directa a la API).
+    if (contrasena.length < 8 || contrasena.length > 20) {
+        return res.status(400).json({ message: 'La contraseña debe tener entre 8 y 20 caracteres' });
+    }
+
     let rolFinal = Number(id_rol);
     if (!req.usuario) {
         rolFinal = 3;

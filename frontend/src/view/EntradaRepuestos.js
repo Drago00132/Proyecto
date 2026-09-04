@@ -58,8 +58,6 @@ function EntradaRepuestos() {
           <h2 className="text-center mb-4">Entrada de Repuestos</h2>
 
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <button type="button" className='btn btn-primary mb-3'
-              onClick={() => setMostrarAgregar(true)}>Agregar Entrada</button>
 
             <div className="d-flex">
               <input className="form-control me-2" type='text' placeholder='Buscar por id'
@@ -127,13 +125,15 @@ function EntradaRepuestos() {
   );
 }
 
-// Carga de listas de repuestos y distribuidores compartida entre Agregar y Editar
-// (antes estaba duplicada en ambas funciones).
 function useRepuestosYDistribuidores() {
   const [repuestos, setRepuestos] = useState([]);
   const [distribuidores, setDistribuidores] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const config = { headers: { 'Authorization': `Bearer ${token}` } };
+
     axios.get('http://localhost:3100/api/repuestos/listar?limit=999999')
       .then((res) => setRepuestos(res.data.repuesto || []))
       .catch((error) => console.error("Error al mostrar repuestos: ", error));
@@ -141,9 +141,15 @@ function useRepuestosYDistribuidores() {
     axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
       .then((res) => setDistribuidores(res.data.distribuidores || []))
       .catch((error) => console.error("Error al mostrar distribuidores: ", error));
+
+    // RF-29/RF-31: el usuario que registra la entrada se selecciona de una lista,
+    // no se toma automáticamente de la sesión.
+    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
+      .then((res) => setUsuarios(res.data.usuarios || res.data || []))
+      .catch((error) => console.error("Error al mostrar usuarios: ", error));
   }, []);
 
-  return { repuestos, distribuidores };
+  return { repuestos, distribuidores, usuarios };
 }
 
 function Agregar({ cerrarmodal }) {
@@ -151,10 +157,10 @@ function Agregar({ cerrarmodal }) {
   const [Cantidad_ingresada, setCantidad_ingresada] = useState("");
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Id_distribuidor, setId_distribuidor] = useState("");
-  // El usuario que registra la entrada siempre es quien tiene la sesión abierta;
-  // ya no se elige de una lista.
-  const Numero_identidad = localStorage.getItem("numero_identidad") || "";
-  const { repuestos, distribuidores } = useRepuestosYDistribuidores();
+  // RF-29: el usuario responsable se selecciona de una lista, como los demás
+  // campos; se preselecciona el usuario de la sesión activa por comodidad.
+  const [Numero_identidad, setNumero_identidad] = useState(localStorage.getItem("numero_identidad") || "");
+  const { repuestos, distribuidores, usuarios } = useRepuestosYDistribuidores();
 
   const add = (event) => {
     event.preventDefault();
@@ -209,6 +215,15 @@ function Agregar({ cerrarmodal }) {
           ))}
         </select>
       </div>
+      <div className="mb-3">
+        <label className="form-label" htmlFor="entrada-agregar-usuario">Usuario responsable</label>
+        <select id="entrada-agregar-usuario" value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
+          <option value=''>seleccione un usuario</option>
+          {usuarios.map((u) => (
+            <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido} ({u.numero_identidad})</option>
+          ))}
+        </select>
+      </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
@@ -221,8 +236,7 @@ function Editar({ datos, cerrarmodal }) {
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Id_distribuidor, setId_distribuidor] = useState("");
   const [Numero_identidad, setNumero_identidad] = useState("");
-  const [usuarioNombreMostrado, setUsuarioNombreMostrado] = useState("");
-  const { repuestos, distribuidores } = useRepuestosYDistribuidores();
+  const { repuestos, distribuidores, usuarios } = useRepuestosYDistribuidores();
 
   useEffect(() => {
     if (datos) {
@@ -232,7 +246,6 @@ function Editar({ datos, cerrarmodal }) {
       setId_repuestos(String(datos.id_repuestos || ""));
       setId_distribuidor(String(datos.id_distribuidor || ""));
       setNumero_identidad(String(datos.numero_identidad || ""));
-      setUsuarioNombreMostrado(`${datos.nombre || ""} ${datos.apellido || ""}`.trim() || "—");
     }
   }, [datos]);
 
@@ -292,8 +305,13 @@ function Editar({ datos, cerrarmodal }) {
         </select>
       </div>
       <div className="mb-3">
-        <label className="form-label" htmlFor="entrada-editar-registrado-por">Registrado por</label>
-        <input id="entrada-editar-registrado-por" className="form-control" value={usuarioNombreMostrado} type='text' disabled></input>
+        <label className="form-label" htmlFor="entrada-editar-usuario">Usuario responsable</label>
+        <select id="entrada-editar-usuario" value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
+          <option value=''>seleccione un usuario</option>
+          {usuarios.map((u) => (
+            <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido} ({u.numero_identidad})</option>
+          ))}
+        </select>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

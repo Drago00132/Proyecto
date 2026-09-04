@@ -1,0 +1,183 @@
+/* ============================================================
+   RNF-1: Paleta de colores institucional de Sigat
+   (Sistema de Gestión Automotriz — taller de motocicletas).
+
+   Observación original de la auditoría: "Actualmente la interfaz usa
+   las clases por defecto de Bootstrap (btn-primary, btn-danger,
+   btn-success, btn-info), sin una paleta de colores propia definida."
+
+   No existe ningún documento del proyecto que defina los colores
+   institucionales reales, así que esta es una paleta propuesta,
+   pensada para un sistema de gestión de taller de motos (azul acero
+   institucional + acento naranja "mecánico"). Es fácilmente
+   ajustable más adelante: basta con cambiar los valores hexadecimales
+   de las variables de :root, todo el resto del archivo las referencia.
+
+   Se aplica sobre las clases de Bootstrap (mismos selectores, mismo
+   nombre de clase) para que toda la interfaz existente (botones,
+   menús, tablas, campos) quede cubierta sin tener que tocar cada
+   pantalla una por una. Se importa después de bootstrap.min.css en
+   index.js para tener prioridad en la cascada. */
+
+:root {
+  --sigat-primary: #1F4E79;
+  --sigat-primary-dark: #163A5C;
+  --sigat-primary-darker: #0F2A42;
+  --sigat-secondary: #FF6B35;
+  --sigat-secondary-dark: #E2551F;
+  --sigat-success: #2E7D32;
+  --sigat-success-dark: #245F27;
+  --sigat-danger: #C62828;
+  --sigat-danger-dark: #A31E1E;
+  --sigat-info: #0288D1;
+  --sigat-info-dark: #01679F;
+  --sigat-warning: #F9A825;
+  --sigat-warning-dark: #C67F0A;
+  --sigat-light: #F5F7FA;
+  --sigat-dark: #16232E;
+}
+
+body {
+  background-color: var(--sigat-light);
+}
+
+/* --- Botones --- */
+.btn-primary {
+  background-color: var(--sigat-primary) !important;
+  border-color: var(--sigat-primary) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--sigat-primary-dark) !important;
+  border-color: var(--sigat-primary-dark) !important;
+}
+
+.btn-secondary {
+  background-color: var(--sigat-secondary) !important;
+  border-color: var(--sigat-secondary) !important;
+  color: #fff !important;
+}
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: var(--sigat-secondary-dark) !important;
+  border-color: var(--sigat-secondary-dark) !important;
+}
+
+.btn-success {
+  background-color: var(--sigat-success) !important;
+  border-color: var(--sigat-success) !important;
+  color: #fff !important;
+}
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: var(--sigat-success-dark) !important;
+  border-color: var(--sigat-success-dark) !important;
+}
+
+.btn-danger {
+  background-color: var(--sigat-danger) !important;
+  border-color: var(--sigat-danger) !important;
+  color: #fff !important;
+}
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active {
+  background-color: var(--sigat-danger-dark) !important;
+  border-color: var(--sigat-danger-dark) !important;
+}
+
+.btn-info {
+  background-color: var(--sigat-info) !important;
+  border-color: var(--sigat-info) !important;
+  color: #fff !important;
+}
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active {
+  background-color: var(--sigat-info-dark) !important;
+  border-color: var(--sigat-info-dark) !important;
+}
+
+.btn-outline-primary {
+  color: var(--sigat-primary) !important;
+  border-color: var(--sigat-primary) !important;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--sigat-primary) !important;
+  border-color: var(--sigat-primary) !important;
+  color: #fff !important;
+}
+
+.btn-outline-secondary {
+  color: var(--sigat-primary-dark) !important;
+  border-color: var(--sigat-primary-dark) !important;
+}
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:active {
+  background-color: var(--sigat-primary-dark) !important;
+  border-color: var(--sigat-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-link {
+  color: var(--sigat-primary) !important;
+}
+
+/* --- Fondos y texto de utilidades de Bootstrap --- */
+.bg-primary { background-color: var(--sigat-primary) !important; }
+.bg-secondary { background-color: var(--sigat-secondary) !important; }
+.bg-info { background-color: var(--sigat-info) !important; }
+.bg-success { background-color: var(--sigat-success) !important; }
+.bg-danger { background-color: var(--sigat-danger) !important; }
+.bg-warning { background-color: var(--sigat-warning) !important; }
+.bg-light { background-color: var(--sigat-light) !important; }
+.bg-dark { background-color: var(--sigat-dark) !important; }
+
+.text-primary { color: var(--sigat-primary) !important; }
+.text-danger { color: var(--sigat-danger) !important; }
+.text-success { color: var(--sigat-success) !important; }
+
+/* --- Tablas --- */
+.table-dark,
+.table-dark > :not(caption) > * > * {
+  background-color: var(--sigat-primary-dark) !important;
+  color: #fff !important;
+  border-color: var(--sigat-primary-darker) !important;
+}
+
+/* --- Campos de formulario: reemplaza el foco azul por defecto de Bootstrap --- */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sigat-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(31, 78, 121, 0.25) !important;
+}
+
+/* --- Menú lateral (Dashboard.js) --- */
+.sigat-sidebar {
+  background-color: var(--sigat-light) !important;
+  border-right: 1px solid rgba(22, 35, 46, 0.1);
+}
+.sigat-sidebar h2 {
+  color: var(--sigat-primary);
+}
+.sigat-sidebar .nav-link {
+  transition: color 0.15s ease-in-out;
+}
+.sigat-sidebar .nav-link:hover {
+  color: var(--sigat-primary) !important;
+}
+
+/* --- Enlaces genéricos --- */
+a {
+  color: var(--sigat-primary);
+}
+a:hover {
+  color: var(--sigat-primary-dark);
+}
