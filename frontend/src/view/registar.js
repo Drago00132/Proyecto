@@ -105,7 +105,7 @@ function Registrarse(){
       localStorage.setItem("numero_identidad", res.data.numero_identidad);
 
       toast.success(res.data.message || "Registro exitoso");
-      navigate("/panel");
+      navigate("/");
     })
     .catch((error) => {
       console.error("Error al registrarse: ", error);

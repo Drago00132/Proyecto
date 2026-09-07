@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const manejarError = require('../utils/manejarError');
 
 const ROLES_ASIGNABLES = {
-    17: [1, 2, 3, 16, 17], 
+    17: [1, 2, 3, 16], 
     1: [2, 3, 16],
     16: [3], 
 };
@@ -49,11 +49,6 @@ exports.crearUsuario = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
-    // RNF-5: la política de longitud de contraseña (8-20 caracteres) antes solo se
-    // validaba en el cliente (registar.js, Usuarios.js) y en el flujo de
-    // restablecerContrasena. Se aplica aquí también, en el propio punto de creación
-    // de la cuenta, para que quede garantizada sin importar el cliente que la use
-    // (web, móvil o una llamada directa a la API).
     if (contrasena.length < 8 || contrasena.length > 20) {
         return res.status(400).json({ message: 'La contraseña debe tener entre 8 y 20 caracteres' });
     }
@@ -62,6 +57,9 @@ exports.crearUsuario = async (req, res) => {
     if (!req.usuario) {
         rolFinal = 3;
     } else {
+        if (req.usuario.rol === 17 && rolFinal === 17) {
+            return res.status(403).json({ message: 'Un super administrador no puede crear otro super administrador.' });
+        }
         const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
         if (!idsPermitidos.includes(rolFinal)) {
             return res.status(403).json({ message: 'No tienes permiso para asignar ese rol.' });
@@ -71,8 +69,6 @@ exports.crearUsuario = async (req, res) => {
     try {
         const id = await usuario_modelo.create({ ...req.body, id_rol: rolFinal });
 
-        // RF-M1.1: si es registro público (sin token), el usuario queda autenticado
-        // de una vez, igual que si hubiera iniciado sesión, para poder redirigirlo al panel.
         if (!req.usuario) {
             const token = jwt.sign(
                 { id, nombre, rol: rolFinal },
@@ -81,7 +77,7 @@ exports.crearUsuario = async (req, res) => {
             );
             return res.status(201).json({
                 message: 'Usuario registrado exitosamente',
-                numero_identidad: id,
+                numero_identidad,
                 rol: rolFinal,
                 token
             });
@@ -101,14 +97,30 @@ exports.actualizarUsuario = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos obligatorios deben estar presentes' });
     }
 
-    const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
-    if (!idsPermitidos.includes(Number(id_rol))) {
-        return res.status(403).json({ message: 'No tienes permiso para asignar o gestionar ese rol.' });
-    }
-
     try {
         const existe = await usuario_modelo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
+        const rolActual = Number(existe.id_rol);
+        const rolNuevo = Number(id_rol);
+
+        // No se puede editar (ni cambiar de rol) a un usuario cuyo rol actual sea igual o
+        // superior al del que edita (según lo que ese rol tiene permitido asignar/gestionar).
+        if (!idsPermitidos.includes(rolActual)) {
+            return res.status(403).json({ message: 'No tienes permiso para editar un usuario con ese rol.' });
+        }
+
+        // No se puede asignar un rol que el que edita no tiene permitido asignar.
+        if (!idsPermitidos.includes(rolNuevo)) {
+            return res.status(403).json({ message: 'No tienes permiso para asignar ese rol.' });
+        }
+
+        // Un super administrador no puede convertir a otro usuario en super administrador
+        // (solo puede editar a los que ya lo eran).
+        if (req.usuario.rol === 17 && rolNuevo === 17 && rolActual !== 17) {
+            return res.status(403).json({ message: 'Un super administrador no puede crear otro super administrador.' });
+        }
 
         await usuario_modelo.update(req.params.id, req.body);
         res.status(200).json({ message: 'Usuario actualizado correctamente' });
@@ -134,6 +146,13 @@ exports.eliminarUsuario = async (req, res) => {
     try {
         const existe = await usuario_modelo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        // No se puede eliminar a un usuario cuyo rol actual sea igual o superior al del
+        // que elimina (misma tabla ROLES_ASIGNABLES usada para crear/editar usuarios).
+        const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
+        if (!idsPermitidos.includes(Number(existe.id_rol))) {
+            return res.status(403).json({ message: 'No tienes permiso para eliminar un usuario con ese rol.' });
+        }
 
         await usuario_modelo.delete(req.params.id);
         res.status(200).json({ message: 'Usuario eliminado correctamente' });

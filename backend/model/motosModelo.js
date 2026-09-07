@@ -17,7 +17,10 @@ const moto = {
         `;
         
         const params = [];
-        if (numero_identidad) {
+        // Se compara contra null/undefined en vez de usar el valor como booleano:
+        // "if (numero_identidad)" trataba un id 0 como "sin filtro" y devolvía todas
+        // las motos (ver corrección en usuariosController.crearUsuario).
+        if (numero_identidad !== null && numero_identidad !== undefined) {
             query += ` WHERE m.numero_identidad = ?`;
             params.push(numero_identidad);
         }
