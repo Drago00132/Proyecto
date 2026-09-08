@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../axiosConfig';
 
 function RecuperarContrasena() {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ function RecuperarContrasena() {
 
         setEnviando(true);
         try {
-            const response = await fetch("/api/login/solicitar-recuperacion", {
+            const response = await fetch(`${API_BASE_URL}/api/login/solicitar-recuperacion`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ correo_electronico: correo })

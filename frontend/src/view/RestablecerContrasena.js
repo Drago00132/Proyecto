@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../axiosConfig';
 
 function RestablecerContrasena() {
     const navigate = useNavigate();
@@ -41,7 +42,7 @@ function RestablecerContrasena() {
 
         setEnviando(true);
         try {
-            const response = await fetch("/api/login/restablecer-contrasena", {
+            const response = await fetch(`${API_BASE_URL}/api/login/restablecer-contrasena`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
