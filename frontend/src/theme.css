@@ -220,25 +220,20 @@ a:hover {
   display: none;
 }
 
-.sigat-boton-descarga {
-  left: 250px;
-}
-
-/* Botones de acción (Nuevo servicio / Asignar técnico / Registrar entrada):
-   flotan fijos sobre toda la pantalla, igual que "Descargar app móvil", y
-   comparten su mismo lado izquierdo (250px en PC / 20px en móvil) en vez
-   de ir pegados a la derecha, que es donde chocaban con el aviso "Powered
-   by Netlify" del plan gratuito. Se apilan verticalmente arriba del botón
-   de descarga: "-baja" (Asignar técnico / Nuevo servicio) primero, luego
-   "-alta" (Registrar entrada) más arriba. */
-.sigat-boton-flotante {
-  left: 250px;
-}
-.sigat-boton-flotante-baja {
-  bottom: 90px;
-}
-.sigat-boton-flotante-alta {
-  bottom: 150px;
+/* Barra de acciones (Descargar app móvil, Nuevo servicio, Asignar
+   técnico, Registrar entrada): fija abajo a la izquierda, siempre visible
+   al hacer scroll (como venía siendo "Descargar app móvil"), agrupada en
+   una sola fila como en el boceto. Se deja libre la esquina inferior
+   derecha donde Netlify pone su aviso "Powered by Netlify". */
+.sigat-barra-acciones {
+  position: fixed;
+  left: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: calc(100vw - 190px);
+  z-index: 1050;
 }
 
 /* --- Barra de "Agregar X" + búsqueda + resetear (Usuarios, Tecnicos,
@@ -335,35 +330,25 @@ a:hover {
 
   .sigat-main {
     padding: 15px;
-    /* Deja espacio abajo para que los botones flotantes fijos (Registrar
-       entrada, Asignar técnico, Nuevo servicio, Descargar app) no tapen el
+    /* Deja espacio abajo para que la barra de acciones fija (Descargar
+       app, Registrar entrada, Asignar técnico, Nuevo servicio) no tape el
        final de las tablas, formularios y la paginación al hacer scroll. */
-    padding-bottom: 260px;
+    padding-bottom: 90px;
   }
 
-  .sigat-boton-descarga {
-    left: 20px;
+  /* En móvil sigue siendo una sola fila fija abajo a la izquierda, pero
+     más pegada al borde y con botones más chicos para no ocupar tanto
+     espacio de la pantalla. */
+  .sigat-barra-acciones {
+    left: 10px;
+    bottom: 10px;
+    gap: 8px;
+    max-width: calc(100vw - 20px);
   }
-
-  /* En móvil siguen del lado izquierdo, apiladas sobre "Descargar app
-     móvil", pero un poco más pequeñas y con menos separación entre ellas
-     para no ocupar tanto espacio de la pantalla. */
-  .sigat-boton-flotante {
-    left: 20px;
+  .sigat-barra-acciones .btn {
     padding: 8px 14px !important;
     font-size: 0.75rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
-  }
-  .sigat-boton-flotante-baja {
-    bottom: 80px;
-  }
-  .sigat-boton-flotante-alta {
-    bottom: 130px;
-  }
-
-  .sigat-boton-descarga {
-    padding: 8px 14px !important;
-    font-size: 0.75rem;
   }
 
   /* --- Tablas: en vez de desbordar la pantalla, se pueden desplazar

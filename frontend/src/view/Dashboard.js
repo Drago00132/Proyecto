@@ -31,25 +31,16 @@ function Dashboard() {
     zIndex: 1000
   };
 
-  // Flotan fijas sobre toda la pantalla, igual que "Descargar app móvil"
-  // (con la que comparten el lado izquierdo, ver theme.css), en vez de ir
-  // pegadas a la derecha donde chocaban con el aviso "Powered by Netlify".
-  const estiloBotonFlotante = () => ({
-    position: 'fixed',
+  // Todos los botones de acción (Descargar app, Nuevo servicio, Asignar
+  // técnico, Registrar entrada) van en una sola fila fija abajo a la
+  // izquierda (ver .sigat-barra-acciones en theme.css), como en el boceto
+  // que mandaste: una sola línea horizontal, dejando libre la esquina
+  // inferior derecha donde Netlify pone su aviso "Powered by Netlify".
+  const estiloBotonAccion = {
     borderRadius: '50px',
     padding: '14px 24px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-    zIndex: 1050
-  });
-
-  const estiloBotonDescarga = (bottom) => ({
-    position: 'fixed',
-    bottom,
-    borderRadius: '50px',
-    padding: '14px 24px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-    zIndex: 1050
-  });
+    boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+  };
 
   const cerrarSidebar = () => setSidebarAbierto(false);
 
@@ -95,42 +86,44 @@ function Dashboard() {
         <Outlet />
       </main>
 
-      <a style={estiloBotonDescarga('30px')} href="/descargas/sigat.apk" download="sigat.apk" className="sigat-boton-descarga btn btn-primary">
-        Descargar app móvil
-      </a>
+      <div className="sigat-barra-acciones">
+        <a style={estiloBotonAccion} href="/descargas/sigat.apk" download="sigat.apk" className="btn btn-primary">
+          Descargar app móvil
+        </a>
 
-      {rol === 3 && (
-        <button
-          type="button"
-          onClick={() => setMostrarNuevoServicio(true)}
-          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
-          style={estiloBotonFlotante()}
-        >
-          + Nuevo servicio
-        </button>
-      )}
+        {rol === 3 && (
+          <button
+            type="button"
+            onClick={() => setMostrarNuevoServicio(true)}
+            className="btn btn-primary"
+            style={estiloBotonAccion}
+          >
+            + Nuevo servicio
+          </button>
+        )}
 
-      {(rol === 1 || rol === 16 || rol === 17) && (
-        <button
-          type="button"
-          onClick={() => setMostrarAsignarTecnico(true)}
-          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
-          style={estiloBotonFlotante()}
-        >
-          + Asignar técnico
-        </button>
-      )}
+        {(rol === 1 || rol === 16 || rol === 17) && (
+          <button
+            type="button"
+            onClick={() => setMostrarAsignarTecnico(true)}
+            className="btn btn-primary"
+            style={estiloBotonAccion}
+          >
+            + Asignar técnico
+          </button>
+        )}
 
-      {(rol === 1 || rol === 16 || rol === 17) && (
-        <button
-          type="button"
-          onClick={() => setMostrarRegistrarEntrada(true)}
-          className="btn btn-success sigat-boton-flotante sigat-boton-flotante-alta"
-          style={estiloBotonFlotante()}
-        >
-          + Registrar entrada
-        </button>
-      )}
+        {(rol === 1 || rol === 16 || rol === 17) && (
+          <button
+            type="button"
+            onClick={() => setMostrarRegistrarEntrada(true)}
+            className="btn btn-success"
+            style={estiloBotonAccion}
+          >
+            + Registrar entrada
+          </button>
+        )}
+      </div>
 
       {mostrarAsignarTecnico && (
         <div style={estiloModal}>
