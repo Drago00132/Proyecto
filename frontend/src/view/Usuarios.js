@@ -87,11 +87,11 @@ function Usuario() {
           <h2 className="text-center mb-4">Usuarios</h2>
 
           {/*agregar, buscar y resetear*/}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
           <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar usuarios</button>
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por nombre, apellido, rol o documento'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
@@ -124,14 +124,14 @@ function Usuario() {
                   <td>{usuario.fecha_nacimiento}</td>
                   <td>{usuario.numero_celular}</td>
                   <td>{usuario.correo_electronico}</td>
-                  <td><button type="button" className="btn btn-success" onClick={()=>{
+                  <td><div className="sigat-acciones"><button type="button" className="btn btn-success" onClick={()=>{
                     setUsuarioSelecionado(usuario);
                     setMostrarEditar(true);}}>
                       Editar</button>
                     <button type="button" className="btn btn-danger" onClick={()=>{
                     setUsuarioSelecionado(usuario.numero_identidad);
                     setmostrarEliminar(true);}}>
-                      Eliminar</button></td>
+                      Eliminar</button></div></td>
                 </tr>
               ))}
             </tbody>

@@ -83,13 +83,13 @@ function Historial() {
           <h2 className="text-center mb-4">Servicio</h2>
 
           {/*agregar, buscar y resetear*/}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
             {(rol === 1 || rol === 16 || rol === 17) && (
           <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Servicio</button>
             )}
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
@@ -136,6 +136,7 @@ function Historial() {
                     <td>{historial.estado}</td>
                     <td>{historial.fecha_inicio ? historial.fecha_inicio.split('T')[0] : ""}</td>
                     <td>
+                      <div className="sigat-acciones">
                       <button type="button" className="btn btn-info btn-sm me-1 text-white" onClick={() => {
                         setDetalleSeleccionado(historial);
                         setMostrarDetalle(true);
@@ -156,6 +157,7 @@ function Historial() {
                           Eliminar
                         </button>
                       )}
+                      </div>
                     </td>
                   </tr>
                 ))}

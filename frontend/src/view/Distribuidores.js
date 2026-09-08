@@ -59,11 +59,11 @@ function Distribuidores() {
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Distribuidores</h2>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
             <button type="button" className='btn btn-primary mb-3'
               onClick={() => setMostrarAgregar(true)}>Agregar Distribuidor</button>
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por id'
                 value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />
               <button type="button" className="btn btn-outline-secondary" onClick={buscarDistribuidor}>Buscar</button>
@@ -94,6 +94,7 @@ function Distribuidores() {
                   <td>{distribuidor.direccion}</td>
                   <td>{distribuidor.contacto}</td>
                   <td>
+                    <div className="sigat-acciones">
                     <button type="button" className="btn btn-success" onClick={() => {
                       setDistribuidorSelecionado(distribuidor);
                       setMostrarEditar(true);
@@ -106,6 +107,7 @@ function Distribuidores() {
                       setDistribuidorSelecionado(distribuidor.id_distribuidor);
                       setmostrarEliminar(true);
                     }}>Eliminar</button>
+                    </div>
                   </td>
                 </tr>
               ))}

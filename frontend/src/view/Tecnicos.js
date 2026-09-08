@@ -60,11 +60,11 @@ function Tecnicos() {
           <h2 className="text-center mb-4">Tecnicos</h2>
 
           {/*agregar, buscar y resetear*/}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
           <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>subir Tecnico</button>
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por numero de identidad'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
@@ -93,14 +93,14 @@ function Tecnicos() {
                   <td>{tecnicos.numero_identidad}</td>
                   <td>{tecnicos.nombre}, {tecnicos.apellido}</td>
                   <td>{tecnicos.reparaciones_asignadas}</td>
-                  <td><button type="button" className="btn btn-success" onClick={()=>{
+                  <td><div className="sigat-acciones"><button type="button" className="btn btn-success" onClick={()=>{
                     setTecnicoSelecionado(tecnicos);
                     setMostrarEditar(true);}}>
                       Editar</button>
                     <button type="button" className="btn btn-danger" onClick={()=>{
                     setTecnicoSelecionado(tecnicos.id_tecnico);
                     setmostrarEliminar(true);}}>
-                      Eliminar</button></td>
+                      Eliminar</button></div></td>
                 </tr>
               ))}
             </tbody>

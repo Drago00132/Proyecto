@@ -224,6 +224,41 @@ a:hover {
   left: 250px;
 }
 
+/* Posición vertical de los botones flotantes de acción (Asignar técnico /
+   Nuevo servicio = "baja"; Registrar entrada, que va encima, = "alta"). En
+   escritorio quedan un poco más abajo; en móvil (media query de abajo) se
+   mantienen más arriba porque ahí sí chocaban con el aviso "Powered by
+   Netlify" del plan gratuito. */
+.sigat-boton-flotante-baja {
+  bottom: 85px;
+}
+.sigat-boton-flotante-alta {
+  bottom: 140px;
+}
+
+/* --- Barra de "Agregar X" + búsqueda + resetear (Usuarios, Tecnicos,
+   Motos, Repuesto, Distribuidores, Roles, EntradaRepuestos, Historial): en
+   escritorio se ven en una sola fila; en móvil (media query de abajo) se
+   apilan en columna, porque antes el campo de búsqueda quedaba
+   apachurrado a casi 0px de ancho y no se veía. */
+.sigat-toolbar {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sigat-toolbar-buscar {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* --- Botones de Editar/Eliminar (y similares) dentro de cada fila de
+   tabla: se agrupan en una fila compacta en vez de quedar como bloques
+   sueltos muy grandes. */
+.sigat-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 @media (max-width: 767.98px) {
   .sigat-layout {
     flex-direction: column;
@@ -315,6 +350,12 @@ a:hover {
     font-size: 0.75rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
   }
+  .sigat-boton-flotante-baja {
+    bottom: 110px;
+  }
+  .sigat-boton-flotante-alta {
+    bottom: 170px;
+  }
 
   .sigat-boton-descarga {
     padding: 8px 14px !important;
@@ -336,6 +377,34 @@ a:hover {
   .modal-dialog {
     margin-left: 10px;
     margin-right: 10px;
+  }
+
+  /* --- Barra "Agregar X" + búsqueda: se apila en columna y cada elemento
+     ocupa el ancho completo, para que el campo de búsqueda ya no
+     desaparezca apachurrado entre el botón de agregar y los de buscar. */
+  .sigat-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sigat-toolbar > button {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .sigat-toolbar-buscar {
+    width: 100%;
+    flex-direction: column;
+  }
+  .sigat-toolbar-buscar input,
+  .sigat-toolbar-buscar button {
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  /* --- Botones de Editar/Eliminar dentro de cada fila: más pequeños para
+     que no dominen la fila ni empujen tanto contenido hacia abajo. */
+  .sigat-acciones .btn {
+    padding: 6px 10px !important;
+    font-size: 0.75rem;
   }
 }
 

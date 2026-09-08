@@ -67,11 +67,11 @@ function Repuestos() {
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Repuestos</h2>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
           <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Repuesto</button>
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por nombre del repuesto'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
@@ -96,14 +96,14 @@ function Repuestos() {
                   <td>{repuesto.id_repuestos}</td>
                   <td>{repuesto.nombre_repuesto}</td>
                   <td>{repuesto.cantidad}</td>
-                  <td><button type="button" className="btn btn-success" onClick={()=>{
+                  <td><div className="sigat-acciones"><button type="button" className="btn btn-success" onClick={()=>{
                     setRepuestoSelecionado(repuesto);
                     setMostrarEditar(true);}}>
                       Editar</button>
                     <button type="button" className="btn btn-danger" onClick={()=>{
                     setRepuestoSelecionado(repuesto.id_repuestos);
                     setmostrarEliminar(true);}}>
-                      Eliminar</button></td>
+                      Eliminar</button></div></td>
                 </tr>
               ))}
             </tbody>

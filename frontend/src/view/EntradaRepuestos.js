@@ -57,9 +57,9 @@ function EntradaRepuestos() {
           <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Entrada de Repuestos</h2>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por id'
                 value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />
               <button type="button" className="btn btn-outline-secondary" onClick={buscarEntrada}>Buscar</button>
@@ -90,6 +90,7 @@ function EntradaRepuestos() {
                   <td>{entrada.nombre_distribuidor}</td>
                   <td>{entrada.nombre}, {entrada.apellido}</td>
                   <td>
+                    <div className="sigat-acciones">
                     <button type="button" className="btn btn-success" onClick={() => {
                       setEntradaSelecionada(entrada);
                       setMostrarEditar(true);
@@ -98,6 +99,7 @@ function EntradaRepuestos() {
                       setEntradaSelecionada(entrada.id_entrada);
                       setmostrarEliminar(true);
                     }}>Eliminar</button>
+                    </div>
                   </td>
                 </tr>
               ))}

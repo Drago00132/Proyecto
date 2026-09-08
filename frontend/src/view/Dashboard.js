@@ -31,9 +31,12 @@ function Dashboard() {
     zIndex: 1000
   };
 
-  const estiloBotonFlotante = (bottom) => ({
+  // La posición vertical (bottom) de estos botones ya no se calcula aquí:
+  // queda en theme.css (.sigat-boton-flotante-baja / -alta), porque en PC y
+  // en móvil necesitan valores distintos para no toparse con el aviso
+  // "Powered by Netlify" del plan gratuito.
+  const estiloBotonFlotante = () => ({
     position: 'fixed',
-    bottom,
     right: '30px',
     borderRadius: '50px',
     padding: '14px 24px',
@@ -102,8 +105,8 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarNuevoServicio(true)}
-          className="btn btn-primary sigat-boton-flotante"
-          style={estiloBotonFlotante('110px')}
+          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
+          style={estiloBotonFlotante()}
         >
           + Nuevo servicio
         </button>
@@ -113,8 +116,8 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarAsignarTecnico(true)}
-          className="btn btn-primary sigat-boton-flotante"
-          style={estiloBotonFlotante('110px')}
+          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
+          style={estiloBotonFlotante()}
         >
           + Asignar técnico
         </button>
@@ -124,8 +127,8 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarRegistrarEntrada(true)}
-          className="btn btn-success sigat-boton-flotante"
-          style={estiloBotonFlotante('170px')}
+          className="btn btn-success sigat-boton-flotante sigat-boton-flotante-alta"
+          style={estiloBotonFlotante()}
         >
           + Registrar entrada
         </button>

@@ -61,11 +61,11 @@ function Roles() {
           <h2 className="text-center mb-4">Roles</h2>
 
           {/*agregar, buscar y resetear*/}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 sigat-toolbar">
           <button type="button" className='btn btn-primary mb-3'
           onClick={()=> setMostrarAgregar(true)}>Agregar Roles</button>
 
-            <div className="d-flex">
+            <div className="d-flex sigat-toolbar-buscar">
               <input className="form-control me-2" type='text' placeholder='Buscar por ID de rol'
               value={busqueda} onChange={(e)=>
               setBusqueda(e.target.value)}/>
@@ -90,14 +90,14 @@ function Roles() {
                 <tr key={index}>
                   <td>{roles.id_rol}</td>
                   <td>{roles.rol}</td>
-                  <td><button type="button" className="btn btn-success" onClick={()=>{
+                  <td><div className="sigat-acciones"><button type="button" className="btn btn-success" onClick={()=>{
                     setRolselecionado(roles);
                     setMostrarEditar(true);}}>
                       Editar</button>
                     <button type="button" className="btn btn-danger" onClick={()=>{
                     setRolselecionado(roles.id_rol);
                     setmostrarEliminar(true);}}>
-                      Eliminar</button></td>
+                      Eliminar</button></div></td>
                 </tr>
               ))}
             </tbody>
