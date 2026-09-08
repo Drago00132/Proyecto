@@ -102,7 +102,7 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarNuevoServicio(true)}
-          className="btn btn-primary"
+          className="btn btn-primary sigat-boton-flotante"
           style={estiloBotonFlotante('30px')}
         >
           + Nuevo servicio
@@ -113,7 +113,7 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarAsignarTecnico(true)}
-          className="btn btn-primary"
+          className="btn btn-primary sigat-boton-flotante"
           style={estiloBotonFlotante('30px')}
         >
           + Asignar técnico
@@ -124,7 +124,7 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMostrarRegistrarEntrada(true)}
-          className="btn btn-success"
+          className="btn btn-success sigat-boton-flotante"
           style={estiloBotonFlotante('90px')}
         >
           + Registrar entrada
