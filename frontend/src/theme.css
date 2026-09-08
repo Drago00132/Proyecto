@@ -298,7 +298,7 @@ a:hover {
     /* Deja espacio abajo para que los botones flotantes fijos (Registrar
        entrada, Asignar técnico, Nuevo servicio, Descargar app) no tapen el
        final de las tablas, formularios y la paginación al hacer scroll. */
-    padding-bottom: 190px;
+    padding-bottom: 260px;
   }
 
   .sigat-boton-descarga {
@@ -307,10 +307,18 @@ a:hover {
 
   /* Los botones flotantes se ven bien en escritorio, pero en pantallas
      angostas ocupan demasiado espacio y se pueden encimar entre ellos o con
-     el aviso "Powered by Netlify" del plan gratuito. Se reducen un poco. */
+     el aviso "Powered by Netlify" del plan gratuito. Se reducen más en
+     móvil que en escritorio (ver estiloBotonFlotante en Dashboard.js, que
+     ya los separa más del borde inferior). */
   .sigat-boton-flotante {
-    padding: 10px 16px !important;
-    font-size: 0.85rem;
+    padding: 8px 14px !important;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .sigat-boton-descarga {
+    padding: 8px 14px !important;
+    font-size: 0.75rem;
   }
 
   /* --- Tablas: en vez de desbordar la pantalla, se pueden desplazar
