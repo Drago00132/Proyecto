@@ -31,12 +31,11 @@ function Dashboard() {
     zIndex: 1000
   };
 
-  // La posición (fija/flotante en móvil, normal al final de la página en
-  // PC) queda controlada por theme.css (.sigat-boton-flotante y el
-  // contenedor .sigat-acciones-panel), porque en PC y en móvil se
-  // comportan distinto: en PC van al final del contenido (como se ve en
-  // la paginación), en móvil siguen flotando fijas sobre la pantalla.
+  // Flotan fijas sobre toda la pantalla, igual que "Descargar app móvil"
+  // (con la que comparten el lado izquierdo, ver theme.css), en vez de ir
+  // pegadas a la derecha donde chocaban con el aviso "Powered by Netlify".
   const estiloBotonFlotante = () => ({
+    position: 'fixed',
     borderRadius: '50px',
     padding: '14px 24px',
     boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
@@ -94,46 +93,44 @@ function Dashboard() {
 
       <main className="sigat-main">
         <Outlet />
-
-        <div className="sigat-acciones-panel">
-          {rol === 3 && (
-            <button
-              type="button"
-              onClick={() => setMostrarNuevoServicio(true)}
-              className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
-              style={estiloBotonFlotante()}
-            >
-              + Nuevo servicio
-            </button>
-          )}
-
-          {(rol === 1 || rol === 16 || rol === 17) && (
-            <button
-              type="button"
-              onClick={() => setMostrarAsignarTecnico(true)}
-              className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
-              style={estiloBotonFlotante()}
-            >
-              + Asignar técnico
-            </button>
-          )}
-
-          {(rol === 1 || rol === 16 || rol === 17) && (
-            <button
-              type="button"
-              onClick={() => setMostrarRegistrarEntrada(true)}
-              className="btn btn-success sigat-boton-flotante sigat-boton-flotante-alta"
-              style={estiloBotonFlotante()}
-            >
-              + Registrar entrada
-            </button>
-          )}
-        </div>
       </main>
 
       <a style={estiloBotonDescarga('30px')} href="/descargas/sigat.apk" download="sigat.apk" className="sigat-boton-descarga btn btn-primary">
         Descargar app móvil
       </a>
+
+      {rol === 3 && (
+        <button
+          type="button"
+          onClick={() => setMostrarNuevoServicio(true)}
+          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
+          style={estiloBotonFlotante()}
+        >
+          + Nuevo servicio
+        </button>
+      )}
+
+      {(rol === 1 || rol === 16 || rol === 17) && (
+        <button
+          type="button"
+          onClick={() => setMostrarAsignarTecnico(true)}
+          className="btn btn-primary sigat-boton-flotante sigat-boton-flotante-baja"
+          style={estiloBotonFlotante()}
+        >
+          + Asignar técnico
+        </button>
+      )}
+
+      {(rol === 1 || rol === 16 || rol === 17) && (
+        <button
+          type="button"
+          onClick={() => setMostrarRegistrarEntrada(true)}
+          className="btn btn-success sigat-boton-flotante sigat-boton-flotante-alta"
+          style={estiloBotonFlotante()}
+        >
+          + Registrar entrada
+        </button>
+      )}
 
       {mostrarAsignarTecnico && (
         <div style={estiloModal}>
