@@ -224,16 +224,20 @@ a:hover {
   left: 250px;
 }
 
-/* Posición vertical de los botones flotantes de acción (Asignar técnico /
-   Nuevo servicio = "baja"; Registrar entrada, que va encima, = "alta"). En
-   escritorio quedan un poco más abajo; en móvil (media query de abajo) se
-   mantienen más arriba porque ahí sí chocaban con el aviso "Powered by
-   Netlify" del plan gratuito. */
-.sigat-boton-flotante-baja {
-  bottom: 85px;
-}
-.sigat-boton-flotante-alta {
-  bottom: 140px;
+/* Botones de acción (Nuevo servicio / Asignar técnico / Registrar entrada,
+   ver .sigat-acciones-panel en Dashboard.js): en PC ya NO flotan fijos
+   sobre el contenido (eso era lo que los hacía chocar con el aviso
+   "Powered by Netlify" o tapar la última fila de las tablas por más que
+   se subieran o bajaran). En PC quedan al final de cada página, junto a
+   la paginación, como botones normales. En móvil (media query de abajo)
+   siguen flotando fijos, que es como ya habías confirmado que se veían
+   bien. */
+.sigat-acciones-panel {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 /* --- Barra de "Agregar X" + búsqueda + resetear (Usuarios, Tecnicos,
@@ -340,12 +344,17 @@ a:hover {
     left: 20px;
   }
 
-  /* Los botones flotantes se ven bien en escritorio, pero en pantallas
-     angostas ocupan demasiado espacio y se pueden encimar entre ellos o con
-     el aviso "Powered by Netlify" del plan gratuito. Se reducen más en
-     móvil que en escritorio (ver estiloBotonFlotante en Dashboard.js, que
-     ya los separa más del borde inferior). */
+  /* En móvil estos botones sí vuelven a flotar fijos sobre la pantalla
+     (ya confirmado que ahí se ven bien), a diferencia de PC donde ahora
+     quedan como botones normales al final de la página. También se
+     reducen un poco de tamaño para no ocupar tanto espacio. */
+  .sigat-acciones-panel {
+    justify-content: flex-end;
+    margin-top: 0;
+  }
   .sigat-boton-flotante {
+    position: fixed;
+    right: 30px;
     padding: 8px 14px !important;
     font-size: 0.75rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
