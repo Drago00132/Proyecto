@@ -28,6 +28,7 @@ function Iniciarsesion() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("rol", data.rol);
         localStorage.setItem("numero_identidad", data.numero_identidad);
+        localStorage.setItem("nombre", data.nombre || "");
 
         toast.success("Inicio de sesión exitoso.");
         navigate("/panel");

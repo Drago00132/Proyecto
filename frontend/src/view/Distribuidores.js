@@ -71,6 +71,7 @@ function Distribuidores() {
             </div>
           </div>
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -110,6 +111,7 @@ function Distribuidores() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerDistribuidor} />
         </div>
       </div>
@@ -310,6 +312,7 @@ function GestionarRepuestos({ id }) {
   }
 
   return (
+    <div className="table-responsive">
     <table className="table table-hover">
       <thead className="table-dark">
         <tr>
@@ -326,6 +329,7 @@ function GestionarRepuestos({ id }) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 

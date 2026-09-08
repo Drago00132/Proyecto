@@ -29,6 +29,7 @@ function AuditoriaRepuestos() {
         <div className="card p-4">
           <h2 className="text-center mb-4">Auditoría de Repuestos</h2>
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -51,6 +52,7 @@ function AuditoriaRepuestos() {
               ))}
             </tbody>
           </table>
+          </div>
 
           {auditoria.length === 0 && <p className="text-muted text-center">No hay registros de auditoría todavía.</p>}
 

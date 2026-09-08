@@ -181,3 +181,149 @@ a {
 a:hover {
   color: var(--sigat-primary-dark);
 }
+
+/* ============================================================
+   RNF: Diseño responsivo (Dashboard.js + tablas + panel de inicio)
+
+   El sidebar antes era fijo (220px de ancho, altura 100vh, siempre
+   visible) y no había ninguna media query en todo el proyecto, así
+   que en pantallas de celular el menú lateral empujaba el contenido
+   y lo dejaba casi ilegible. Ahora el layout general vive en
+   ".sigat-layout" (Dashboard.js): en escritorio el sidebar sigue
+   fijo y visible igual que antes; en móvil (max-width: 767.98px) se
+   convierte en un panel deslizante (off-canvas) que se abre con el
+   botón hamburguesa de la barra superior ".sigat-topbar". */
+
+.sigat-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sigat-sidebar {
+  width: 220px;
+  min-height: 100vh;
+  padding: 15px;
+  flex-shrink: 0;
+}
+
+.sigat-main {
+  flex: 1;
+  padding: 20px;
+  min-width: 0; /* evita que tablas/anchos fijos desborden el flex item */
+}
+
+.sigat-topbar {
+  display: none;
+}
+
+.sigat-sidebar-backdrop {
+  display: none;
+}
+
+.sigat-boton-descarga {
+  left: 250px;
+}
+
+@media (max-width: 767.98px) {
+  .sigat-layout {
+    flex-direction: column;
+  }
+
+  .sigat-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+    background-color: var(--sigat-light);
+    border-bottom: 1px solid rgba(22, 35, 46, 0.1);
+    padding: 10px 15px;
+  }
+
+  .sigat-topbar-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .sigat-topbar-toggle span {
+    display: block;
+    height: 3px;
+    background-color: var(--sigat-primary);
+    border-radius: 2px;
+  }
+
+  .sigat-topbar-title {
+    font-weight: 600;
+    color: var(--sigat-primary);
+    font-size: 1.1rem;
+  }
+
+  .sigat-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    max-width: 80vw;
+    background-color: var(--sigat-light);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-in-out;
+    z-index: 1050;
+    overflow-y: auto;
+  }
+  .sigat-sidebar-abierto {
+    transform: translateX(0);
+  }
+
+  .sigat-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1045;
+  }
+
+  .sigat-main {
+    padding: 15px;
+  }
+
+  .sigat-boton-descarga {
+    left: 20px;
+  }
+
+  /* --- Tablas: en vez de desbordar la pantalla, se pueden desplazar
+     horizontalmente dentro de su propio contenedor. Los .table-responsive
+     ya se agregaron alrededor de cada tabla en las vistas (Usuarios,
+     Tecnicos, Motos, Repuesto, Distribuidores, Roles, EntradaRepuestos,
+     auditoria; Historial ya lo tenía). */
+  .table-responsive table {
+    font-size: 0.85rem;
+  }
+
+  /* --- Formularios y modales: los modal-dialog de Bootstrap ya son
+     responsivos por defecto, pero se les da un margen lateral pequeño
+     para que no toquen los bordes de la pantalla. */
+  .modal-dialog {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+/* --- Panel de inicio (PanelInicio.js): tarjetas de acceso rápido --- */
+.sigat-card-opcion {
+  transition: box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+.sigat-card-opcion:hover {
+  box-shadow: 0 4px 12px rgba(22, 35, 46, 0.15);
+  transform: translateY(-2px);
+}

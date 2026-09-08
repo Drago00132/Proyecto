@@ -76,6 +76,7 @@ function Roles() {
 
           {/* tabal de Roles*/}
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -101,6 +102,7 @@ function Roles() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerRol} />
         </div>
       </div>

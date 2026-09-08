@@ -75,6 +75,7 @@ function Tecnicos() {
 
           {/* tabal de Roles*/}
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -104,6 +105,7 @@ function Tecnicos() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={setPaginaActual} />
         </div>
       </div>

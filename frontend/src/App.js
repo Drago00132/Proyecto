@@ -15,6 +15,7 @@ import RecuperarContrasena from './view/RecuperarContrasena';
 import RestablecerContrasena from './view/RestablecerContrasena';
 import MiPerfil from './view/MiPerfil';
 import Auditoria from './view/auditoria';
+import PanelInicio from './view/PanelInicio';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
            <Route path='/recuperar-contrasena' element={<RecuperarContrasena/>}></Route>
            <Route path='/restablecer-contrasena' element={<RestablecerContrasena/>}></Route>
            <Route path="/panel" element={<Dashboard/>}>
+            <Route index element={<PanelInicio/>}></Route>
             <Route path='/panel/mi-perfil' element={<MiPerfil/>}></Route>
             <Route path='/panel/usuarios' element={<Usuarios/>}></Route>
             <Route path='/panel/tecnico' element={<Tecnico/>}></Route>

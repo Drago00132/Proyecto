@@ -12,6 +12,11 @@ function Dashboard() {
   const [mostrarAsignarTecnico, setMostrarAsignarTecnico] = useState(false);
   const [mostrarRegistrarEntrada, setMostrarRegistrarEntrada] = useState(false);
   const [mostrarNuevoServicio, setMostrarNuevoServicio] = useState(false);
+  // RNF: menú lateral responsivo. En móvil el sidebar se comporta como un
+  // panel deslizante (off-canvas) que se abre con el botón hamburguesa de
+  // la barra superior y se cierra tocando el fondo oscuro o un enlace.
+  // En escritorio el sidebar sigue siendo fijo y visible (ver theme.css).
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
   const estiloModal = {
     position: 'fixed',
@@ -36,42 +41,60 @@ function Dashboard() {
     zIndex: 1050
   });
 
-  const estiloBotonDescarga =(bottom)=> ({
+  const estiloBotonDescarga = (bottom) => ({
     position: 'fixed',
     bottom,
-    left: '250px',
     borderRadius: '50px',
     padding: '14px 24px',
     boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
     zIndex: 1050
   });
 
+  const cerrarSidebar = () => setSidebarAbierto(false);
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div className="sigat-layout">
       <InactividadTimer />
-      <nav className="sigat-sidebar" style={{ width: '220px', height: '100vh', padding: '15px' }}>
+
+      <header className="sigat-topbar">
+        <button
+          type="button"
+          className="sigat-topbar-toggle"
+          aria-label="Abrir menú"
+          onClick={() => setSidebarAbierto((abierto) => !abierto)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <span className="sigat-topbar-title">Sigat</span>
+      </header>
+
+      {sidebarAbierto && <div className="sigat-sidebar-backdrop" onClick={cerrarSidebar}></div>}
+
+      <nav className={`sigat-sidebar${sidebarAbierto ? ' sigat-sidebar-abierto' : ''}`}>
         <h2>Panel</h2>
         <ul className='nav flex-column mt2'>
-          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel" className='nav-link text-black px-0 py-2' >inicio</Link></li>
-          {(rol === 1 || rol === 16 || rol === 17) && ( <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/usuarios" className='nav-link text-black px-0 py-2'>usuarios</Link></li>)}
-          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/tecnico" className='nav-link text-black px-0 py-2'>tecnico</Link></li>)}
-          { rol === 17 && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/roles" className='nav-link text-black px-0 py-2'>roles</Link></li>)}
-          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/distribuidores" className='nav-link text-black px-0 py-2'>distribuidores</Link></li>)}
-          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/entradaRepuestos" className='nav-link text-black px-0 py-2'>entrada de repuestos</Link></li>)}
-          {(rol === 1 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/repuesto" className='nav-link text-black px-0 py-2'>repuesto</Link></li>)}
-          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/auditoria" className='nav-link text-black px-0 py-2'>Auditoria</Link></li>)}
-          {(rol === 1 || rol === 3 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/motos" className='nav-link text-black px-0 py-2'>motos</Link></li>)}
-          {(rol === 1 || rol === 2 || rol === 3 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/historial" className='nav-link text-black px-0 py-2'>Servicio</Link></li>)}
-          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/mi-perfil" className='nav-link text-black px-0 py-2'>mi perfil</Link></li>
-          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/" className='nav-link text-black px-0 py-2' onClick={() => localStorage.clear()}>Cerrar Sesión</Link></li>
+          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>inicio</Link></li>
+          {(rol === 1 || rol === 16 || rol === 17) && ( <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/usuarios" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>usuarios</Link></li>)}
+          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/tecnico" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>tecnico</Link></li>)}
+          { rol === 17 && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/roles" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>roles</Link></li>)}
+          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/distribuidores" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>distribuidores</Link></li>)}
+          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/entradaRepuestos" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>entrada de repuestos</Link></li>)}
+          {(rol === 1 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/repuesto" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>repuesto</Link></li>)}
+          {(rol === 1 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/auditoria" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>Auditoria</Link></li>)}
+          {(rol === 1 || rol === 3 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/motos" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>motos</Link></li>)}
+          {(rol === 1 || rol === 2 || rol === 3 || rol === 16 || rol === 17) && (<li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/historial" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>Servicio</Link></li>)}
+          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/panel/mi-perfil" className='nav-link text-black px-0 py-2' onClick={cerrarSidebar}>mi perfil</Link></li>
+          <li className='nav-item border-bottom border-secundary border-opacity-25'><Link to="/" className='nav-link text-black px-0 py-2' onClick={() => { localStorage.clear(); cerrarSidebar(); }}>Cerrar Sesión</Link></li>
         </ul>
       </nav>
 
-      <main style={{ flex: 1, padding: '20px' }}>
+      <main className="sigat-main">
         <Outlet />
       </main>
 
-      <a style={estiloBotonDescarga('30px')} href="/descargas/sigat.apk" download="sigat.apk" className="btn btn-primary">
+      <a style={estiloBotonDescarga('30px')} href="/descargas/sigat.apk" download="sigat.apk" className="sigat-boton-descarga btn btn-primary">
         Descargar app móvil
       </a>
 

@@ -102,6 +102,7 @@ function Usuario() {
 
           {/* tabal de usuarios*/}
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -135,6 +136,7 @@ function Usuario() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerUsuarios} />
 
         </div>

@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
             
         );
 
-        res.json({ message: "Bienvenido", token, rol: usuario.id_rol, numero_identidad: usuario.numero_identidad
+        res.json({ message: "Bienvenido", token, rol: usuario.id_rol, numero_identidad: usuario.numero_identidad, nombre: usuario.nombre
 });
 
     } catch (error) {
@@ -111,7 +111,7 @@ exports.verificarCodigo2FA = async (req, res) => {
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
 
-        res.json({ message: "Bienvenido", token, rol: usuario.id_rol, numero_identidad: usuario.numero_identidad });
+        res.json({ message: "Bienvenido", token, rol: usuario.id_rol, numero_identidad: usuario.numero_identidad, nombre: usuario.nombre });
 
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });

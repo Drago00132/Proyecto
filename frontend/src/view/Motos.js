@@ -94,6 +94,7 @@ function Motos() {
 
           {/* tabal de Roles*/}
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -127,6 +128,7 @@ function Motos() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerMoto} />
         </div>
       </div>

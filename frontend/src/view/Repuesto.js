@@ -80,6 +80,7 @@ function Repuestos() {
             </div>
           </div>
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -107,6 +108,7 @@ function Repuestos() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerRepuesto} />
         </div>
       </div>

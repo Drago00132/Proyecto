@@ -67,6 +67,7 @@ function EntradaRepuestos() {
             </div>
           </div>
 
+          <div className="table-responsive">
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
@@ -102,6 +103,7 @@ function EntradaRepuestos() {
               ))}
             </tbody>
           </table>
+          </div>
           <Paginador paginaActual={paginaActual} totalPaginas={totalPaginas} onCambiarPagina={obtenerEntrada} />
         </div>
       </div>
