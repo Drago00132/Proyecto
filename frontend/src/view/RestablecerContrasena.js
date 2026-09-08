@@ -41,7 +41,7 @@ function RestablecerContrasena() {
 
         setEnviando(true);
         try {
-            const response = await fetch("http://localhost:3100/api/login/restablecer-contrasena", {
+            const response = await fetch("/api/login/restablecer-contrasena", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

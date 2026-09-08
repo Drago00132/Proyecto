@@ -18,8 +18,8 @@ function AsignarTecnico() {
   const cargarDatos = () => {
     setCargando(true);
     Promise.all([
-      axios.get("http://localhost:3100/api/tecnico/listar?limit=999999", cabecera()),
-      axios.get("http://localhost:3100/api/historial/listar?limit=999999", cabecera())
+      axios.get("/api/tecnico/listar?limit=999999", cabecera()),
+      axios.get("/api/historial/listar?limit=999999", cabecera())
     ]).then(([resTecnicos, resHistorial]) => {
       setTecnicos(resTecnicos.data.tecnico || []);
       const todos = resHistorial.data.historial || [];
@@ -46,7 +46,7 @@ function AsignarTecnico() {
     }
 
     setAsignando(true);
-    axios.put(`http://localhost:3100/api/historial/actualizar/${idHistorial}`,
+    axios.put(`/api/historial/actualizar/${idHistorial}`,
       { id_tecnico: idTecnico },
       cabecera()
     ).then(() => {

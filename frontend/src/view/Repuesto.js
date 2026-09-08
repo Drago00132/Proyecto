@@ -23,7 +23,7 @@ function Repuestos() {
       toast.error("Ingresa un nombre para buscar");
       return;
     }
-    axios.get(`http://localhost:3100/api/repuestos/buscar?nombre=${encodeURIComponent(busqueda)}`)
+    axios.get(`/api/repuestos/buscar?nombre=${encodeURIComponent(busqueda)}`)
     .then((res) => {
       setRepuestos(res.data.repuesto || []);
       setTotalPaginas(1);
@@ -40,7 +40,7 @@ function Repuestos() {
   };
 
     const obtenerRepuesto = (page = 1) => {
-      axios.get(`http://localhost:3100/api/repuestos/listar?page=${page}&limit=${limite}`).then((res)=>{
+      axios.get(`/api/repuestos/listar?page=${page}&limit=${limite}`).then((res)=>{
         setRepuestos(res.data.repuesto || []);
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
@@ -146,7 +146,7 @@ function Agregar({cerrarmodal}){
       return;
     }
 
-    axios.post("http://localhost:3100/api/repuestos/agregar",{
+    axios.post("/api/repuestos/agregar",{
       nombre_repuesto:Nombre_repuesto,
       cantidad:Cantidad
     })
@@ -201,7 +201,7 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    axios.put(`http://localhost:3100/api/repuestos/actualizar/${datos.id_repuestos}`,{
+    axios.put(`/api/repuestos/actualizar/${datos.id_repuestos}`,{
       id_repuestos: Id_repuestos,
       nombre_repuesto: Nombre_repuesto,
       cantidad: Cantidad
@@ -237,7 +237,7 @@ function Editar({datos,cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/repuestos/eliminar/${id}`,
+      url: `/api/repuestos/eliminar/${id}`,
       mensajeExito: "Repuesto eliminado",
       mensajeError: "el Repuesto no fue eliminado",
       cerrarmodal

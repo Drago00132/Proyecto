@@ -21,7 +21,7 @@ function Roles() {
   const limite = 5;
 
   const buscarRol = () =>{
-    axios.get(`http://localhost:3100/api/roles/consultar/${busqueda}`)
+    axios.get(`/api/roles/consultar/${busqueda}`)
     .then((res) => {
       setRol(Array.isArray(res.data) ? res.data : [res.data]);
       setTotalPaginas(1);
@@ -32,7 +32,7 @@ function Roles() {
   };
 
     const obtenerRol = (page = 1) => {
-      axios.get(`http://localhost:3100/api/roles/listar?page=${page}&limit=${limite}`).then((res)=>{
+      axios.get(`/api/roles/listar?page=${page}&limit=${limite}`).then((res)=>{
         setRol(res.data.rol || []);
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
@@ -136,7 +136,7 @@ function Agregar({cerrarmodal}){
       return;
     }
 
-    axios.post("http://localhost:3100/api/roles/agregar",{
+    axios.post("/api/roles/agregar",{
       rol: Rol
     })
     .then(()=>{
@@ -181,7 +181,7 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    axios.put(`http://localhost:3100/api/roles/actualizar/${datos.id_rol}`,{
+    axios.put(`/api/roles/actualizar/${datos.id_rol}`,{
       id_rol: Id_rol,
       rol: Rol
     }).then(()=>{
@@ -210,7 +210,7 @@ function Editar({datos,cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/roles/eliminar/${id}`,
+      url: `/api/roles/eliminar/${id}`,
       mensajeExito: "Rol eliminado",
       mensajeError: "el Rol no fue eliminado",
       cerrarmodal

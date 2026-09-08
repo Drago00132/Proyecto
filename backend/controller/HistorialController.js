@@ -102,6 +102,10 @@ exports.agregarHistorial = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
+    if (descripcion_prodlema.trim().length < 10) {
+        return res.status(400).json({ message: 'La descripción del problema debe tener al menos 10 caracteres.' });
+    }
+
     try {
         const yaActivo = await historial_mo.tieneHistorialActivo(id_motos);
         if (yaActivo) {
@@ -202,6 +206,10 @@ exports.actualizarHistorial = async (req, res) => {
 
         if (!dataUpdate.id_motos || !dataUpdate.descripcion_prodlema || !dataUpdate.fecha_inicio) {
             return res.status(400).json({ message: 'Todos los campos obligatorios deben estar presentes' });
+        }
+
+        if (dataUpdate.descripcion_prodlema.trim().length < 10) {
+            return res.status(400).json({ message: 'La descripción del problema debe tener al menos 10 caracteres.' });
         }
 
         await historial_mo.update(req.params.id, dataUpdate);

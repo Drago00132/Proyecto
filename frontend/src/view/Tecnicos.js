@@ -21,7 +21,7 @@ function Tecnicos() {
   const limite = 5;
 
   const buscarTecnico = () =>{
-    axios.get(`http://localhost:3100/api/tecnico/consultar/${busqueda}`)
+    axios.get(`/api/tecnico/consultar/${busqueda}`)
     .then((res) => {
       setTecnico(Array.isArray(res.data) ? res.data : [res.data]);
       setTotalPaginas(1);
@@ -32,7 +32,7 @@ function Tecnicos() {
   };
 
     const obtenerTecnicos = () => {
-      axios.get(`http://localhost:3100/api/tecnico/listar?page=${paginaActual}&limit=${limite}`).then((res)=>{
+      axios.get(`/api/tecnico/listar?page=${paginaActual}&limit=${limite}`).then((res)=>{
         setTecnico(res.data.tecnico || []);
         setTotalPaginas(res.data.totalPages || 1);
         setPaginaActual(res.data.currentPage || 1);
@@ -139,7 +139,7 @@ const subirArchivo = async () => {
 
   setCargando(true);
   try {
-    const res = await axios.post('http://localhost:3100/api/usuarios/cargar-masiva', formData, {
+    const res = await axios.post('/api/usuarios/cargar-masiva', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
 
@@ -192,7 +192,7 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    axios.put(`http://localhost:3100/api/tecnico/actualizar/${datos.id_tecnico}`,{
+    axios.put(`/api/tecnico/actualizar/${datos.id_tecnico}`,{
       id_tecnico:Id_tecnico,
       numero_identidad:Numero_identidad,
       reparaciones_asignadas:Reparaciones_asignadas
@@ -223,7 +223,7 @@ function Editar({datos,cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Tecnico = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/tecnico/eliminar/${id}`,
+      url: `/api/tecnico/eliminar/${id}`,
       mensajeExito: "Tecnico eliminado",
       mensajeError: "el Tecnico no fue eliminado",
       cerrarmodal

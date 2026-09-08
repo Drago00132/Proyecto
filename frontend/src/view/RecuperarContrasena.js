@@ -18,7 +18,7 @@ function RecuperarContrasena() {
 
         setEnviando(true);
         try {
-            const response = await fetch("http://localhost:3100/api/login/solicitar-recuperacion", {
+            const response = await fetch("/api/login/solicitar-recuperacion", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ correo_electronico: correo })

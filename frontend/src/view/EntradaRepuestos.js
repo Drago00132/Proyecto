@@ -19,7 +19,7 @@ function EntradaRepuestos() {
   const limite = 5;
 
   const buscarEntrada = () => {
-    axios.get(`http://localhost:3100/api/entradaRepuestos/consultar/${busqueda}`)
+    axios.get(`/api/entradaRepuestos/consultar/${busqueda}`)
     .then((res) => {
       setEntradas(Array.isArray(res.data) ? res.data : [res.data]);
       setTotalPaginas(1);
@@ -30,7 +30,7 @@ function EntradaRepuestos() {
   };
 
   const obtenerEntrada = (page = 1) => {
-    axios.get(`http://localhost:3100/api/entradaRepuestos/listar?page=${page}&limit=${limite}`).then((res) => {
+    axios.get(`/api/entradaRepuestos/listar?page=${page}&limit=${limite}`).then((res) => {
       setEntradas(res.data.entradas || []);
       setTotalPaginas(res.data.totalPages || 1);
       setPaginaActual(res.data.currentPage || 1);
@@ -134,17 +134,17 @@ function useRepuestosYDistribuidores() {
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    axios.get('http://localhost:3100/api/repuestos/listar?limit=999999')
+    axios.get('/api/repuestos/listar?limit=999999')
       .then((res) => setRepuestos(res.data.repuesto || []))
       .catch((error) => console.error("Error al mostrar repuestos: ", error));
 
-    axios.get('http://localhost:3100/api/distribuidores/listar?limit=999999')
+    axios.get('/api/distribuidores/listar?limit=999999')
       .then((res) => setDistribuidores(res.data.distribuidores || []))
       .catch((error) => console.error("Error al mostrar distribuidores: ", error));
 
     // RF-29/RF-31: el usuario que registra la entrada se selecciona de una lista,
     // no se toma automáticamente de la sesión.
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
+    axios.get('/api/usuarios/listar?limit=999999', config)
       .then((res) => setUsuarios(res.data.usuarios || res.data || []))
       .catch((error) => console.error("Error al mostrar usuarios: ", error));
   }, []);
@@ -153,12 +153,22 @@ function useRepuestosYDistribuidores() {
 }
 
 function Agregar({ cerrarmodal }) {
-  const [Fecha_entrada, setFecha_entrada] = useState("");
+  // RF-29 (ampliado): para Recepcionista, la fecha de entrada y el usuario
+  // responsable ya no son campos manuales — se ocultan y se autocompletan
+  // con la fecha de hoy y con el usuario de la sesión activa. Administrador
+  // y Súper Administrador conservan el comportamiento anterior (campos
+  // manuales, como pedía RF-29 originalmente).
+  const rol = Number(localStorage.getItem("rol"));
+  const esRecepcionista = rol === 16;
+  const hoy = new Date().toISOString().slice(0, 10);
+
+  const [Fecha_entrada, setFecha_entrada] = useState(esRecepcionista ? hoy : "");
   const [Cantidad_ingresada, setCantidad_ingresada] = useState("");
   const [Id_repuestos, setId_repuestos] = useState("");
   const [Id_distribuidor, setId_distribuidor] = useState("");
-  // RF-29: el usuario responsable se selecciona de una lista, como los demás
-  // campos; se preselecciona el usuario de la sesión activa por comodidad.
+  // RF-29: para Administrador/Súper Administrador el usuario responsable se
+  // sigue seleccionando de una lista; se preselecciona el de la sesión activa
+  // por comodidad. Para Recepcionista, ver nota arriba: queda fijo y oculto.
   const [Numero_identidad, setNumero_identidad] = useState(localStorage.getItem("numero_identidad") || "");
   const { repuestos, distribuidores, usuarios } = useRepuestosYDistribuidores();
 
@@ -170,7 +180,7 @@ function Agregar({ cerrarmodal }) {
       return;
     }
 
-    axios.post("http://localhost:3100/api/entradaRepuestos/agregar", {
+    axios.post("/api/entradaRepuestos/agregar", {
       fecha_entrada: Fecha_entrada,
       cantidad_ingresada: Cantidad_ingresada,
       id_repuestos: Id_repuestos,
@@ -189,10 +199,16 @@ function Agregar({ cerrarmodal }) {
 
   return (
     <form>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="entrada-agregar-fecha">Fecha de entrada</label>
-        <input id="entrada-agregar-fecha" className="form-control" onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
-      </div>
+      {esRecepcionista ? (
+        <p className="text-muted">
+          Se registrará con la fecha de hoy ({hoy}) y a tu nombre como usuario responsable.
+        </p>
+      ) : (
+        <div className="mb-3">
+          <label className="form-label" htmlFor="entrada-agregar-fecha">Fecha de entrada</label>
+          <input id="entrada-agregar-fecha" className="form-control" value={Fecha_entrada} onChange={(event) => { setFecha_entrada(event.target.value); }} type='date'></input>
+        </div>
+      )}
       <div className="mb-3">
         <label className="form-label" htmlFor="entrada-agregar-cantidad">Cantidad ingresada</label>
         <input id="entrada-agregar-cantidad" className="form-control" onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
@@ -215,15 +231,17 @@ function Agregar({ cerrarmodal }) {
           ))}
         </select>
       </div>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="entrada-agregar-usuario">Usuario responsable</label>
-        <select id="entrada-agregar-usuario" value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
-          <option value=''>seleccione un usuario</option>
-          {usuarios.map((u) => (
-            <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido} ({u.numero_identidad})</option>
-          ))}
-        </select>
-      </div>
+      {!esRecepcionista && (
+        <div className="mb-3">
+          <label className="form-label" htmlFor="entrada-agregar-usuario">Usuario responsable</label>
+          <select id="entrada-agregar-usuario" value={Numero_identidad} className="form-control" onChange={(event) => { setNumero_identidad(event.target.value); }}>
+            <option value=''>seleccione un usuario</option>
+            {usuarios.map((u) => (
+              <option key={u.numero_identidad} value={u.numero_identidad}>{u.nombre} {u.apellido} ({u.numero_identidad})</option>
+            ))}
+          </select>
+        </div>
+      )}
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
   )
@@ -257,7 +275,7 @@ function Editar({ datos, cerrarmodal }) {
       return;
     }
 
-    axios.put(`http://localhost:3100/api/entradaRepuestos/actualizar/${datos.id_entrada}`, {
+    axios.put(`/api/entradaRepuestos/actualizar/${datos.id_entrada}`, {
       fecha_entrada: Fecha_entrada,
       cantidad_ingresada: Cantidad_ingresada,
       id_repuestos: Id_repuestos,
@@ -321,7 +339,7 @@ function Editar({ datos, cerrarmodal }) {
 function Eliminar({ id, cerrarmodal }) {
   const eliminar = () => {
     eliminarRecurso({
-      url: `http://localhost:3100/api/entradaRepuestos/eliminar/${id}`,
+      url: `/api/entradaRepuestos/eliminar/${id}`,
       mensajeExito: "Entrada eliminada",
       mensajeError: "la Entrada no fue eliminada",
       cerrarmodal

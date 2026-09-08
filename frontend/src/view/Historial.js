@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../axiosConfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
@@ -37,7 +38,7 @@ function Historial() {
   const limite = 5;
 
   const buscarHistorial = () =>{
-    axios.get(`http://localhost:3100/api/historial/consultar/${busqueda}`)
+    axios.get(`/api/historial/consultar/${busqueda}`)
     .then((res) => {
       setHistorial(Array.isArray(res.data) ? res.data : [res.data]);
       setTotalPaginas(1);
@@ -49,7 +50,7 @@ function Historial() {
 
     const obtenerHistorial = (page = 1) => {
       const token = localStorage.getItem("token");
-      axios.get(`http://localhost:3100/api/historial/listar?page=${page}&limit=${limite}`, {
+      axios.get(`/api/historial/listar?page=${page}&limit=${limite}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -201,15 +202,15 @@ function useUsuariosTecnicoMotos() {
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999', config)
+    axios.get('/api/usuarios/listar?limit=999999', config)
       .then((res) => setUsuarios(res.data.usuarios || res.data || []))
       .catch((err) => console.error("Error al traer usuarios: ", err));
 
-    axios.get('http://localhost:3100/api/tecnico/listar?limit=999999', config)
+    axios.get('/api/tecnico/listar?limit=999999', config)
       .then((res) => setTecnico(res.data.tecnico || res.data || []))
       .catch((err) => console.error("Error al traer técnicos: ", err));
 
-    axios.get('http://localhost:3100/api/motos/listar?limit=999999', config)
+    axios.get('/api/motos/listar?limit=999999', config)
       .then((res) => setMotos(res.data.motos || res.data || []))
       .catch((err) => console.error("Error al traer motos: ", err));
   }, []);
@@ -250,6 +251,11 @@ function Agregar({cerrarmodal}){
 
     const validarFormulario = () => {
 
+    if (Descripcion_prodlema.trim().length < 10) {
+      toast.error("La descripción del problema debe tener al menos 10 caracteres.");
+      return false;
+    }
+
     if (Descripcion_prodlema.length > 1000) {
       toast.error("El problema no debe superar los 1000 caracteres.");
       return false;
@@ -273,7 +279,7 @@ function Agregar({cerrarmodal}){
       formData.append('fotos', Fotos);
     }
 
-    axios.post("http://localhost:3100/api/historial/agregar",formData,{
+    axios.post("/api/historial/agregar",formData,{
       headers: {
         'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}`
       }
@@ -292,7 +298,7 @@ function Agregar({cerrarmodal}){
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    axios.get('http://localhost:3100/api/repuestos/listar', config)
+    axios.get('/api/repuestos/listar', config)
     .then((res) => setRepuestosDisponibles(res.data.repuesto || res.data || []))
     .catch((err) => console.error("Error al traer repuestos: ", err));
   }, []);
@@ -485,6 +491,11 @@ function Editar({datos, cerrarmodal}){
 
     const validarFormulario = () => {
 
+    if (Descripcion_prodlema.trim().length < 10) {
+      toast.error("La descripción del problema debe tener al menos 10 caracteres.");
+      return false;
+    }
+
     if (Descripcion_prodlema.length > 1000) {
       toast.error("El problema no debe superar los 1000 caracteres.");
       return false;
@@ -496,7 +507,7 @@ function Editar({datos, cerrarmodal}){
     return;
     }
 
-    axios.put(`http://localhost:3100/api/historial/actualizar/${datos.id_historial}`, formData, {
+    axios.put(`/api/historial/actualizar/${datos.id_historial}`, formData, {
       headers: {'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
     }).then(() => {
       cerrarmodal();
@@ -531,11 +542,11 @@ function Editar({datos, cerrarmodal}){
     const token = localStorage.getItem("token");
     const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    axios.get('http://localhost:3100/api/repuestos/listar?limit=999999', config)
+    axios.get('/api/repuestos/listar?limit=999999', config)
       .then((res) => setRepuestosDisponibles(res.data.repuesto || []))
       .catch((err) => console.error(err));
 
-    axios.get(`http://localhost:3100/api/historial/consultar/${datos.id_historial}`, config)
+    axios.get(`/api/historial/consultar/${datos.id_historial}`, config)
       .then((res) => {
         if (res.data.repuestos && res.data.repuestos.length > 0) {
           setRepuestosSeleccionados(res.data.repuestos);
@@ -732,7 +743,7 @@ function Editar({datos, cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Historial = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/historial/eliminar/${id}`,
+      url: `/api/historial/eliminar/${id}`,
       mensajeExito: "Historial eliminado",
       mensajeError: "el Historial no fue eliminado",
       cerrarmodal
@@ -861,7 +872,7 @@ function Detalle({ datos, cerrarmodal }) {
   // --- Foto de evidencia (si existe) ---
   if (datos.fotos) {
     try {
-      const base64 = await cargarImagenComoBase64(`http://localhost:3100/uploads/${datos.fotos}`);
+      const base64 = await cargarImagenComoBase64(`${API_BASE_URL}/uploads/${datos.fotos}`);
       doc.setFont(undefined, 'bold');
       doc.text('Evidencia Fotográfica:', COL_IZQ, y);
       y += 6;
@@ -939,7 +950,7 @@ function Detalle({ datos, cerrarmodal }) {
           <strong>Evidencia Fotográfica:</strong>
           <div className="mt-2">
             <img
-              src={`http://localhost:3100/uploads/${datos.fotos}`}
+              src={`${API_BASE_URL}/uploads/${datos.fotos}`}
               alt="Evidencia"
               className="img-thumbnail"
               style={{ maxHeight: '300px', objectFit: 'contain' }}

@@ -88,7 +88,7 @@ function Registrarse(){
     }
 
     setEnviando(true);
-    axios.post("http://localhost:3100/api/usuarios/registrar-publico", {
+    axios.post("/api/usuarios/registrar-publico", {
       numero_identidad: Numero_identidad,
       tipo_documento: Tipo_documento,
       nombre: Nombre,
@@ -105,7 +105,7 @@ function Registrarse(){
       localStorage.setItem("numero_identidad", res.data.numero_identidad);
 
       toast.success(res.data.message || "Registro exitoso");
-      navigate("/");
+      navigate("/panel");
     })
     .catch((error) => {
       console.error("Error al registrarse: ", error);

@@ -20,7 +20,7 @@ function Distribuidores() {
   const limite = 5;
 
   const buscarDistribuidor = () => {
-    axios.get(`http://localhost:3100/api/distribuidores/consultar/${busqueda}`)
+    axios.get(`/api/distribuidores/consultar/${busqueda}`)
     .then((res) => {
       setDistribuidores(Array.isArray(res.data) ? res.data : [res.data]);
       setTotalPaginas(1);
@@ -31,7 +31,7 @@ function Distribuidores() {
   };
 
   const obtenerDistribuidor = (page = 1) => {
-    axios.get(`http://localhost:3100/api/distribuidores/listar?page=${page}&limit=${limite}`).then((res) => {
+    axios.get(`/api/distribuidores/listar?page=${page}&limit=${limite}`).then((res) => {
       setDistribuidores(res.data.distribuidores || []);
       setTotalPaginas(res.data.totalPages || 1);
       setPaginaActual(res.data.currentPage || 1);
@@ -153,7 +153,7 @@ function Agregar({ cerrarmodal }) {
       return;
     }
 
-    axios.post("http://localhost:3100/api/distribuidores/agregar", {
+    axios.post("/api/distribuidores/agregar", {
       nombre_distribuidor: Nombre_distribuidor,
       telefono: Telefono,
       correo: Correo,
@@ -224,7 +224,7 @@ function Editar({ datos, cerrarmodal }) {
       return;
     }
 
-    axios.put(`http://localhost:3100/api/distribuidores/actualizar/${datos.id_distribuidor}`, {
+    axios.put(`/api/distribuidores/actualizar/${datos.id_distribuidor}`, {
       nombre_distribuidor: Nombre_distribuidor,
       telefono: Telefono,
       correo: Correo,
@@ -273,7 +273,7 @@ function Editar({ datos, cerrarmodal }) {
 function Eliminar({ id, cerrarmodal }) {
   const eliminar = () => {
     eliminarRecurso({
-      url: `http://localhost:3100/api/distribuidores/eliminar/${id}`,
+      url: `/api/distribuidores/eliminar/${id}`,
       mensajeExito: "Distribuidor eliminado",
       mensajeError: "el Distribuidor no fue eliminado",
       cerrarmodal
@@ -289,7 +289,7 @@ function GestionarRepuestos({ id }) {
 
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:3100/api/repuestoDistribuidor/consultar/${id}`)
+      axios.get(`/api/repuestoDistribuidor/consultar/${id}`)
         .then((res) => {
           setRepuestos(res.data.relaciones || []);
           setCargando(false);

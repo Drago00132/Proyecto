@@ -26,7 +26,7 @@ function Motos() {
   // por id), se trae el listado completo y se filtra por placa en el cliente.
   const buscarMotos = () =>{
     const token = localStorage.getItem("token");
-    axios.get(`http://localhost:3100/api/motos/listar?limit=999999`, {
+    axios.get(`/api/motos/listar?limit=999999`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then((res) => {
@@ -45,7 +45,7 @@ function Motos() {
 
     const obtenerMoto = (page = 1) => {
       const token = localStorage.getItem("token");
-      axios.get(`http://localhost:3100/api/motos/listar?page=${page}&limit=${limite}`,{
+      axios.get(`/api/motos/listar?page=${page}&limit=${limite}`,{
         Headers:{
           'Authorization': `Bearer ${token}`
         }
@@ -170,7 +170,7 @@ function Agregar({cerrarmodal}){
       return;
     }
 
-    axios.post("http://localhost:3100/api/motos/agregar",{
+    axios.post("/api/motos/agregar",{
       numero_identidad: Numero_identidad,
       marca_moto: Marca_moto,
       modelo_moto: Modelo_moto,
@@ -187,7 +187,7 @@ function Agregar({cerrarmodal}){
   }
 
   useEffect(() => {
-    axios.get('http://localhost:3100/api/usuarios/listar?limit=999999')
+    axios.get('/api/usuarios/listar?limit=999999')
       .then((res) => {
         setUsuarios(res.data.usuarios || []);
       })
@@ -252,7 +252,7 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    axios.put(`http://localhost:3100/api/motos/actualizar/${datos.id_motos}`,{
+    axios.put(`/api/motos/actualizar/${datos.id_motos}`,{
       id_motos:Id_motos,
       numero_identidad: Numero_identidad,
       marca_moto: Marca_moto,
@@ -300,7 +300,7 @@ function Editar({datos,cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_Rol = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/motos/eliminar/${id}`,
+      url: `/api/motos/eliminar/${id}`,
       mensajeExito: "Moto eliminado",
       mensajeError: "la Moto no fue eliminado",
       cerrarmodal

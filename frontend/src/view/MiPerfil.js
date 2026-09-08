@@ -17,7 +17,7 @@ function MiPerfil() {
 
   const cargarPerfil = () => {
     const token = localStorage.getItem("token");
-    axios.get("http://localhost:3100/api/usuarios/mi-perfil", {
+    axios.get("/api/usuarios/mi-perfil", {
       headers: { 'Authorization': `Bearer ${token}` }
     }).then((res) => {
       const u = res.data;
@@ -49,9 +49,30 @@ function MiPerfil() {
       return;
     }
 
+    // Mismas reglas que validarUsuario() en Usuarios.js y CuentaFragment.kt
+    // (móvil): nombre/apellido solo letras, celular opcional pero, si se
+    // diligencia, exactamente 10 dígitos. Antes Mi Perfil no validaba nada de
+    // esto, a diferencia de esos otros dos formularios.
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+    if (!soloLetras.test(nombre)) {
+      toast.error("El nombre no debe contener números ni caracteres especiales.");
+      return;
+    }
+
+    if (apellido.trim() !== "" && !soloLetras.test(apellido)) {
+      toast.error("El apellido no debe contener números ni caracteres especiales.");
+      return;
+    }
+
+    if (celular.trim() !== "" && !/^\d{10}$/.test(celular)) {
+      toast.error("El numero de celular debe tener exactamente 10 dígitos.");
+      return;
+    }
+
     setGuardando(true);
     const token = localStorage.getItem("token");
-    axios.put("http://localhost:3100/api/usuarios/mi-perfil", {
+    axios.put("/api/usuarios/mi-perfil", {
       nombre,
       apellido,
       correo_electronico: correo,

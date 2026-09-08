@@ -31,7 +31,7 @@ function Usuario() {
       return;
     }
 
-    axios.get(`http://localhost:3100/api/usuarios/listar?limit=999999`)
+    axios.get(`/api/usuarios/listar?limit=999999`)
     .then((res) => {
       const texto = busqueda.trim().toLowerCase();
       const todos = res.data.usuarios || [];
@@ -57,7 +57,7 @@ function Usuario() {
   const obtenerUsuarios = (page = 1) => {
   const pagina = typeof page === 'number' ? page : 1;
 
-  axios.get(`http://localhost:3100/api/usuarios/listar?page=${pagina}&limit=${limite}`)
+  axios.get(`/api/usuarios/listar?page=${pagina}&limit=${limite}`)
     .then((res) => {
       setUsuarios(res.data.usuarios || []);
       setTotalPaginas(res.data.totalPages || 1);
@@ -232,7 +232,7 @@ function useUsuarioFormState() {
   const [roles, setRoles] = useState([]);
 
   useEffect(()=>{
-    axios.get("http://localhost:3100/api/usuarios/roles-asignables", {
+    axios.get("/api/usuarios/roles-asignables", {
       headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
     })
     .then((res)=>{
@@ -284,7 +284,7 @@ function Agregar({cerrarmodal}){
       return;
     }
 
-    axios.post("http://localhost:3100/api/usuarios/agregar",{
+    axios.post("/api/usuarios/agregar",{
       numero_identidad: Numero_identidad,
       tipo_documento: Tipo_documento,
       nombre: Nombre,
@@ -402,7 +402,7 @@ function Editar({datos,cerrarmodal}){
       return;
     }
 
-    axios.put(`http://localhost:3100/api/usuarios/actualizar/${datos.numero_identidad}`,{
+    axios.put(`/api/usuarios/actualizar/${datos.numero_identidad}`,{
       numero_identidad:Numero_identidad,
       tipo_documento: Tipo_documento,
       nombre: Nombre,
@@ -481,7 +481,7 @@ function Editar({datos,cerrarmodal}){
 function Eliminar ({id, cerrarmodal}){
   const eliminar_usuario = ()=>{
     eliminarRecurso({
-      url: `http://localhost:3100/api/usuarios/eliminar/${id}`,
+      url: `/api/usuarios/eliminar/${id}`,
       mensajeExito: "usuario eliminado",
       mensajeError: "el usuario no fue eliminado",
       cerrarmodal

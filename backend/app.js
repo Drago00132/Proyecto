@@ -15,7 +15,13 @@ const app = express();
 
 app.disable('x-powered-by');
 
-const allowedOrigins = ['http://localhost:3000']; 
+// En desarrollo local siempre se permite http://localhost:3000. En
+// producción se agrega además FRONTEND_URL (la misma variable que ya se usa
+// para armar el enlace de recuperación de contraseña), con la URL real del
+// frontend desplegado (Netlify). Antes este arreglo solo tenía localhost, lo
+// que habría bloqueado con CORS cualquier petición desde el frontend ya
+// desplegado.
+const allowedOrigins = ['http://localhost:3000', process.env.FRONTEND_URL].filter(Boolean);
 
 app.use(cors({ origin: allowedOrigins })); 
 app.use(express.json());

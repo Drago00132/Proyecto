@@ -42,7 +42,7 @@ function Iniciarsesion() {
 
         setEnviando(true);
         try {
-            const response = await fetch("http://localhost:3100/api/login/login", { 
+            const response = await fetch("/api/login/login", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -86,7 +86,7 @@ function Iniciarsesion() {
 
         setEnviando(true);
         try {
-            const response = await fetch("http://localhost:3100/api/login/verificar-2fa", {
+            const response = await fetch("/api/login/verificar-2fa", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -131,7 +131,7 @@ function Iniciarsesion() {
 
                                         <form onSubmit={handleSubmit}>
                                             <div className="md-3">
-                                                <label className="form-label" htmlFor="login-usuario">Usuario</label>
+                                                <label className="form-label" htmlFor="login-usuario">Correo</label>
                                                 <input placeholder='usuario' id="login-usuario" className="form-control" type="text" name="usuario" value={form.usuario} onChange={handleChange} />
                                             </div>
 

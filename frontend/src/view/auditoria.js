@@ -8,7 +8,7 @@ function AuditoriaRepuestos() {
   const limite = 10;
 
   useEffect(() => {
-    axios.get('http://localhost:3100/api/repuestos/auditoria')
+    axios.get('/api/repuestos/auditoria')
       .then((res) => setAuditoria(res.data.auditoria || []))
       .catch((error) => console.error('Error al cargar la auditoría: ', error));
   }, []);
