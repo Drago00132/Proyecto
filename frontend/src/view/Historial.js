@@ -373,7 +373,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
         )}
       <div className="mb-3">
         <label className="form-label" htmlFor="historial-agregar-descripcion-problema">Descripción del problema</label>
-        <input id="historial-agregar-descripcion-problema" className="form-control" onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' required></input>
+        <input id="historial-agregar-descripcion-problema" className="form-control" onChange={(event) => setDescripcion_prodlema(event.target.value)} type='text' maxLength={1000} required></input>
       </div>
       {(rol === 1 || rol === 17) && (
       <div className="mb-3">
@@ -389,7 +389,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       {(rol === 1 || rol === 17) &&(
       <div className="mb-3">
         <label className="form-label" htmlFor="historial-agregar-descripcion-trabajo">Descripción del trabajo</label>
-        <input id="historial-agregar-descripcion-trabajo" className="form-control" onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
+        <input id="historial-agregar-descripcion-trabajo" className="form-control" onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text' maxLength={1000}></input>
       </div>
       )}
       <div className="mb-3">
@@ -413,7 +413,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
       ))}
       </select>
 
-      <input type="number" className="form-control me-2" style={{ width: '100px' }}min="1"value={item.cantidad} onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}placeholder="Cant."/>
+      <input type="number" className="form-control me-2" style={{ width: '100px' }}min="1" max={2147483647}value={item.cantidad} onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}placeholder="Cant."/>
 
       {repuestosSeleccionados.length > 1 && (
         <button type="button" className="btn btn-danger btn-sm" onClick={() => eliminarFilaRepuesto(index)}>X</button>
@@ -636,6 +636,7 @@ function Editar({datos, cerrarmodal}){
           value={Descripcion_prodlema}
           onChange={(event) => setDescripcion_prodlema(event.target.value)}
           type='text'
+          maxLength={1000}
           required
         />
         {rol === 16 && (
@@ -656,7 +657,7 @@ function Editar({datos, cerrarmodal}){
       {(rol === 1 || rol === 2 || rol === 17) && (
       <div className="mb-3">
         <label className="form-label" htmlFor="historial-editar-descripcion-trabajo">Descripción del trabajo</label>
-        <input id="historial-editar-descripcion-trabajo" className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text'></input>
+        <input id="historial-editar-descripcion-trabajo" className="form-control" value={Descripcion_trabajo} onChange={(event) => setDescripcion_trabajo(event.target.value)} type='text' maxLength={1000}></input>
       </div>
       )}
       {(rol === 1 || rol === 3) && (
@@ -709,6 +710,7 @@ function Editar({datos, cerrarmodal}){
         className="form-control me-2"
         style={{ width: '100px' }}
         min="1"
+        max={2147483647}
         value={item.cantidad}
         onChange={(e) => cambiarValoresRepuesto(index, 'cantidad', e.target.value)}
         placeholder="Cant."

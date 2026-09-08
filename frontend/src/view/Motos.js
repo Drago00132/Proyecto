@@ -212,15 +212,15 @@ function Agregar({cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-agregar-marca">Marca de la moto</label>
-        <input id="moto-agregar-marca" className="form-control" onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
+        <input id="moto-agregar-marca" className="form-control" onChange={(event) => {setMarca_moto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-agregar-modelo">Modelo de la moto</label>
-        <input id="moto-agregar-modelo" className="form-control" onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
+        <input id="moto-agregar-modelo" className="form-control" onChange={(event) => {setModelo_moto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-agregar-placa">Placa</label>
-        <input id="moto-agregar-placa" className="form-control" onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
+        <input id="moto-agregar-placa" className="form-control" onChange={(event) => {setPlaca(event.target.value);}} type='text' maxLength={10}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
@@ -284,15 +284,15 @@ function Editar({datos,cerrarmodal}){
       )}
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-editar-marca">Marca de la moto</label>
-        <input id="moto-editar-marca" className="form-control" value={Marca_moto} onChange={(event) => {setMarca_moto(event.target.value);}} type='text'></input>
+        <input id="moto-editar-marca" className="form-control" value={Marca_moto} onChange={(event) => {setMarca_moto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-editar-modelo">Modelo de la moto</label>
-        <input id="moto-editar-modelo" className="form-control" value={Modelo_moto} onChange={(event) => {setModelo_moto(event.target.value);}} type='text'></input>
+        <input id="moto-editar-modelo" className="form-control" value={Modelo_moto} onChange={(event) => {setModelo_moto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="moto-editar-placa">Placa</label>
-        <input id="moto-editar-placa" className="form-control" value={Placa} onChange={(event) => {setPlaca(event.target.value);}} type='text'></input>
+        <input id="moto-editar-placa" className="form-control" value={Placa} onChange={(event) => {setPlaca(event.target.value);}} type='text' maxLength={10}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

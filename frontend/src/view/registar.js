@@ -132,7 +132,7 @@ function Registrarse(){
                             <form onSubmit={add}>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-identidad">Numero de identidad</label>
-                                    <input id="registro-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric'></input>
+                                    <input id="registro-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric' maxLength={10}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="registro-tipo-documento">Tipo de documento</label>
@@ -145,11 +145,11 @@ function Registrarse(){
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-nombre">Nombre</label>
-                                    <input id="registro-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+                                    <input id="registro-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text' maxLength={50}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-apellido">Apellido</label>
-                                    <input id="registro-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+                                    <input id="registro-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text' maxLength={50}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-fecha-nacimiento">Fecha de nacimiento</label>
@@ -157,15 +157,15 @@ function Registrarse(){
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-celular">Numero celular</label>
-                                    <input id="registro-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric'></input>
+                                    <input id="registro-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric' maxLength={10}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-email">Email</label>
-                                    <input id="registro-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+                                    <input id="registro-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email' maxLength={100}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="registro-contrasena">contraseña</label>
-                                    <input id="registro-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+                                    <input id="registro-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password' maxLength={20}></input>
                                 </div>
                                 <button className='btn btn-primary mb-3' type="submit" disabled={enviando}>
                                     {enviando ? "Registrando..." : "Registrarse"}

@@ -167,11 +167,11 @@ function Agregar({cerrarmodal}){
     <form>
       <div className="mb-3">
         <label className="form-label" htmlFor="repuesto-agregar-nombre">Nombre del repuesto</label>
-        <input id="repuesto-agregar-nombre" className="form-control" onChange={(event) => {setNombre_repuesto(event.target.value);}} type='text'></input>
+        <input id="repuesto-agregar-nombre" className="form-control" onChange={(event) => {setNombre_repuesto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="repuesto-agregar-cantidad">Cantidad</label>
-        <input id="repuesto-agregar-cantidad" className="form-control" onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
+        <input id="repuesto-agregar-cantidad" className="form-control" onChange={(event) => {setCantidad(event.target.value);}} type='number' max={2147483647}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
@@ -225,11 +225,11 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="repuesto-editar-nombre">Nombre del repuesto</label>
-        <input id="repuesto-editar-nombre" className="form-control" value={Nombre_repuesto} onChange={(event) => {setNombre_repuesto(event.target.value);}} type='text'></input>
+        <input id="repuesto-editar-nombre" className="form-control" value={Nombre_repuesto} onChange={(event) => {setNombre_repuesto(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="repuesto-editar-cantidad">Cantidad</label>
-        <input id="repuesto-editar-cantidad" className="form-control" value={Cantidad} onChange={(event) => {setCantidad(event.target.value);}} type='number'></input>
+        <input id="repuesto-editar-cantidad" className="form-control" value={Cantidad} onChange={(event) => {setCantidad(event.target.value);}} type='number' max={2147483647}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

@@ -156,7 +156,7 @@ function Agregar({cerrarmodal}){
     <form>
       <div className="mb-3">
         <label className="form-label" htmlFor="rol-agregar-nombre">Rol</label>
-        <input id="rol-agregar-nombre" className="form-control" onChange={(event) => {setRol(event.target.value);}} type='text'></input>
+        <input id="rol-agregar-nombre" className="form-control" onChange={(event) => {setRol(event.target.value);}} type='text' maxLength={20}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
@@ -202,7 +202,7 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="rol-editar-nombre">Rol</label>
-        <input id="rol-editar-nombre" className="form-control" value={Rol} onChange={(event) => {setRol(event.target.value);}} type='text'></input>
+        <input id="rol-editar-nombre" className="form-control" value={Rol} onChange={(event) => {setRol(event.target.value);}} type='text' maxLength={20}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>

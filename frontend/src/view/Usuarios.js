@@ -313,7 +313,7 @@ function Agregar({cerrarmodal}){
     <form>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-identidad">Numero de identidad</label>
-        <input id="usuario-agregar-identidad" className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='number'></input>
+        <input id="usuario-agregar-identidad" className="form-control" onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric' maxLength={10}></input>
       </div>
       <div className="mb-3">
         <label htmlFor="usuario-agregar-tipo-documento">Tipo de documento</label>
@@ -326,11 +326,11 @@ function Agregar({cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-nombre">Nombre</label>
-        <input id="usuario-agregar-nombre" className="form-control" onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+        <input id="usuario-agregar-nombre" className="form-control" onChange={(event) => {setNombre(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-apellido">Apellido</label>
-        <input id="usuario-agregar-apellido" className="form-control" onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+        <input id="usuario-agregar-apellido" className="form-control" onChange={(event) => {setApellido(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-fecha-nacimiento">Fecha de nacimiento</label>
@@ -338,15 +338,15 @@ function Agregar({cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-celular">Numero celular</label>
-        <input id="usuario-agregar-celular" className="form-control" onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
+        <input id="usuario-agregar-celular" className="form-control" onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric' maxLength={10}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-email">Email</label>
-        <input id="usuario-agregar-email" className="form-control" onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+        <input id="usuario-agregar-email" className="form-control" onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-contrasena">contraseña</label>
-        <input id="usuario-agregar-contrasena" className="form-control" onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+        <input id="usuario-agregar-contrasena" className="form-control" onChange={(event) => {setContrasena(event.target.value);}} type='password' maxLength={20}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-agregar-rol">Rol</label>
@@ -429,7 +429,7 @@ function Editar({datos,cerrarmodal}){
     <form>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-identidad">Numero de identidad</label>
-        <input id="usuario-editar-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='number' disabled></input>
+        <input id="usuario-editar-identidad" className="form-control" value={Numero_identidad} onChange={(event) => {setNumero_identidad(event.target.value);}} type='text' inputMode='numeric' maxLength={10} disabled></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-tipo-documento">Tipo de documento</label>
@@ -442,11 +442,11 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-nombre">Nombre</label>
-        <input id="usuario-editar-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text'></input>
+        <input id="usuario-editar-nombre" className="form-control" value={Nombre} onChange={(event) => {setNombre(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-apellido">Apellido</label>
-        <input id="usuario-editar-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text'></input>
+        <input id="usuario-editar-apellido" className="form-control" value={Apellido} onChange={(event) => {setApellido(event.target.value);}} type='text' maxLength={50}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-fecha-nacimiento">Fecha de nacimiento</label>
@@ -454,15 +454,15 @@ function Editar({datos,cerrarmodal}){
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-celular">Numero celular</label>
-        <input id="usuario-editar-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='number'></input>
+        <input id="usuario-editar-celular" className="form-control" value={Numero_celular} onChange={(event) => {setNumero_celular(event.target.value);}} type='text' inputMode='numeric' maxLength={10}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-email">Email</label>
-        <input id="usuario-editar-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email'></input>
+        <input id="usuario-editar-email" className="form-control" value={Correo_electronico} onChange={(event) => {setCorreo_electrico(event.target.value);}} type='email' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-contrasena">contraseña</label>
-        <input id="usuario-editar-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password'></input>
+        <input id="usuario-editar-contrasena" className="form-control" value={Contrasena} onChange={(event) => {setContrasena(event.target.value);}} type='password' maxLength={20}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="usuario-editar-rol">Rol</label>

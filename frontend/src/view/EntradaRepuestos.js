@@ -215,7 +215,7 @@ function Agregar({ cerrarmodal }) {
       )}
       <div className="mb-3">
         <label className="form-label" htmlFor="entrada-agregar-cantidad">Cantidad ingresada</label>
-        <input id="entrada-agregar-cantidad" className="form-control" onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
+        <input id="entrada-agregar-cantidad" className="form-control" onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number' max={2147483647}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="entrada-agregar-repuesto">Repuesto</label>
@@ -306,7 +306,7 @@ function Editar({ datos, cerrarmodal }) {
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="entrada-editar-cantidad">Cantidad ingresada</label>
-        <input id="entrada-editar-cantidad" className="form-control" value={Cantidad_ingresada} onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number'></input>
+        <input id="entrada-editar-cantidad" className="form-control" value={Cantidad_ingresada} onChange={(event) => { setCantidad_ingresada(event.target.value); }} type='number' max={2147483647}></input>
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="entrada-editar-repuesto">Repuesto</label>

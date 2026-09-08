@@ -125,19 +125,19 @@ function MiPerfil() {
           <form onSubmit={guardar}>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-nombre">Nombre</label>
-              <input id="miperfil-nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' />
+              <input id="miperfil-nombre" className="form-control" value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' maxLength={50} />
             </div>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-apellido">Apellido</label>
-              <input id="miperfil-apellido" className="form-control" value={apellido} onChange={(e) => setApellido(e.target.value)} type='text' />
+              <input id="miperfil-apellido" className="form-control" value={apellido} onChange={(e) => setApellido(e.target.value)} type='text' maxLength={50} />
             </div>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-correo">Correo electrónico</label>
-              <input id="miperfil-correo" className="form-control" value={correo} onChange={(e) => setCorreo(e.target.value)} type='email' required />
+              <input id="miperfil-correo" className="form-control" value={correo} onChange={(e) => setCorreo(e.target.value)} type='email' maxLength={100} required />
             </div>
             <div className="mb-3">
               <label className="form-label" htmlFor="miperfil-celular">Número celular</label>
-              <input id="miperfil-celular" className="form-control" value={celular} onChange={(e) => setCelular(e.target.value)} type='text' />
+              <input id="miperfil-celular" className="form-control" value={celular} onChange={(e) => setCelular(e.target.value)} type='text' inputMode='numeric' maxLength={10} />
             </div>
 
             <div className="d-grid gap-2">

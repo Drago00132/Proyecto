@@ -178,23 +178,23 @@ function Agregar({ cerrarmodal }) {
     <form>
       <div className="mb-3">
         <label className="form-label">Nombre del distribuidor</label>
-        <input id="distribuidor-agregar-nombre" className="form-control" onChange={(event) => { setNombre_distribuidor(event.target.value); }} type='text'></input>
+        <input id="distribuidor-agregar-nombre" className="form-control" onChange={(event) => { setNombre_distribuidor(event.target.value); }} type='text' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Teléfono</label>
-        <input id="distribuidor-agregar-telefono" className="form-control" onChange={(event) => { setTelefono(event.target.value); }} type='number'></input>
+        <input id="distribuidor-agregar-telefono" className="form-control" onChange={(event) => { setTelefono(event.target.value); }} type='tel' inputMode='numeric' maxLength={19}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Correo</label>
-        <input id="distribuidor-agregar-correo" className="form-control" onChange={(event) => { setCorreo(event.target.value); }} type='email'></input>
+        <input id="distribuidor-agregar-correo" className="form-control" onChange={(event) => { setCorreo(event.target.value); }} type='email' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Dirección</label>
-        <input id="distribuidor-agregar-Direccion" className="form-control" onChange={(event) => { setDireccion(event.target.value); }} type='text'></input>
+        <input id="distribuidor-agregar-Direccion" className="form-control" onChange={(event) => { setDireccion(event.target.value); }} type='text' maxLength={150}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Contacto</label>
-        <input id="distribuidor-agregar-contacto" className="form-control" onChange={(event) => { setContacto(event.target.value); }} type='text'></input>
+        <input id="distribuidor-agregar-contacto" className="form-control" onChange={(event) => { setContacto(event.target.value); }} type='text' maxLength={100}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={add}>Agregar</button>
     </form>
@@ -251,23 +251,23 @@ function Editar({ datos, cerrarmodal }) {
       </div>
       <div className="mb-3">
         <label className="form-label">Nombre del distribuidor</label>
-        <input id="distribuidor-editar-nombre" className="form-control" value={Nombre_distribuidor} onChange={(event) => { setNombre_distribuidor(event.target.value); }} type='text'></input>
+        <input id="distribuidor-editar-nombre" className="form-control" value={Nombre_distribuidor} onChange={(event) => { setNombre_distribuidor(event.target.value); }} type='text' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Teléfono</label>
-        <input id="distribuidor-editar-telefono" className="form-control" value={Telefono} onChange={(event) => { setTelefono(event.target.value); }} type='number'></input>
+        <input id="distribuidor-editar-telefono" className="form-control" value={Telefono} onChange={(event) => { setTelefono(event.target.value); }} type='tel' inputMode='numeric' maxLength={19}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Correo</label>
-        <input id="distribuidor-editar-correo" className="form-control" value={Correo} onChange={(event) => { setCorreo(event.target.value); }} type='email'></input>
+        <input id="distribuidor-editar-correo" className="form-control" value={Correo} onChange={(event) => { setCorreo(event.target.value); }} type='email' maxLength={100}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Dirección</label>
-        <input id="distribuidor-editar-direccion" className="form-control" value={Direccion} onChange={(event) => { setDireccion(event.target.value); }} type='text'></input>
+        <input id="distribuidor-editar-direccion" className="form-control" value={Direccion} onChange={(event) => { setDireccion(event.target.value); }} type='text' maxLength={150}></input>
       </div>
       <div className="mb-3">
         <label className="form-label">Contacto</label>
-        <input id="distribuidor-editar-contacto" className="form-control" value={Contacto} onChange={(event) => { setContacto(event.target.value); }} type='text'></input>
+        <input id="distribuidor-editar-contacto" className="form-control" value={Contacto} onChange={(event) => { setContacto(event.target.value); }} type='text' maxLength={100}></input>
       </div>
       <button type="button" className='btn btn-primary mb-3' onClick={editar}>Guardar</button>
     </form>
