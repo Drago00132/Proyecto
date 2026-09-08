@@ -28,7 +28,11 @@ function Dashboard() {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000
+    // Por encima de la barra superior, el sidebar y la barra de botones
+    // fijos en móvil (.sigat-topbar 1040, .sigat-sidebar-backdrop 1045,
+    // .sigat-sidebar y .sigat-barra-acciones 1050 en theme.css), para que
+    // el modal siempre se vea completo y no quede tapado por ellos.
+    zIndex: 1100
   };
 
   // Todos los botones de acción (Descargar app, Nuevo servicio, Asignar
