@@ -9,7 +9,6 @@ function MiPerfil() {
   const [numeroIdentidad, setNumeroIdentidad] = useState("");
   const [tipoDocumento, setTipoDocumento] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
-  const [rol, setRol] = useState("");
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
@@ -24,7 +23,6 @@ function MiPerfil() {
       setNumeroIdentidad(u.numero_identidad || "");
       setTipoDocumento(u.tipo_documento || "");
       setFechaNacimiento(u.fecha_nacimiento ? String(u.fecha_nacimiento).split('T')[0] : "");
-      setRol(u.id_rol || "");
       setNombre(u.nombre || "");
       setApellido(u.apellido || "");
       setCorreo(u.correo_electronico || "");

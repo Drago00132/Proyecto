@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import AsignarTecnico from './AsignarTecnico';
 import { AgregarEntradaRepuesto } from './EntradaRepuestos';
 import { AgregarHistorial } from './Historial';
@@ -8,7 +8,6 @@ import InactividadTimer from '../components/InactividadTimer';
 function Dashboard() {
 
   const rol = Number(localStorage.getItem("rol"));
-  const navigate = useNavigate();
 
   const [mostrarAsignarTecnico, setMostrarAsignarTecnico] = useState(false);
   const [mostrarRegistrarEntrada, setMostrarRegistrarEntrada] = useState(false);

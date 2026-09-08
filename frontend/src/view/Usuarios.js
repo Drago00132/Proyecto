@@ -388,7 +388,7 @@ function Editar({datos,cerrarmodal}){
       setContrasena(datos.contrasena || "");
       setId_rol(datos.id_rol || "");
     }
-  },[datos]);
+  },[datos, setApellido, setContrasena, setCorreo_electrico, setFecha_nacimiento, setId_rol, setNombre, setNumero_celular, setNumero_identidad, setTipo_documento]);
 
   const editar= (event)=>{
     event.preventDefault();

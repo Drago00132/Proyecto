@@ -25,7 +25,7 @@ function Historial() {
       searchParams.delete('nuevo');
       setSearchParams(searchParams, { replace: true });
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarEliminar, setmostrarEliminar] = useState(false);
@@ -226,7 +226,6 @@ function Agregar({cerrarmodal}){
   const [Estado, setEstado] = useState("");
   const [Descripcion_trabajo, setDescripcion_trabajo] = useState("");
   const [Fotos, setFotos] = useState(null);
-  const [Fecha_inicio, setFecha_inicio] = useState("");
 
   const { Usuarios, Motos, Tecnico } = useUsuariosTecnicoMotos();
 
@@ -775,14 +774,6 @@ function Detalle({ datos, cerrarmodal }) {
   doc.setFont(undefined, 'normal');
 
   let y = 34;
-
-  const etiqueta = (texto, x, yPos) => {
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...AZUL);
-    doc.text(texto, x, yPos);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'normal');
-  };
 
   // --- Fila 1: Moto | Estado (con "badge") ---
   doc.setFontSize(11);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,7 +15,7 @@ function AsignarTecnico() {
     headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
   });
 
-  const cargarDatos = () => {
+  const cargarDatos = useCallback(() => {
     setCargando(true);
     Promise.all([
       axios.get("/api/tecnico/listar?limit=999999", cabecera()),
@@ -31,11 +31,11 @@ function AsignarTecnico() {
     }).finally(() => {
       setCargando(false);
     });
-  };
+  }, []);
 
   useEffect(() => {
     cargarDatos();
-  }, []);
+  }, [cargarDatos]);
 
   const asignar = (event) => {
     event.preventDefault();

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,7 +31,7 @@ function Tecnicos() {
     });
   };
 
-    const obtenerTecnicos = () => {
+    const obtenerTecnicos = useCallback(() => {
       axios.get(`/api/tecnico/listar?page=${paginaActual}&limit=${limite}`).then((res)=>{
         setTecnico(res.data.tecnico || []);
         setTotalPaginas(res.data.totalPages || 1);
@@ -39,7 +39,7 @@ function Tecnicos() {
       }).catch((error)=>{
         console.error("Error al mostrar Rol: ",error);
       });
-    };
+    }, [paginaActual, limite]);
 
     const cerrarModal =()=>{
       setMostrarAgregar(false);
@@ -50,7 +50,7 @@ function Tecnicos() {
 
     useEffect(()=>{
       obtenerTecnicos();
-    },[paginaActual]);
+    },[obtenerTecnicos]);
 
   return (
     <div className="App">
