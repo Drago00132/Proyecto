@@ -52,6 +52,19 @@ const tecnico = {
     delete: async (id) => {
         await db.query('DELETE FROM tecnico WHERE id_tecnico = ?', [id]);
         return true;
+    },
+
+    // RN: reparaciones_asignadas se mantiene sincronizado desde
+    // HistorialController (asignar/reasignar técnico, finalizar y eliminar
+    // un historial), no se edita solo desde el formulario de Editar Técnico.
+    incrementar: async (id_tecnico) => {
+        await db.query('UPDATE tecnico SET reparaciones_asignadas = reparaciones_asignadas + 1 WHERE id_tecnico = ?', [id_tecnico]);
+        return true;
+    },
+
+    decrementar: async (id_tecnico) => {
+        await db.query('UPDATE tecnico SET reparaciones_asignadas = GREATEST(reparaciones_asignadas - 1, 0) WHERE id_tecnico = ?', [id_tecnico]);
+        return true;
     }
 };
 

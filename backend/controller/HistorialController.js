@@ -1,4 +1,5 @@
 const historial_mo = require('../model/historialModelo');
+const tecnico_mo = require('../model/tecnicoModelo');
 const manejarError = require('../utils/manejarError');
 
 const CAMPOS_EDITABLES_POR_ROL = {
@@ -141,6 +142,14 @@ exports.agregarHistorial = async (req, res) => {
         };
 
         const id = await historial_mo.create(dataInsert);
+
+        // RN: si el historial nace con un técnico ya asignado (solo
+        // Administrador/Super Administrador pueden fijarlo desde la creación),
+        // esa reparación cuenta para el técnico desde el inicio.
+        if (dataInsert.id_tecnico) {
+            await tecnico_mo.incrementar(dataInsert.id_tecnico);
+        }
+
         res.status(201).json({ id_historial: id, ...dataInsert });
     } catch (error) {
         console.log("EL ERROR ES:", error);
@@ -208,11 +217,32 @@ exports.actualizarHistorial = async (req, res) => {
             return res.status(400).json({ message: 'Todos los campos obligatorios deben estar presentes' });
         }
 
-        if (dataUpdate.descripcion_prodlema.trim().length < 10) {
+        // Solo se valida el largo de la descripción cuando de verdad se está
+        // enviando un valor nuevo para ella. Antes se validaba siempre contra
+        // dataUpdate.descripcion_prodlema (que puede venir sin cambios desde
+        // "existe"), así que un historial con una descripción corta ya
+        // guardada (de antes de esta regla) bloqueaba cualquier otra edición
+        // permitida a ese rol, como que Recepcionista solo asigne técnico.
+        if (req.body.descripcion_prodlema !== undefined && dataUpdate.descripcion_prodlema.trim().length < 10) {
             return res.status(400).json({ message: 'La descripción del problema debe tener al menos 10 caracteres.' });
         }
 
         await historial_mo.update(req.params.id, dataUpdate);
+
+        // RN: mantener tecnico.reparaciones_asignadas sincronizado con la
+        // asignación/reasignación de técnico y con el cierre del historial.
+        if (seAsignaTecnicoNuevo) {
+            await tecnico_mo.incrementar(dataUpdate.id_tecnico);
+            if (existe.id_tecnico) {
+                await tecnico_mo.decrementar(existe.id_tecnico);
+            }
+        }
+
+        const pasaAFinalizado = dataUpdate.estado === 'Finalizado' && existe.estado !== 'Finalizado';
+        if (pasaAFinalizado && dataUpdate.id_tecnico) {
+            await tecnico_mo.decrementar(dataUpdate.id_tecnico);
+        }
+
         res.status(200).json({ message: 'Historial actualizado correctamente' });
     } catch (error) {
         console.log("EL ERROR ES:", error);
@@ -231,6 +261,14 @@ exports.eliminarHistorial = async (req, res) => {
         }
 
         await historial_mo.delete(req.params.id);
+
+        // RN: si tenía un técnico asignado y el historial no estaba
+        // Finalizado (ese conteo ya se descontó al finalizar), se libera esa
+        // reparación asignada.
+        if (existe.id_tecnico && existe.estado !== 'Finalizado') {
+            await tecnico_mo.decrementar(existe.id_tecnico);
+        }
+
         res.status(200).json({ message: 'Historial eliminado correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });

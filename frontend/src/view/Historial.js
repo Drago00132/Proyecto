@@ -143,7 +143,7 @@ function Historial() {
                       }}>
                         Ver Detalles
                       </button>
-                      {!(rol === 3 && historial.id_tecnico) && (
+                      {!(rol === 3 && historial.id_tecnico) && !(historial.estado === 'Finalizado' && rol !== 1 && rol !== 17) && (
                         <button type="button" className="btn btn-success btn-sm me-1" onClick={()=>{
                           setHistorialSelecionado(historial);
                           setMostrarEditar(true);}}>
