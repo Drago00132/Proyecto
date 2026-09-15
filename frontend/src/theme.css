@@ -258,11 +258,21 @@ a:hover {
 
 /* --- Botones de Editar/Eliminar (y similares) dentro de cada fila de
    tabla: se agrupan en una fila compacta en vez de quedar como bloques
-   sueltos muy grandes. */
+   sueltos muy grandes. Los botones en sí se reducen aquí (antes solo se
+   reducían en móvil): en vistas con varias acciones por fila -- por
+   ejemplo Servicio, que tiene "Ver Detalles" / "Actualizar" / "Eliminar"
+   en vez de solo Editar/Eliminar -- los botones por defecto (btn-sm) no
+   alcanzaban a caber en una sola línea dentro de la columna Acciones y se
+   partían en dos líneas, lo que engordaba esa fila (y por eso la tabla se
+   veía "más grande" / distinta a las demás). */
 .sigat-acciones {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+.sigat-acciones .btn {
+  padding: 5px 10px !important;
+  font-size: 0.78rem !important;
 }
 
 @media (max-width: 767.98px) {
@@ -395,12 +405,9 @@ a:hover {
     margin: 0 !important;
   }
 
-  /* --- Botones de Editar/Eliminar dentro de cada fila: más pequeños para
-     que no dominen la fila ni empujen tanto contenido hacia abajo. */
-  .sigat-acciones .btn {
-    padding: 6px 10px !important;
-    font-size: 0.75rem;
-  }
+  /* Nota: el tamaño reducido de los botones de .sigat-acciones ya no está
+     limitado a móvil -- ver la regla base de .sigat-acciones .btn más
+     arriba en este archivo -- así que aquí ya no hace falta repetirlo. */
 }
 
 /* --- Panel de inicio (PanelInicio.js): tarjetas de acceso rápido --- */
