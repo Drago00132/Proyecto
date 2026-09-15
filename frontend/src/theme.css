@@ -405,3 +405,87 @@ a:hover {
   box-shadow: 0 4px 12px rgba(22, 35, 46, 0.15);
   transform: translateY(-2px);
 }
+
+/* ============================================================
+   Retoque visual de escritorio: tarjetas, tablas y paginador.
+
+   Pedido del usuario: la vista de escritorio (Usuarios y las demás
+   pantallas con tabla: Técnicos, Motos, Repuesto, Distribuidores,
+   Roles, EntradaRepuestos, Historial, auditoria) se veía muy plana —
+   tarjeta blanca sin sombra, encabezado de tabla casi negro, poco
+   espaciado. Se centraliza aquí (igual que el resto del archivo) para
+   que aplique a todas esas vistas sin tocar cada una por separado,
+   porque todas comparten las mismas clases (.card, .table, .table-hover,
+   .table-dark, .btn-*) y viven dentro de .sigat-main. */
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(22, 35, 46, 0.08);
+}
+
+.sigat-main h2 {
+  color: var(--sigat-primary);
+  font-weight: 700;
+}
+
+/* Encabezado de tabla: el azul institucional (--sigat-primary) en vez del
+   tono --sigat-primary-dark, que en pantalla se leía casi negro. */
+.table-dark,
+.table-dark > :not(caption) > * > * {
+  background-color: var(--sigat-primary) !important;
+}
+.table thead th {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: none;
+}
+.table td {
+  vertical-align: middle;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
+/* Rayado (zebra) + resaltado al pasar el mouse, sobre cualquier tabla
+   dentro de .sigat-main (todas las vistas listadas arriba). */
+.sigat-main .table-hover > tbody > tr:nth-of-type(even) {
+  background-color: rgba(31, 78, 121, 0.035);
+}
+.sigat-main .table-hover > tbody > tr:hover {
+  background-color: rgba(31, 78, 121, 0.08);
+}
+
+/* Botones: bordes un poco más redondeados y una sombra suave que se
+   acentúa al pasar el mouse (el mismo tipo de elevación que ya tenían
+   las tarjetas de PanelInicio.js con .sigat-card-opcion). */
+.btn {
+  border-radius: 8px;
+  transition: box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-info {
+  box-shadow: 0 1px 3px rgba(22, 35, 46, 0.2);
+}
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-info:hover {
+  box-shadow: 0 3px 8px rgba(22, 35, 46, 0.25);
+}
+
+/* Botones outline deshabilitados (p. ej. "Anterior" del Paginador en la
+   página 1): antes quedaban casi invisibles por la opacidad reducida que
+   Bootstrap aplica por defecto sobre el color institucional claro. Ahora
+   se ven claramente "apagados" pero legibles, en vez de desaparecer. */
+.btn-outline-primary:disabled,
+.btn-outline-secondary:disabled {
+  opacity: 1 !important;
+  color: #9AA5B1 !important;
+  border-color: #D5DAE0 !important;
+}
