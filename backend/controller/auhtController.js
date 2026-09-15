@@ -139,7 +139,7 @@ exports.solicitarRecuperacion = async (req, res) => {
         await usuariosModelo.guardarTokenRecuperacion(usuario.numero_identidad, token, expira);
 
         const enlace = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/restablecer-contrasena?token=${token}`;
-        await enviarCorreoRecuperacion(usuario.correo_electronico, usuario.nombre, enlace);
+        await enviarCorreoRecuperacion(usuario.correo_electronico, usuario.nombre, enlace, MINUTOS_VIGENCIA_TOKEN);
 
         res.json({ message: "Se envió un enlace de recuperación a tu correo. Es válido por 15 minutos." });
 
