@@ -442,16 +442,10 @@ a:hover {
   background-color: var(--sigat-primary) !important;
 }
 .table thead th {
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
   border-bottom: none;
 }
 .table td {
   vertical-align: middle;
-  padding-top: 0.55rem;
-  padding-bottom: 0.55rem;
 }
 
 /* Rayado (zebra) + resaltado al pasar el mouse, sobre cualquier tabla
@@ -483,15 +477,4 @@ a:hover {
 .btn-danger:hover,
 .btn-info:hover {
   box-shadow: 0 3px 8px rgba(22, 35, 46, 0.25);
-}
-
-/* Botones outline deshabilitados (p. ej. "Anterior" del Paginador en la
-   página 1): antes quedaban casi invisibles por la opacidad reducida que
-   Bootstrap aplica por defecto sobre el color institucional claro. Ahora
-   se ven claramente "apagados" pero legibles, en vez de desaparecer. */
-.btn-outline-primary:disabled,
-.btn-outline-secondary:disabled {
-  opacity: 1 !important;
-  color: #9AA5B1 !important;
-  border-color: #D5DAE0 !important;
 }
