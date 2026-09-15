@@ -209,6 +209,12 @@ a:hover {
 .sigat-main {
   flex: 1;
   padding: 20px;
+  /* Deja espacio abajo para que la barra de botones fija (Descargar app,
+     Asignar técnico, Registrar entrada, position: fixed, bottom: 30px en
+     .sigat-barra-acciones) no tape el final del contenido -- por ejemplo el
+     botón "Anterior" del paginador -- cuando una tabla tiene pocas filas y
+     no hay suficiente contenido para empujarlo por encima de esa barra. */
+  padding-bottom: 110px;
   min-width: 0; /* evita que tablas/anchos fijos desborden el flex item */
 }
 
@@ -438,14 +444,14 @@ a:hover {
 .table thead th {
   font-weight: 600;
   letter-spacing: 0.02em;
-  padding-top: 0.85rem;
-  padding-bottom: 0.85rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
   border-bottom: none;
 }
 .table td {
   vertical-align: middle;
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
 }
 
 /* Rayado (zebra) + resaltado al pasar el mouse, sobre cualquier tabla
