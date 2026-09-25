@@ -12,11 +12,11 @@
 //     diferencia de repuestos, que sí tiene GET /repuestos/buscar por nombre). Esto es un
 //     vacío real del requisito, no solo un CP sin probar.
 
-jest.mock('../model/motosModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/motosModelo');
+jest.mock('../../../utils/manejarError');
 
-const { listarMotos, obtenerMotos } = require('../controller/motosController');
-const motos_mo = require('../model/motosModelo');
+const { listarMotos, obtenerMotos } = require('../../../controller/motosController');
+const motos_mo = require('../../../model/motosModelo');
 
 function crearRes() {
     return {

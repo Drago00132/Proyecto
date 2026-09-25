@@ -1,23 +1,8 @@
-// RF-M6.1 — Registrar entrada de repuestos
-// Casos de prueba asociados: CP-077, CP-078, CP-079b
-//
-// AVISO: CP-077 y CP-078 son los mismos números que ya se usaron en RF-M3.3 (intento de
-// modificar registro finalizado, y cliente intenta modificar). Misma duplicidad de
-// numeración que ya señalamos en RF-M5.
-//
-// FALTA — y no se puede resolver con una prueba unitaria:
-//   - CP-079b Verificación de aumento automático de stock: esto lo hace el trigger de la
-//     base de datos "sumar_stock_entrada", no el controlador ni el modelo en JavaScript.
-//     No hay nada que mockear aquí porque no hay ninguna línea de código de aplicación que
-//     ejecute esa suma — ocurre directamente en MySQL cuando se inserta la fila. Para
-//     probar esto de verdad haría falta una prueba de integración contra una base de datos
-//     real (crear una entrada y luego consultar el stock del repuesto para confirmar que
-//     subió), no una prueba unitaria con el modelo mockeado.
 
-jest.mock('../model/entradaRepuestoModelo');
+jest.mock('../../../model/entradaRepuestoModelo');
 
-const { crearEntrada } = require('../controller/entradaRepuestosController');
-const entrada_mo = require('../model/entradaRepuestoModelo');
+const { crearEntrada } = require('../../../controller/entradaRepuestosController');
+const entrada_mo = require('../../../model/entradaRepuestoModelo');
 
 function crearRes() {
     return {

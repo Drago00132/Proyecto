@@ -1,14 +1,11 @@
-// RF-M2.1 — Registrar repuesto
-// Casos de prueba asociados: CP-046, CP-047, CP-048
-//
-// Los 3 CP ya estaban cubiertos; no falta ninguno.
 
-jest.mock('../model/repuestoModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/repuestoModelo');
+jest.mock('../../../utils/manejarError');
+jest.mock('../../../config/db');
 
-const { crearRepuesto } = require('../controller/repuestosController');
-const repuesto_mo = require('../model/repuestoModelo');
-const manejarError = require('../utils/manejarError');
+const { crearRepuesto } = require('../../../controller/repuestosController');
+const repuesto_mo = require('../../../model/repuestoModelo');
+const manejarError = require('../../../utils/manejarError');
 
 function crearRes() {
     return {
@@ -25,7 +22,7 @@ describe('RF-M2.1 — Registrar repuesto', () => {
     test('CP-046 — Debería crear el repuesto y responder 201', async () => {
         repuesto_mo.create.mockResolvedValue(10);
 
-        const req = { body: { nombre_repuesto: 'Filtro de aceite', cantidad: 20 } };
+        const req = { usuario: { rol: 1, id: '1' }, body: { nombre_repuesto: 'Filtro de aceite', cantidad: 20 } };
         const res = crearRes();
 
         await crearRepuesto(req, res);
@@ -76,7 +73,7 @@ describe('RF-M2.1 — Registrar repuesto', () => {
     test('Debería permitir cantidad = 0 (0 es válido, distinto de "no enviado")', async () => {
         repuesto_mo.create.mockResolvedValue(1);
 
-        const req = { body: { nombre_repuesto: 'Filtro', cantidad: 0 } };
+        const req = { usuario: { rol: 1, id: '1' }, body: { nombre_repuesto: 'Filtro', cantidad: 0 } };
         const res = crearRes();
 
         await crearRepuesto(req, res);

@@ -1,25 +1,16 @@
-// RF-M1.2 — Iniciar sesión
-// Casos de prueba asociados: CP-006, CP-007, CP-008, CP-009
-//
-// Nota de alcance: las pruebas de 2FA (verificarCodigo2FA) NO van en este archivo, aunque
-// ocurren dentro del mismo flujo de login. El segundo factor de autenticación corresponde
-// a RNF-006 (un requisito NO funcional), no a este RF-M1.2. Si quieres, armamos un archivo
-// RNF-006.test.js aparte con ese mismo criterio.
-//
-// Los 4 casos de prueba de este RF-M1.2 ya estaban cubiertos; no falta ninguno.
 
-jest.mock('../model/auhtModel');
-jest.mock('../config/mailer');
+jest.mock('../../model/auhtModel');
+jest.mock('../../config/mailer');
 jest.mock('jsonwebtoken');
 jest.mock('bcrypt');
 jest.mock('crypto');
-jest.mock('../utils/manejarError');
+jest.mock('../../utils/manejarError');
 
-const { login } = require('../controller/auhtController');
-const usuariosModelo = require('../model/auhtModel');
+const { login } = require('../../controller/auhtController');
+const usuariosModelo = require('../../model/auhtModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const manejarError = require('../utils/manejarError');
+const manejarError = require('../../utils/manejarError');
 
 function crearRes() {
     return {
@@ -124,7 +115,8 @@ describe('RF-M1.2 — Iniciar sesión', () => {
             message: "Bienvenido",
             token: 'token-falso-valido-123',
             rol: usuarioSimulado.id_rol,
-            numero_identidad: usuarioSimulado.numero_identidad
+            numero_identidad: usuarioSimulado.numero_identidad,
+            nombre: usuarioSimulado.nombre
         });
     });
 

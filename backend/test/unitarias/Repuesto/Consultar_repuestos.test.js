@@ -1,22 +1,9 @@
-// RF-M2.2 — Consultar repuestos
-// Casos de prueba asociados: CP-049, CP-050, CP-051, CP-052
-//
-// FALTAN respecto al documento de Casos de Prueba, y por qué:
-//   - CP-051 Técnico accede al listado: no requiere una prueba propia — listarRepuest no
-//     distingue el rol de quien consulta, así que sería idéntica a la prueba genérica de
-//     "listar correctamente". El control de acceso real (quién SÍ puede entrar a este
-//     endpoint) vive en el middleware de la ruta (repuestosRutas.js), no en el controlador.
-//   - CP-052 Técnico intenta ver detalle (denegado): NO SE PUEDE escribir como prueba
-//     unitaria de controlador, por la misma razón — repuestosRutas.js hoy permite el rol
-//     Técnico en /consultar/:id, así que si esto se probara como prueba de integración de
-//     la ruta, HOY PASARÍA lo contrario de lo que pide este CP (dejaría entrar al Técnico
-//     en vez de bloquearlo). Vale la pena revisar si esa ruta debe restringirse más.
 
-jest.mock('../model/repuestoModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/repuestoModelo');
+jest.mock('../../../utils/manejarError');
 
-const { listarRepuest, obtenerRepuestos, buscarPorNombre } = require('../controller/repuestosController');
-const repuesto_mo = require('../model/repuestoModelo');
+const { listarRepuest, obtenerRepuestos, buscarPorNombre } = require('../../../controller/repuestosController');
+const repuesto_mo = require('../../../model/repuestoModelo');
 
 function crearRes() {
     return {

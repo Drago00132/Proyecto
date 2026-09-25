@@ -9,10 +9,10 @@ exports.ListarTecnico = async (req, res) => {
         const offset = (page - 1 ) * limit;
         let tecnico = await tecnico_mo.findAll();
 
-        // RF-37: el técnico solo debe ver su propia ficha, no el listado completo.
-        // Administrador y Super Administrador siguen viendo todas.
-        if (req.usuario.rol === 2) {
-            tecnico = tecnico.filter((t) => Number(t.numero_identidad) === Number(req.usuario.id));
+        // RN: el rol Técnico solo puede ver su propia ficha; los demás roles
+        // autorizados ven el listado completo.
+        if (Number(req.usuario?.rol) === 2) {
+            tecnico = tecnico.filter(t => String(t.numero_identidad) === String(req.usuario.id));
         }
 
         const totgalItems = tecnico.length;

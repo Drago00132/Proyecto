@@ -1,14 +1,10 @@
-// RF-M7.4 — Eliminar rol
-// Casos de prueba asociados: CP-086, CP-087, CP-088
-// AVISO: mismos números que CP-086 a 088 de RF-M3.5. Misma duplicidad ya señalada.
-// Los 3 CP ya estaban cubiertos; no falta ninguno.
 
-jest.mock('../model/RoleModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/RoleModelo');
+jest.mock('../../../utils/manejarError');
 
-const { eliminarRol } = require('../controller/RolController');
-const Rol_modelo = require('../model/RoleModelo');
-const manejarError = require('../utils/manejarError');
+const { eliminarRol } = require('../../../controller/RolController');
+const Rol_modelo = require('../../../model/RoleModelo');
+const manejarError = require('../../../utils/manejarError');
 
 function crearRes() {
     return {

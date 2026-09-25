@@ -5,7 +5,9 @@ const manejarError = require('../utils/manejarError');
 const CAMPOS_EDITABLES_POR_ROL = {
     1: ['id_motos', 'id_tecnico', 'descripcion_prodlema', 'estado', 'descripcion_trabajo', 'fecha_inicio', 'fecha_fin', 'repuestos', 'fotos'],
     17: ['id_motos', 'id_tecnico', 'descripcion_prodlema', 'estado', 'descripcion_trabajo', 'fecha_inicio', 'fecha_fin', 'repuestos', 'fotos'],
-    2: ['estado', 'descripcion_trabajo', 'repuestos', 'fotos'], 
+    // RN: el Técnico registra el avance del servicio, pero no puede reasignar
+    // el historial a otra motocicleta.
+    2: ['estado', 'descripcion_trabajo', 'repuestos', 'fotos'],
     16: ['id_tecnico'], 
     3: ['descripcion_prodlema', 'fotos'],
 };
@@ -14,6 +16,8 @@ const CAMPOS_CREACION_POR_ROL = {
     1: ['id_motos', 'id_tecnico', 'descripcion_prodlema', 'estado', 'descripcion_trabajo', 'repuestos', 'fotos'],
     17: ['id_motos', 'id_tecnico', 'descripcion_prodlema', 'estado', 'descripcion_trabajo', 'repuestos', 'fotos'],
     16: ['id_motos', 'id_tecnico', 'descripcion_prodlema', 'fotos'],
+    // RN: el Cliente solo reporta el problema; el estado inicial y los
+    // repuestos los fija el personal técnico o administrativo.
     3: ['id_motos', 'descripcion_prodlema', 'fotos'],
 };
 
@@ -23,8 +27,11 @@ exports.listarHistrial = async (req, res) => {
         const limit = Number.parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
 
-        const veTodoElHistorial = [1, 16, 17].includes(req.usuario.rol);
-        const filtroIdentidad = veTodoElHistorial ? null : req.usuario.id;
+        // RN: el Cliente solo ve su propio historial y el Técnico solo lo que
+        // tiene asignado; Recepcionista, Administrador y Súper Administrador
+        // ven el historial completo.
+        const rolActual = Number(req.usuario?.rol);
+        const filtroIdentidad = (rolActual === 3 || rolActual === 2) ? req.usuario.id : null;
 
         const filas = await historial_mo.findAll(filtroIdentidad);
 
@@ -81,11 +88,10 @@ exports.obtenerHistorial = async (req, res) => {
     try {
         const historial = await historial_mo.findById(req.params.id);
         if (!historial) return res.status(404).json({ message: 'Historial no encontrado' });
-        
-        const repuestos = await historial_mo.getRepuestosByHistorial(req.params.id);
-        historial.repuestos = repuestos; 
 
-        res.status(200).json(historial);
+        const repuestos = await historial_mo.getRepuestosByHistorial(req.params.id);
+
+        res.status(200).json({ ...historial, repuestos });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         manejarError(error, res);
@@ -152,7 +158,6 @@ exports.agregarHistorial = async (req, res) => {
 
         res.status(201).json({ id_historial: id, ...dataInsert });
     } catch (error) {
-        console.log("EL ERROR ES:", error);
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         manejarError(error, res);
     }
@@ -166,12 +171,15 @@ exports.actualizarHistorial = async (req, res) => {
         const existe = await historial_mo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Historial no encontrado' });
 
-        if (existe.estado === 'Finalizado' && rol !== 1 && rol !== 17) {
-            return res.status(409).json({ message: 'Este historial ya está finalizado y no se puede modificar.' });
-        }
-
         if (rol === 3 && existe.id_tecnico) {
             return res.status(409).json({ message: 'Ya se asignó un técnico a este historial; no puedes editarlo.' });
+        }
+
+        // RN: un historial ya Finalizado solo lo puede tocar un Administrador o
+        // un Súper Administrador; ningún otro rol puede modificarlo, ni
+        // siquiera para reasignar el técnico.
+        if (existe.estado === 'Finalizado' && rol !== 1 && rol !== 17) {
+            return res.status(409).json({ message: 'El historial ya está finalizado; no puede modificarse.' });
         }
 
         const repuestosActuales = await historial_mo.getRepuestosByHistorial(req.params.id);
@@ -245,7 +253,6 @@ exports.actualizarHistorial = async (req, res) => {
 
         res.status(200).json({ message: 'Historial actualizado correctamente' });
     } catch (error) {
-        console.log("EL ERROR ES:", error);
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         manejarError(error, res);
     }

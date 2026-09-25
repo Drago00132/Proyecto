@@ -16,10 +16,12 @@ exports.listarUsuarios = async (req, res) => {
         const limit = Number.parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
         const usuarios = await usuario_modelo.findAll();
-        const usuariosSinContrasena = usuarios.map(({ contrasena, ...resto }) => resto);
-        const totalItems = usuariosSinContrasena.length;
+        const totalItems = usuarios.length;
         const totalPages = Math.ceil(totalItems / limit);
-        const usuariosPaginados = usuariosSinContrasena.slice(offset, offset + limit);
+        // RNF-seguridad: el listado nunca debe exponer el hash de la contraseña.
+        const usuariosPaginados = usuarios
+            .slice(offset, offset + limit)
+            .map(({ contrasena, ...resto }) => resto);
         res.status(200).json({
             usuarios: usuariosPaginados,
             totalItems,
@@ -53,16 +55,20 @@ exports.crearUsuario = async (req, res) => {
         return res.status(400).json({ message: 'La contraseña debe tener entre 8 y 20 caracteres' });
     }
 
-    let rolFinal = Number(id_rol);
-    if (!req.usuario) {
-        rolFinal = 3;
-    } else {
+    // RN: en el registro público (sin sesión iniciada) el rol se fuerza a
+    // Cliente (3); nadie puede autoasignarse un rol enviándolo en el body.
+    let rolFinal = 3;
+    if (req.usuario) {
+        rolFinal = Number(id_rol);
+
         if (req.usuario.rol === 17 && rolFinal === 17) {
             return res.status(403).json({ message: 'Un super administrador no puede crear otro super administrador.' });
         }
+
+        // RN: cada rol solo puede registrar los roles que tiene permitido asignar.
         const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
         if (!idsPermitidos.includes(rolFinal)) {
-            return res.status(403).json({ message: 'No tienes permiso para asignar ese rol.' });
+            return res.status(403).json({ message: 'No tienes permiso para registrar un usuario con ese rol.' });
         }
     }
 
@@ -97,24 +103,19 @@ exports.actualizarUsuario = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos obligatorios deben estar presentes' });
     }
 
+    const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
+    const rolNuevo = Number(id_rol);
+
+    // RN: cada rol solo puede editar usuarios cuyo rol tenga permitido asignar.
+    if (!idsPermitidos.includes(rolNuevo)) {
+        return res.status(403).json({ message: 'No tienes permiso para asignar ese rol.' });
+    }
+
     try {
         const existe = await usuario_modelo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-        const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
         const rolActual = Number(existe.id_rol);
-        const rolNuevo = Number(id_rol);
-
-        // No se puede editar (ni cambiar de rol) a un usuario cuyo rol actual sea igual o
-        // superior al del que edita (según lo que ese rol tiene permitido asignar/gestionar).
-        if (!idsPermitidos.includes(rolActual)) {
-            return res.status(403).json({ message: 'No tienes permiso para editar un usuario con ese rol.' });
-        }
-
-        // No se puede asignar un rol que el que edita no tiene permitido asignar.
-        if (!idsPermitidos.includes(rolNuevo)) {
-            return res.status(403).json({ message: 'No tienes permiso para asignar ese rol.' });
-        }
 
         // Un super administrador no puede convertir a otro usuario en super administrador
         // (solo puede editar a los que ya lo eran).
@@ -147,8 +148,7 @@ exports.eliminarUsuario = async (req, res) => {
         const existe = await usuario_modelo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-        // No se puede eliminar a un usuario cuyo rol actual sea igual o superior al del
-        // que elimina (misma tabla ROLES_ASIGNABLES usada para crear/editar usuarios).
+        // RN: cada rol solo puede eliminar usuarios cuyo rol tenga permitido asignar.
         const idsPermitidos = ROLES_ASIGNABLES[req.usuario.rol] || [];
         if (!idsPermitidos.includes(Number(existe.id_rol))) {
             return res.status(403).json({ message: 'No tienes permiso para eliminar un usuario con ese rol.' });
@@ -195,7 +195,6 @@ exports.cargaMasiva = async (req, res) => {
             return res.status(400).json({ message: 'No se recibió ningún archivo' });
         }
 
-        console.log("Ruta del archivo temporal:", req.file.path);
 
         const workbook = xlsx.readFile(req.file.path);
         
@@ -203,8 +202,10 @@ exports.cargaMasiva = async (req, res) => {
         const sheet = workbook.Sheets[sheetName];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-        console.log("Datos procesados:", data);
 
+        // RN: esta vía solo crea técnicos. El id_rol se fuerza a 2 en cada fila,
+        // sin importar lo que traiga el archivo, y si una fila falla se detiene
+        // todo el proceso para no dejar una carga a medias.
         for (const usuario of data) {
             await usuario_modelo.create({ ...usuario, id_rol: 2 });
         }

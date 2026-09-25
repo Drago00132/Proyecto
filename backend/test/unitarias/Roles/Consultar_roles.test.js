@@ -1,12 +1,9 @@
-// RF-M7.2 — Consultar roles
-// Casos de prueba asociados: CP-084 Consulta exitosa.
-// AVISO: mismo número que CP-084 de RF-M3.5. Misma duplicidad de numeración ya señalada.
 
-jest.mock('../model/RoleModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/RoleModelo');
+jest.mock('../../../utils/manejarError');
 
-const { ListarRol, obtenerRol } = require('../controller/RolController');
-const Rol_modelo = require('../model/RoleModelo');
+const { ListarRol, obtenerRol } = require('../../../controller/RolController');
+const Rol_modelo = require('../../../model/RoleModelo');
 
 function crearRes() {
     return {

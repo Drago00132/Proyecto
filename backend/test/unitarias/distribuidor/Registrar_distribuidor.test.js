@@ -1,18 +1,10 @@
-// RF-M5.1 — Registrar distribuidor
-// Casos de prueba asociados: CP-069 Registro exitoso. CP-070 Nombre vacío.
-//
-// AVISO: estos mismos números (CP-069, CP-070) ya se usaron en RF-M3.1 (archivo inválido
-// adjunto, y recepcionista registra en nombre del cliente). Es una duplicidad real del
-// documento de Casos de Prueba original, no un error de este archivo — probablemente al
-// numerar RF-M3 y RF-M5 se reinició el contador por accidente. Vale la pena corregir la
-// numeración en el documento maestro para que cada CP sea único en todo el proyecto.
 
-jest.mock('../model/distribuidorModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/distribuidorModelo');
+jest.mock('../../../utils/manejarError');
 
-const { crearDistribuidor } = require('../controller/distribuidoresController');
-const distribuidor_mo = require('../model/distribuidorModelo');
-const manejarError = require('../utils/manejarError');
+const { crearDistribuidor } = require('../../../controller/distribuidoresController');
+const distribuidor_mo = require('../../../model/distribuidorModelo');
+const manejarError = require('../../../utils/manejarError');
 
 function crearRes() {
     return {

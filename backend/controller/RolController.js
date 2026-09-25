@@ -71,17 +71,18 @@ exports.eliminarRol = async (req, res) => {
         const existe = await Rol_modelo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Rol no encontrado' });
 
-        const nombreRol = (existe.rol || '').trim().toLowerCase();
+        // RN-023: los cinco roles base del sistema no se pueden eliminar. La
+        // comparación normaliza mayúsculas y espacios sobrantes.
+        const nombreRol = String(existe.rol || '').trim().toLowerCase();
         if (ROLES_BASE.includes(nombreRol)) {
-            return res.status(409).json({
-                message: 'No se puede eliminar un rol base del sistema (Administrador, Técnico, Cliente, Recepcionista o Súper Administrador).'
-            });
+            return res.status(409).json({ message: 'No se puede eliminar un rol base del sistema.' });
         }
 
-        const usuariosConEsteRol = await Rol_modelo.contarUsuariosPorRol(req.params.id);
-        if (usuariosConEsteRol > 0) {
+        // RN-024: un rol con usuarios asignados tampoco se puede eliminar.
+        const usuarios = await Rol_modelo.contarUsuariosPorRol(req.params.id);
+        if (usuarios > 0) {
             return res.status(409).json({
-                message: `No se puede eliminar: hay ${usuariosConEsteRol} usuario(s) con este rol asignado.`
+                message: `No se puede eliminar: este rol tiene ${usuarios} usuario(s) asignado(s).`
             });
         }
 

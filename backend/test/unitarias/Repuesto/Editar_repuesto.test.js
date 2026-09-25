@@ -1,19 +1,9 @@
-// RF-M2.3 — Editar repuesto
-// Casos de prueba asociados: CP-053, CP-054
-//
-// FALTA (parte de la Descripción/Postcondiciones del propio requisito, no un CP numerado):
-//   - "Dejar trazabilidad del cambio" (registrar qué usuario editó y cuándo): el backend
-//     actual (repuestosController.actualizarRepuesto) NO guarda esta información en
-//     absoluto — no hay columna ni tabla para eso. La EDICIÓN en sí (nombre, cantidad,
-//     validación de duplicados) sí funciona y está probada abajo; lo que falta es
-//     específicamente el "quién y cuándo". Por eso este RF se clasifica como "Parcial" en
-//     el Dashboard, no como "Pendiente real": la funcionalidad principal existe, le falta
-//     un detalle puntual.
 
-jest.mock('../model/repuestoModelo');
+jest.mock('../../../model/repuestoModelo');
+jest.mock('../../../config/db');
 
-const { actualizarRepuesto } = require('../controller/repuestosController');
-const repuesto_mo = require('../model/repuestoModelo');
+const { actualizarRepuesto } = require('../../../controller/repuestosController');
+const repuesto_mo = require('../../../model/repuestoModelo');
 
 function crearRes() {
     return {
@@ -31,7 +21,7 @@ describe('RF-M2.3 — Editar repuesto', () => {
         repuesto_mo.findById.mockResolvedValue({ id_repuestos: 1 });
         repuesto_mo.update.mockResolvedValue(true);
 
-        const req = { params: { id: '1' }, body: { nombre_repuesto: 'Filtro nuevo', cantidad: 15 } };
+        const req = { usuario: { rol: 1, id: '1' }, params: { id: '1' }, body: { nombre_repuesto: 'Filtro nuevo', cantidad: 15 } };
         const res = crearRes();
 
         await actualizarRepuesto(req, res);

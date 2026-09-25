@@ -1,10 +1,8 @@
-// RF-M5.3 — Editar distribuidor
-// Casos de prueba asociados: CP-073 Edición exitosa.
 
-jest.mock('../model/distribuidorModelo');
+jest.mock('../../../model/distribuidorModelo');
 
-const { actualizarDistribuidor } = require('../controller/distribuidoresController');
-const distribuidor_mo = require('../model/distribuidorModelo');
+const { actualizarDistribuidor } = require('../../../controller/distribuidoresController');
+const distribuidor_mo = require('../../../model/distribuidorModelo');
 
 function crearRes() {
     return {

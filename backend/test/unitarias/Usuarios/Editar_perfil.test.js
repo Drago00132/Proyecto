@@ -1,25 +1,8 @@
-// RF-M1.4 — Editar perfil propio
-// Cubre TANTO la autoedición (obtenerMiPerfil/actualizarMiPerfil) COMO la edición de otros
-// usuarios por personal interno (actualizarUsuario) — el documento RF/RNF describe las dos
-// cosas dentro del mismo requisito ("El personal interno autorizado podrá editar además
-// datos de otros usuarios, respetando las mismas restricciones...").
-//
-// Casos de prueba asociados: CP-014, CP-015, CP-016, CP-017, CP-018
-//
-// FALTAN respecto al documento de Casos de Prueba:
-//   - CP-015 Intento de edición de documento (bloqueado): no había una prueba que confirmara
-//     específicamente que mandar numero_identidad en el body de actualizarMiPerfil no tiene
-//     ningún efecto (antes solo se probaba que id_rol/contrasena se ignoran). Se agrega abajo.
-//   - CP-016 Edición de rol por Súper Administrador: no había un caso específico para esta
-//     combinación. Se agrega abajo.
-//   - CP-017 Administrador intenta editar a otro Administrador (denegado): existía una
-//     prueba genérica de "403 si el rol no está permitido", pero no este caso puntual.
-//   - CP-018 Recepcionista intenta editar a un Técnico (denegado): no existía. Se agrega abajo.
 
-jest.mock('../model/usuariosModelo');
+jest.mock('../../../model/usuariosModelo');
 
-const { actualizarUsuario, obtenerMiPerfil, actualizarMiPerfil } = require('../controller/usuariosController');
-const usuario_modelo = require('../model/usuariosModelo');
+const { actualizarUsuario, obtenerMiPerfil, actualizarMiPerfil } = require('../../../controller/usuariosController');
+const usuario_modelo = require('../../../model/usuariosModelo');
 
 function crearRes() {
     return {
@@ -107,7 +90,7 @@ describe('RF-M1.4 — Edición de otros usuarios por personal interno', () => {
     });
 
     test('CP-016 — Súper Administrador SÍ puede editar el rol de un usuario (ej. subirlo a Administrador)', async () => {
-        usuario_modelo.findById.mockResolvedValue({ numero_identidad: '1' });
+        usuario_modelo.findById.mockResolvedValue({ numero_identidad: '1', id_rol: 2 });
         usuario_modelo.update.mockResolvedValue(true);
 
         const req = { usuario: { rol: 17 }, params: { id: '1' }, body: { ...datosBase, id_rol: 1 } };
@@ -140,7 +123,7 @@ describe('RF-M1.4 — Edición de otros usuarios por personal interno', () => {
     });
 
     test('Debería actualizar correctamente cuando el rol de destino sí está permitido', async () => {
-        usuario_modelo.findById.mockResolvedValue({ numero_identidad: '1' });
+        usuario_modelo.findById.mockResolvedValue({ numero_identidad: '1', id_rol: 2 });
         usuario_modelo.update.mockResolvedValue(true);
 
         const req = { usuario: { rol: 1 }, params: { id: '1' }, body: { ...datosBase, id_rol: 3 } };

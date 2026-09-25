@@ -1,16 +1,8 @@
-// RF-M6.3 — Editar entrada de repuestos
-// Casos de prueba asociados: CP-081 Edición exitosa.
-// AVISO: mismo número que CP-081 de RF-M3.4. Misma duplicidad de numeración ya señalada.
-//
-// FALTA — y no se puede resolver con una prueba unitaria: el ajuste de stock por la
-// DIFERENCIA entre la cantidad nueva y la anterior lo hace el trigger
-// "actualizar_stock_entrada" (AFTER UPDATE), no el controlador. Igual que en RF-M6.1, se
-// necesitaría una prueba de integración contra una base de datos real para verificarlo.
 
-jest.mock('../model/entradaRepuestoModelo');
+jest.mock('../../../model/entradaRepuestoModelo');
 
-const { actualizarEntrada } = require('../controller/entradaRepuestosController');
-const entrada_mo = require('../model/entradaRepuestoModelo');
+const { actualizarEntrada } = require('../../../controller/entradaRepuestosController');
+const entrada_mo = require('../../../model/entradaRepuestoModelo');
 
 function crearRes() {
     return {

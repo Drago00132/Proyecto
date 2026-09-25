@@ -30,9 +30,6 @@ exports.obtenerPorRepuesto = async (req, res) => {
 
 exports.asignarDistribuidor = async (req, res) => {
     const { id_repuestos, id_distribuidor } = req.body;
-    if (!id_repuestos || !id_distribuidor) {
-        return res.status(400).json({ message: 'id_repuestos e id_distribuidor son obligatorios' });
-    }
     try {
         const id = await rd_mo.asignar(id_repuestos, id_distribuidor);
         res.status(200).json({ id_repuesto_distribuidor: id, id_repuestos, id_distribuidor });

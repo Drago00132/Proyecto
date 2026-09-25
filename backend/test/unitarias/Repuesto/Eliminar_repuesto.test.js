@@ -1,22 +1,9 @@
-// RF-M2.4 — Eliminar repuesto
-// Casos de prueba asociados: CP-055, CP-056, CP-057
-//
-// FALTA respecto al documento de Casos de Prueba, y por qué:
-//   - CP-056 Eliminación exitosa por Recepcionista: eliminarRepuesto no distingue el rol de
-//     quien elimina (el control de acceso vive en repuestosRutas.js, con verificarRol
-//     incluyendo el rol 16). A nivel de controlador, sería idéntica a CP-055. Si se quiere
-//     probar el rol específicamente, tendría que ser una prueba de integración de ruta, no
-//     una prueba unitaria de este controlador.
-//
-// Nota aparte (no es un CP, pero está en la Observación de este RF): el formulario real NO
-// pide motivo de eliminación ni tiene casilla de confirmación aparte del modal genérico
-// ConfirmarEliminar — solo un botón simple. No hay nada que probar de eso a nivel de
-// backend porque el backend nunca esperó ese dato.
 
-jest.mock('../model/repuestoModelo');
+jest.mock('../../../model/repuestoModelo');
+jest.mock('../../../config/db');
 
-const { eliminarRepuesto } = require('../controller/repuestosController');
-const repuesto_mo = require('../model/repuestoModelo');
+const { eliminarRepuesto } = require('../../../controller/repuestosController');
+const repuesto_mo = require('../../../model/repuestoModelo');
 
 function crearRes() {
     return {
@@ -34,7 +21,7 @@ describe('RF-M2.4 — Eliminar repuesto', () => {
         repuesto_mo.findById.mockResolvedValue({ id_repuestos: 1 });
         repuesto_mo.delete.mockResolvedValue(true);
 
-        const req = { params: { id: '1' } };
+        const req = { usuario: { rol: 1, id: '1' }, params: { id: '1' } };
         const res = crearRes();
 
         await eliminarRepuesto(req, res);

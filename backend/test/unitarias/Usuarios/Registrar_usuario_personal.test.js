@@ -1,20 +1,8 @@
-// RF-M1.9 — Registrar usuario por personal interno
-// Casos de prueba asociados: CP-034, CP-035, CP-036, CP-037, CP-038, CP-039, CP-040
-//
-// FALTAN respecto al documento de Casos de Prueba:
-//   - CP-035 Administrador registra Recepcionista: no había una prueba específica para esta
-//     combinación exacta. Se agrega abajo.
-//   - CP-036 Administrador registra Técnico (ficha automática): la parte de "ficha
-//     automática" la genera un TRIGGER de la base de datos (crear_ficha_tecnico), no el
-//     controlador. A nivel de prueba unitaria (con el modelo mockeado) solo se puede
-//     verificar que el controlador acepta el rol Técnico y llama a create con ese id_rol;
-//     la creación real de la ficha solo se puede confirmar con una prueba de integración
-//     contra la base de datos real, no aquí.
 
-jest.mock('../model/usuariosModelo');
+jest.mock('../../../model/usuariosModelo');
 
-const { crearUsuario } = require('../controller/usuariosController');
-const usuario_modelo = require('../model/usuariosModelo');
+const { crearUsuario } = require('../../../controller/usuariosController');
+const usuario_modelo = require('../../../model/usuariosModelo');
 
 function crearRes() {
     return {

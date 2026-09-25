@@ -2,12 +2,12 @@
 // Casos de prueba asociados: CP-096, CP-097, CP-098
 // Los 3 ya estaban cubiertos; no falta ninguno.
 
-jest.mock('../model/motosModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/motosModelo');
+jest.mock('../../../utils/manejarError');
 
-const { crearMoto } = require('../controller/motosController');
-const motos_mo = require('../model/motosModelo');
-const manejarError = require('../utils/manejarError');
+const { crearMoto } = require('../../../controller/motosController');
+const motos_mo = require('../../../model/motosModelo');
+const manejarError = require('../../../utils/manejarError');
 
 function crearRes() {
     return {

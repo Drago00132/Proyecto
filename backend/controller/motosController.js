@@ -8,8 +8,9 @@ exports.listarMotos = async (req, res) => {
         const limit = Number.parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
 
-        const veTodasLasMotos = [1, 2, 16, 17].includes(req.usuario.rol);
-        const filtroIdentidad = veTodasLasMotos ? null : req.usuario.id;
+        // RN: el Cliente solo ve las motos asociadas a su propia identidad;
+        // los demás roles ven el listado completo.
+        const filtroIdentidad = Number(req.usuario?.rol) === 3 ? req.usuario.id : null;
 
         const motos = await motos_mo.findAll(filtroIdentidad);
 
@@ -76,12 +77,10 @@ exports.eliminarMotos = async (req, res) => {
         const existe = await motos_mo.findById(req.params.id);
         if (!existe) return res.status(404).json({ message: 'Moto no encontrada' });
 
-        // RF-23: no se permite eliminar una moto con historial de servicio activo
-        // asociado, igual que HistorialController impide un segundo historial
-        // activo para la misma moto (RN-010).
-        const tieneHistorialActivo = await historial_mo.tieneHistorialActivo(req.params.id);
-        if (tieneHistorialActivo) {
-            return res.status(409).json({ message: 'No se puede eliminar: esta moto tiene un historial de servicio activo.' });
+        // RN: una moto con un servicio en curso no se puede eliminar.
+        const activo = await historial_mo.tieneHistorialActivo(req.params.id);
+        if (activo) {
+            return res.status(409).json({ message: 'No se puede eliminar: la moto tiene un servicio activo.' });
         }
 
         await motos_mo.delete(req.params.id);

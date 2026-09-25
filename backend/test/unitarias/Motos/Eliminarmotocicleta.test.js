@@ -1,19 +1,17 @@
 // RF-M4.4 — Eliminar motocicleta
 // Casos de prueba asociados: CP-105, CP-106
 //
-// FALTA respecto al documento de Casos de Prueba:
-//   - CP-106 Intento de eliminar moto con historial activo: SE ESCRIBIÓ abajo, pero el
-//     código actual (motosController.eliminarMotos) NO valida esto en absoluto — elimina
-//     la moto sin revisar si tiene un historial en curso. Queda con test.skip para
-//     describir el comportamiento que DEBERÍA existir, sin tumbar la suite. Quítale el
-//     .skip una vez que se agregue esa validación (sería el mismo patrón que ya usa
-//     HistorialController con tieneHistorialActivo, aplicado en sentido inverso: antes de
-//     eliminar la moto, en vez de antes de crear el historial).
+// Nota de actualización: motosController.eliminarMotos SÍ valida esto ahora (llama a
+// historial_mo.tieneHistorialActivo antes de eliminar, mismo patrón que usa
+// HistorialController en sentido inverso). El test de CP-106 estaba con .skip describiendo
+// esto como "pendiente de implementar" — ya no lo está, así que se habilita.
 
-jest.mock('../model/motosModelo');
+jest.mock('../../../model/motosModelo');
+jest.mock('../../../model/historialModelo');
 
-const { eliminarMotos } = require('../controller/motosController');
-const motos_mo = require('../model/motosModelo');
+const { eliminarMotos } = require('../../../controller/motosController');
+const motos_mo = require('../../../model/motosModelo');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {
@@ -41,6 +39,7 @@ describe('RF-M4.4 — Eliminar motocicleta', () => {
 
     test('CP-105 — Debería eliminar correctamente y responder 200', async () => {
         motos_mo.findById.mockResolvedValue({ id_motos: 1 });
+        historial_mo.tieneHistorialActivo.mockResolvedValue(false);
         motos_mo.delete.mockResolvedValue(true);
 
         const req = { params: { id: '1' } };
@@ -52,8 +51,9 @@ describe('RF-M4.4 — Eliminar motocicleta', () => {
         expect(res.status).toHaveBeenCalledWith(200);
     });
 
-    test.skip('CP-106 — NO debería poder eliminar una moto con historial activo (pendiente de implementar)', async () => {
-        motos_mo.findById.mockResolvedValue({ id_motos: 1, tiene_historial_activo: true });
+    test('CP-106 — NO debería poder eliminar una moto con historial activo', async () => {
+        motos_mo.findById.mockResolvedValue({ id_motos: 1 });
+        historial_mo.tieneHistorialActivo.mockResolvedValue(true);
 
         const req = { params: { id: '1' } };
         const res = crearRes();

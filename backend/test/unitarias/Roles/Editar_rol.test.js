@@ -1,18 +1,8 @@
-// RF-M7.3 — Editar rol
-// Casos de prueba asociados: CP-085 Edición exitosa.
-// AVISO: mismo número que CP-085 de RF-M3.5. Misma duplicidad de numeración ya señalada.
-//
-// FALTA — y aquí no hay ni siquiera un CP numerado para esto, solo la Observación de este
-// mismo RF: nada impide renombrar uno de los 5 roles base (por ejemplo, cambiar
-// "administrador" a otro texto). Como varias partes del sistema dependen del NOMBRE exacto
-// del rol (no solo del id_rol) para tomar decisiones, renombrarlo rompería la lógica de
-// permisos en otros módulos. La prueba de abajo describe el comportamiento que DEBERÍA
-// existir; queda con test.skip porque el código actual no lo bloquea.
 
-jest.mock('../model/RoleModelo');
+jest.mock('../../../model/RoleModelo');
 
-const { actualizarRol } = require('../controller/RolController');
-const Rol_modelo = require('../model/RoleModelo');
+const { actualizarRol } = require('../../../controller/RolController');
+const Rol_modelo = require('../../../model/RoleModelo');
 
 function crearRes() {
     return {

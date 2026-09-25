@@ -1,20 +1,9 @@
-// RF-M3.4 — Asignar técnico a historial
-// Casos de prueba asociados: CP-081, CP-082, CP-083, CP-084
-//
-// FALTAN respecto al documento de Casos de Prueba, y por qué:
-//   - CP-083 Intento de asignar en registro cerrado: OJO, este caso queda documentado abajo
-//     con un resultado que puede sorprenderte. El código actual SÍ permite que un
-//     Administrador reasigne técnico en un historial Finalizado (solo evita que el estado
-//     se autoavance a "En Proceso" otra vez) — no lo bloquea del todo como parece pedir este
-//     CP. Si la intención real es que NADIE pueda reasignar técnico en un registro cerrado
-//     (ni siquiera Administrador), falta agregar esa validación explícita.
-//   - CP-084 Búsqueda de técnico por nombre: no implementada. El formulario de "Asignar
-//     técnico" (AsignarTecnico.js) usa un <select> con todos los técnicos, sin buscador.
 
-jest.mock('../model/historialModelo');
+jest.mock('../../../model/historialModelo');
+jest.mock('../../../model/tecnicoModelo');
 
-const { actualizarHistorial } = require('../controller/HistorialController');
-const historial_mo = require('../model/historialModelo');
+const { actualizarHistorial } = require('../../../controller/HistorialController');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {
@@ -98,11 +87,10 @@ describe('RF-M3.4 — Asignar técnico a historial', () => {
 
         await actualizarHistorial(req, res);
 
-        // El cambio de técnico SÍ se guarda (no se bloquea); solo el estado se queda igual.
         const datosActualizados = historial_mo.update.mock.calls[0][1];
         expect(datosActualizados.id_tecnico).toBe('999');
         expect(datosActualizados.estado).toBe('Finalizado');
-        expect(res.status).toHaveBeenCalledWith(200); // no es un 409/403, se permitió
+        expect(res.status).toHaveBeenCalledWith(200);
     });
 
     test('Un rol distinto a Administrador/Súper Administrador NO puede tocar un registro Finalizado en absoluto (incluida la asignación de técnico)', async () => {

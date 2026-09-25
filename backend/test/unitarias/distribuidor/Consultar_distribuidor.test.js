@@ -1,14 +1,9 @@
-// RF-M5.2 — Consultar distribuidores
-// Casos de prueba asociados: CP-071 Consulta exitosa. CP-072 Distribuidor no encontrado.
-//
-// AVISO: estos números (CP-071 a CP-075) ya se usaron en RF-M3.2 (consulta de historial por
-// rol). Misma duplicidad de numeración que se explica en RF-M5.1.
 
-jest.mock('../model/distribuidorModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/distribuidorModelo');
+jest.mock('../../../utils/manejarError');
 
-const { listarDistribuidores, obtenerDistribuidor } = require('../controller/distribuidoresController');
-const distribuidor_mo = require('../model/distribuidorModelo');
+const { listarDistribuidores, obtenerDistribuidor } = require('../../../controller/distribuidoresController');
+const distribuidor_mo = require('../../../model/distribuidorModelo');
 
 function crearRes() {
     return {

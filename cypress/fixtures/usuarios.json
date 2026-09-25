@@ -1,0 +1,51 @@
+{
+  "cliente": {
+    "numero_identidad": "1900000001",
+    "correo": "cliente.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 3,
+    "requiere2FA": false
+  },
+  "cliente2": {
+    "numero_identidad": "1900000003",
+    "correo": "cliente2.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 3,
+    "requiere2FA": false
+  },
+  "tecnico": {
+    "numero_identidad": "1900000002",
+    "correo": "tecnico.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 2,
+    "requiere2FA": false
+  },
+  "recepcionista": {
+    "numero_identidad": "1900000016",
+    "correo": "recepcion.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 16,
+    "requiere2FA": false
+  },
+  "administrador": {
+    "numero_identidad": "1900000010",
+    "correo": "admin.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 1,
+    "requiere2FA": true
+  },
+  "superadministrador": {
+    "numero_identidad": "1900000017",
+    "correo": "superadmin.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 17,
+    "requiere2FA": true
+  },
+  "administrador2": {
+    "numero_identidad": "1900000011",
+    "correo": "admin2.pruebas@gmail.com",
+    "contrasena": "Sigat2026!",
+    "rol": 1,
+    "requiere2FA": true
+  }
+}

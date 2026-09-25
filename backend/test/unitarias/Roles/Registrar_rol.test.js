@@ -1,13 +1,9 @@
-// RF-M7.1 — Registrar rol
-// Casos de prueba asociados: CP-083 Registro exitoso.
-// AVISO: mismo número que CP-083 de RF-M3.4. Misma duplicidad de numeración ya señalada
-// en RF-M5 y RF-M6.
 
-jest.mock('../model/RoleModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/RoleModelo');
+jest.mock('../../../utils/manejarError');
 
-const { crearRol } = require('../controller/RolController');
-const Rol_modelo = require('../model/RoleModelo');
+const { crearRol } = require('../../../controller/RolController');
+const Rol_modelo = require('../../../model/RoleModelo');
 
 function crearRes() {
     return {

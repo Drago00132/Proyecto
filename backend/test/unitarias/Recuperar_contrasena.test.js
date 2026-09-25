@@ -1,17 +1,13 @@
-// RF-M1.3 — Recuperar contraseña mediante correo electrónico
-// Casos de prueba asociados: CP-010, CP-011, CP-012, CP-013
-//
-// FALTAN respecto al documento de Casos de Prueba: ninguno. Los 4 CP ya estaban cubiertos.
 
-jest.mock('../model/auhtModel');
-jest.mock('../config/mailer');
+jest.mock('../../model/auhtModel');
+jest.mock('../../config/mailer');
 jest.mock('bcrypt');
 jest.mock('crypto');
-jest.mock('../utils/manejarError');
+jest.mock('../../utils/manejarError');
 
-const { solicitarRecuperacion, restablecerContrasena } = require('../controller/auhtController');
-const usuariosModelo = require('../model/auhtModel');
-const { enviarCorreoRecuperacion } = require('../config/mailer');
+const { solicitarRecuperacion, restablecerContrasena } = require('../../controller/auhtController');
+const usuariosModelo = require('../../model/auhtModel');
+const { enviarCorreoRecuperacion } = require('../../config/mailer');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -57,7 +53,7 @@ describe('RF-M1.3 — Solicitar recuperación de contraseña', () => {
         await solicitarRecuperacion(req, res);
 
         expect(usuariosModelo.guardarTokenRecuperacion).toHaveBeenCalledWith('555', 'token-recuperacion-hex', expect.any(Date));
-        expect(enviarCorreoRecuperacion).toHaveBeenCalledWith('cliente@correo.com', 'Cliente Uno', expect.stringContaining('token-recuperacion-hex'));
+        expect(enviarCorreoRecuperacion).toHaveBeenCalledWith('cliente@correo.com', 'Cliente Uno', expect.stringContaining('token-recuperacion-hex'), 15);
         expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('enlace de recuperación') }));
     });
 });

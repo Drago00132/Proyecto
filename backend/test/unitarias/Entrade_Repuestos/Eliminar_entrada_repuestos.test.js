@@ -1,15 +1,8 @@
-// RF-M6.4 — Eliminar entrada de repuestos
-// Casos de prueba asociados: CP-082 Eliminación exitosa.
-// AVISO: mismo número que CP-082 de RF-M3.4. Misma duplicidad de numeración ya señalada.
-//
-// FALTA — y no se puede resolver con una prueba unitaria: la resta de stock la hace el
-// trigger "restar_stock_entrada_eliminada" (AFTER DELETE), no el controlador. Se necesitaría
-// una prueba de integración contra una base de datos real para verificarlo.
 
-jest.mock('../model/entradaRepuestoModelo');
+jest.mock('../../../model/entradaRepuestoModelo');
 
-const { eliminarEntrada } = require('../controller/entradaRepuestosController');
-const entrada_mo = require('../model/entradaRepuestoModelo');
+const { eliminarEntrada } = require('../../../controller/entradaRepuestosController');
+const entrada_mo = require('../../../model/entradaRepuestoModelo');
 
 function crearRes() {
     return {

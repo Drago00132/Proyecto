@@ -1,12 +1,9 @@
-// RF-M6.2 — Consultar entradas de repuestos
-// Casos de prueba asociados: CP-080 Consulta exitosa.
-// AVISO: mismo número que CP-080 de RF-M3.3. Misma duplicidad de numeración ya señalada.
 
-jest.mock('../model/entradaRepuestoModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/entradaRepuestoModelo');
+jest.mock('../../../utils/manejarError');
 
-const { listarEntradas, obtenerEntrada } = require('../controller/entradaRepuestosController');
-const entrada_mo = require('../model/entradaRepuestoModelo');
+const { listarEntradas, obtenerEntrada } = require('../../../controller/entradaRepuestosController');
+const entrada_mo = require('../../../model/entradaRepuestoModelo');
 
 function crearRes() {
     return {

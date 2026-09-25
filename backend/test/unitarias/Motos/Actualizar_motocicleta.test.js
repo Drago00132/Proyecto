@@ -1,13 +1,10 @@
-// RF-M4.3 — Actualizar motocicleta
-// Casos de prueba asociados: CP-103, CP-104
-// Los 2 ya estaban cubiertos; no falta ninguno.
 
-jest.mock('../model/motosModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/motosModelo');
+jest.mock('../../../utils/manejarError');
 
-const { actualizarMoto } = require('../controller/motosController');
-const motos_mo = require('../model/motosModelo');
-const manejarError = require('../utils/manejarError');
+const { actualizarMoto } = require('../../../controller/motosController');
+const motos_mo = require('../../../model/motosModelo');
+const manejarError = require('../../../utils/manejarError');
 
 function crearRes() {
     return {

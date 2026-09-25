@@ -1,16 +1,9 @@
-// RF-M3.2 — Consultar historial
-// Casos de prueba asociados: CP-071, CP-072, CP-073, CP-074, CP-075
-//
-// FALTA respecto al documento de Casos de Prueba:
-//   - CP-075 Filtro por número (de placa o documento, no se especifica cuál): no está
-//     implementado. listarHistrial solo filtra por identidad completa (todo o nada, según
-//     el rol), no admite un parámetro de búsqueda parcial todavía.
 
-jest.mock('../model/historialModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/historialModelo');
+jest.mock('../../../utils/manejarError');
 
-const { listarHistrial, obtenerHistorial } = require('../controller/HistorialController');
-const historial_mo = require('../model/historialModelo');
+const { listarHistrial, obtenerHistorial } = require('../../../controller/HistorialController');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {

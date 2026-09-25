@@ -1,19 +1,8 @@
-// RF-M8.3 — Eliminar técnico
-// Casos de prueba asociados: CP-092 Eliminación exitosa. CP-093 Intento de eliminar técnico
-// con historial activo.
-//
-// FALTA: CP-093 — SE ESCRIBIÓ abajo, pero el código actual (eliminarTecnico) NO valida si
-// el técnico tiene historiales activos asignados antes de borrar su ficha. Mismo patrón que
-// ya encontramos en RF-M4.4 (eliminar moto) — queda con test.skip.
-//
-// Nota aparte: eliminar la FICHA de técnico no elimina la cuenta de usuario (rol Técnico)
-// asociada — son dos tablas distintas. Ya lo comprobamos en las pruebas de Selenium de
-// Técnicos (tecnico.test.js), donde había que limpiar el usuario por separado.
 
-jest.mock('../model/tecnicoModelo');
+jest.mock('../../../model/tecnicoModelo');
 
-const { eliminarTecnico } = require('../controller/tecnicoController');
-const tecnico_mo = require('../model/tecnicoModelo');
+const { eliminarTecnico } = require('../../../controller/tecnicoController');
+const tecnico_mo = require('../../../model/tecnicoModelo');
 
 function crearRes() {
     return {

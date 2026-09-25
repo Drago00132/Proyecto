@@ -1,18 +1,9 @@
-// RF-M3.3 — Modificar historial
-// Casos de prueba asociados: CP-076, CP-077, CP-078, CP-079, CP-080
-// Los 5 CP ya están cubiertos; no falta ninguno.
-//
-// Nota sobre CP-078: el actor principal de este RF es Técnico/Administrador, no Cliente. El
-// Cliente SÍ puede tocar el formulario de edición (para su propia descripción y fotos, ver
-// RF-M1.4/RF-M3.1), pero "modificar" en el sentido de este RF-M3.3 se refiere a los campos
-// técnicos (estado, diagnóstico) — y esos SÍ están bloqueados para él, que es lo que prueba
-// el caso de abajo.
 
-jest.mock('../model/historialModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/historialModelo');
+jest.mock('../../../utils/manejarError');
 
-const { actualizarHistorial } = require('../controller/HistorialController');
-const historial_mo = require('../model/historialModelo');
+const { actualizarHistorial } = require('../../../controller/HistorialController');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {
@@ -57,7 +48,7 @@ describe('RF-M3.3 — Modificar historial', () => {
         await actualizarHistorial(req, res);
 
         const datosActualizados = historial_mo.update.mock.calls[0][1];
-        expect(datosActualizados.id_motos).toBe(10); // no cambia, campo no permitido para Técnico
+        expect(datosActualizados.id_motos).toBe(10); 
         expect(datosActualizados.descripcion_trabajo).toBe('Se cambió aceite');
         expect(res.status).toHaveBeenCalledWith(200);
     });
@@ -102,9 +93,9 @@ describe('RF-M3.3 — Modificar historial', () => {
         await actualizarHistorial(req, res);
 
         const datosActualizados = historial_mo.update.mock.calls[0][1];
-        expect(datosActualizados.estado).toBe('En Asignacion'); // se ignora
-        expect(datosActualizados.descripcion_trabajo).toBeNull(); // se ignora
-        expect(datosActualizados.descripcion_prodlema).toBe('Aclaración'); // este sí es suyo
+        expect(datosActualizados.estado).toBe('En Asignacion'); 
+        expect(datosActualizados.descripcion_trabajo).toBeNull(); 
+        expect(datosActualizados.descripcion_prodlema).toBe('Aclaración'); 
     });
 
     test('CP-078b — Debería retornar 409 si el Cliente intenta editar y ya tiene técnico asignado (denegado por completo)', async () => {
@@ -134,8 +125,8 @@ describe('RF-M3.3 — Modificar historial', () => {
         await actualizarHistorial(req, res);
 
         const datosActualizados = historial_mo.update.mock.calls[0][1];
-        expect(datosActualizados.id_tecnico).toBe('77'); // CP-079: permitido
-        expect(datosActualizados.descripcion_trabajo).toBeNull(); // CP-080: denegado (se ignora)
+        expect(datosActualizados.id_tecnico).toBe('77');
+        expect(datosActualizados.descripcion_trabajo).toBeNull(); 
     });
 
     test('Debería retornar 400 si, tras el merge, faltan campos obligatorios', async () => {

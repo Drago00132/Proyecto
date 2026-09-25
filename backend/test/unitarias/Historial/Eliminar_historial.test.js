@@ -1,18 +1,9 @@
-// RF-M3.5 — Eliminar historial
-// Casos de prueba asociados: CP-085, CP-086, CP-087, CP-088
-//
-// FALTA respecto al documento de Casos de Prueba, y por qué:
-//   - CP-088 Recepcionista intenta eliminar (denegado): NO SE PUDO VERIFICAR. El controlador
-//     (eliminarHistorial) no tiene ninguna regla que bloquee a Recepcionista específicamente
-//     — la única restricción que sí existe en el código es la del Cliente con técnico
-//     asignado. Si Recepcionista está bloqueada, tendría que ser a nivel de ruta
-//     (historialRutas.js), y no tengo ese archivo para confirmarlo. Pendiente de revisar
-//     con el archivo de rutas real.
 
-jest.mock('../model/historialModelo');
+jest.mock('../../../model/historialModelo');
+jest.mock('../../../model/tecnicoModelo');
 
-const { eliminarHistorial } = require('../controller/HistorialController');
-const historial_mo = require('../model/historialModelo');
+const { eliminarHistorial } = require('../../../controller/HistorialController');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {

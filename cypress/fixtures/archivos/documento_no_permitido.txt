@@ -1,0 +1,2 @@
+Este archivo no es una imagen. Sirve para comprobar que el sistema rechaza
+los adjuntos con una extension que no esta permitida.

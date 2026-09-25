@@ -1,11 +1,8 @@
-// RF-M8.2 — Editar técnico
-// Casos de prueba asociados: CP-091 Edición exitosa.
-// AVISO: mismo número que CP-091 de RF-M3.6. Misma duplicidad de numeración ya señalada.
 
-jest.mock('../model/tecnicoModelo');
+jest.mock('../../../model/tecnicoModelo');
 
-const { actializarTecnico } = require('../controller/tecnicoController'); // nombre real de la función (con el typo "actializar")
-const tecnico_mo = require('../model/tecnicoModelo');
+const { actializarTecnico } = require('../../../controller/tecnicoController'); 
+const tecnico_mo = require('../../../model/tecnicoModelo');
 
 function crearRes() {
     return {

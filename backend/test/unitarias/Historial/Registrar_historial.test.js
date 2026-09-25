@@ -1,18 +1,9 @@
-// RF-M3.1 — Registrar historial
-// Casos de prueba asociados: CP-066, CP-067, CP-068, CP-069, CP-070
-//
-// FALTAN respecto al documento de Casos de Prueba, y por qué:
-//   - CP-069 Archivo inválido adjunto: el filtro de extensión de fotos (solo .jpg, .jpeg,
-//     .png, .webp) lo hace multer (fileFilter) ANTES de llegar al controlador, en
-//     historialRepustos.js. No se puede probar llamando a agregarHistorial directamente
-//     (req.file ya vendría filtrado o ausente); haría falta una prueba de integración con
-//     multer real o una prueba end-to-end (Selenium) subiendo un archivo con otra extensión.
 
-jest.mock('../model/historialModelo');
-jest.mock('../utils/manejarError');
+jest.mock('../../../model/historialModelo');
+jest.mock('../../../utils/manejarError');
 
-const { agregarHistorial } = require('../controller/HistorialController');
-const historial_mo = require('../model/historialModelo');
+const { agregarHistorial } = require('../../../controller/HistorialController');
+const historial_mo = require('../../../model/historialModelo');
 
 function crearRes() {
     return {
@@ -70,14 +61,9 @@ describe('RF-M3.1 — Registrar historial', () => {
     test('CP-070 — Recepcionista SÍ puede registrar un historial para la moto de cualquier cliente (el "dueño" lo determina la moto elegida, no un campo aparte)', async () => {
         historial_mo.tieneHistorialActivo.mockResolvedValue(false);
         historial_mo.create.mockResolvedValue(2);
-
-        // Nota: agregarHistorial no recibe "id_historial_cliente" como entrada — ese campo
-        // solo existe al LEER un historial ya guardado (viene de un JOIN con motos). El
-        // cliente dueño queda determinado por la moto seleccionada (id_motos), que a su vez
-        // ya tiene un numero_identidad de cliente asociado desde que se registró la moto.
         const req = {
             usuario: { rol: 16 },
-            body: { id_motos: '10', descripcion_prodlema: 'Frenos chillan' } // la moto "10" es de un cliente cualquiera
+            body: { id_motos: '10', descripcion_prodlema: 'Frenos chillan' } 
         };
         const res = crearRes();
 
@@ -95,7 +81,7 @@ describe('RF-M3.1 — Registrar historial', () => {
 
         const req = {
             usuario: { rol: 1 },
-            body: { id_motos: '10', descripcion_prodlema: 'Prueba', fecha_inicio: '1999-01-01' }
+            body: { id_motos: '10', descripcion_prodlema: 'Prueba de fecha automática', fecha_inicio: '1999-01-01' }
         };
         const res = crearRes();
 
@@ -111,7 +97,7 @@ describe('RF-M3.1 — Registrar historial', () => {
         error.code = 'ECONNREFUSED';
         historial_mo.tieneHistorialActivo.mockRejectedValue(error);
 
-        const req = { usuario: { rol: 1 }, body: { id_motos: '10', descripcion_prodlema: 'Prueba' } };
+        const req = { usuario: { rol: 1 }, body: { id_motos: '10', descripcion_prodlema: 'Prueba de conexión caída' } };
         const res = crearRes();
 
         await agregarHistorial(req, res);

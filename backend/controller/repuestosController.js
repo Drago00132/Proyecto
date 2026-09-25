@@ -64,9 +64,11 @@ exports.buscarPorNombre = async (req, res) => {
 
     try {
         const resultados = await repuesto_mo.findByNombre(nombre);
-        if (resultados.length === 0) {
+
+        if (!resultados || resultados.length === 0) {
             return res.status(404).json({ message: 'producto no encontrado' });
         }
+
         res.status(200).json({ repuesto: resultados });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
@@ -130,6 +132,7 @@ exports.eliminarRepuesto = async (req, res) => {
 
         await repuesto_mo.delete(req.params.id);
         await registrarAuditoria(req.params.id, existe.nombre_repuesto, 'ELIMINAR', req.usuario.id);
+        res.status(200).json({ message: 'Repuesto eliminado correctamente' });
     } catch (error) {
         if (error.code === 'ECONNREFUSED') return res.status(503).json({ message: 'Servicio de base de datos no disponible' });
         manejarError(error, res);
