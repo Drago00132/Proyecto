@@ -1,15 +1,54 @@
-import { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import AsignarTecnico from './AsignarTecnico';
 import { AgregarEntradaRepuesto } from './EntradaRepuestos';
 import { AgregarHistorial } from './Historial';
 import InactividadTimer from '../components/InactividadTimer';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SesionContext, puedeEntrar } from '../components/Sesion';
 
 function Dashboard() {
 
-  const rol = Number(localStorage.getItem("rol"));
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // El rol se toma del servidor, nunca del localStorage (ver components/Sesion.js).
+  // null = todavía verificando; "error" = no se pudo verificar.
+  const [sesion, setSesion] = useState(null);
+
+  const cerrarSesion = useCallback(() => {
+    localStorage.clear();
+    navigate('/', { replace: true });
+  }, [navigate]);
+
+  const cargarSesion = useCallback(() => {
+    if (!localStorage.getItem('token')) {
+      cerrarSesion();
+      return;
+    }
+    axios.get('/api/usuarios/mi-perfil').then((res) => {
+      const u = res.data;
+      setSesion({
+        rol: Number(u.id_rol),
+        nombre: u.nombre || '',
+        numeroIdentidad: u.numero_identidad != null ? String(u.numero_identidad) : '',
+      });
+    }).catch((error) => {
+      const estado = error.response?.status;
+      // Token inválido, vencido o alterado: se cierra la sesión.
+      if (estado === 401 || estado === 403 || estado === 404) {
+        cerrarSesion();
+      } else {
+        setSesion('error');
+      }
+    });
+  }, [cerrarSesion]);
+
+  useEffect(() => {
+    cargarSesion();
+  }, [cargarSesion]);
 
   const [mostrarAsignarTecnico, setMostrarAsignarTecnico] = useState(false);
   const [mostrarRegistrarEntrada, setMostrarRegistrarEntrada] = useState(false);
@@ -50,7 +89,29 @@ function Dashboard() {
 
   const cerrarSidebar = () => setSidebarAbierto(false);
 
+  if (sesion === null) {
+    return <div className="container mt-5"><p>Verificando tu sesión...</p></div>;
+  }
+
+  if (sesion === 'error') {
+    return (
+      <div className="container mt-5">
+        <p>No se pudo verificar tu sesión. Revisa tu conexión e intenta de nuevo.</p>
+        <button type="button" className="btn btn-primary me-2" onClick={() => { setSesion(null); cargarSesion(); }}>Reintentar</button>
+        <button type="button" className="btn btn-outline-secondary" onClick={cerrarSesion}>Cerrar sesión</button>
+      </div>
+    );
+  }
+
+  const rol = sesion.rol;
+
+  // Entrar por dirección a una sección de otro rol devuelve al inicio del panel.
+  if (!puedeEntrar(location.pathname, rol)) {
+    return <Navigate to="/panel" replace />;
+  }
+
   return (
+    <SesionContext.Provider value={{ ...sesion, recargarSesion: cargarSesion }}>
     <div className="sigat-layout">
       <InactividadTimer />
 
@@ -190,6 +251,7 @@ function Dashboard() {
         </div>
       )}
     </div>
+    </SesionContext.Provider>
   );
 }
 

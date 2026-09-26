@@ -25,10 +25,11 @@ function Iniciarsesion() {
     };
 
     const guardarSesionYEntrar = (data) => {
+        // Solo se guarda el token. El rol, el nombre y el documento se piden al
+        // servidor al entrar al panel (ver components/Sesion.js), para que no
+        // se puedan alterar desde el navegador.
+        localStorage.clear();
         localStorage.setItem("token", data.token);
-        localStorage.setItem("rol", data.rol);
-        localStorage.setItem("numero_identidad", data.numero_identidad);
-        localStorage.setItem("nombre", data.nombre || "");
 
         toast.success("Inicio de sesión exitoso.");
         navigate("/panel");

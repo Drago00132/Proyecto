@@ -100,9 +100,9 @@ function Registrarse(){
       id_rol: Id_rol
     })
     .then((res) => {
+      // Solo se guarda el token; el rol se pide al servidor al entrar al panel.
+      localStorage.clear();
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("rol", res.data.rol);
-      localStorage.setItem("numero_identidad", res.data.numero_identidad);
 
       toast.success(res.data.message || "Registro exitoso");
       navigate("/panel");

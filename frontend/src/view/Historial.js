@@ -8,11 +8,12 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
+import { useSesion } from '../components/Sesion';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 function Historial() {
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
   const [Historial, setHistorial] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   //modales y sus funciones
@@ -220,7 +221,7 @@ function useUsuariosTecnicoMotos() {
 }
 
 function Agregar({cerrarmodal}){
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol, numeroIdentidad } = useSesion();
   const [Id_motos, setId_motos] = useState("");
   const [Id_tecnico, setId_tecnico] = useState("");
   const [Descripcion_prodlema, setDescripcion_prodlema] = useState("");
@@ -235,9 +236,7 @@ function Agregar({cerrarmodal}){
   const [motosFiltradas, setMotosFiltradas] = useState([]);
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState(() => {
-    const rolLogueado = Number(localStorage.getItem("rol"));
-    const idLogueado = localStorage.getItem("numero_identidad");
-    return rolLogueado === 3 ? idLogueado : "";
+    return rol === 3 ? numeroIdentidad : "";
   });
 
   const add = (event) => {
@@ -430,7 +429,7 @@ const cambiarValoresRepuesto = (index, campo, valor) => {
 }
 
 function Editar({datos, cerrarmodal}){
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
   const [Id_historial, setId_historial] = useState("");
   const [Id_motos, setId_motos] = useState("");
   const [Id_tecnico, setId_tecnico] = useState("");
@@ -756,7 +755,7 @@ function Eliminar ({id, cerrarmodal}){
 }
 
 function Detalle({ datos, cerrarmodal }) {
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
   if (!datos) return null;
 
   const descargarPDF = async () => {

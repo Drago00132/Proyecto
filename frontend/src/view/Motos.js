@@ -6,9 +6,10 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
+import { useSesion } from '../components/Sesion';
 
 function Motos() {  
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
   const [Motos, setMotos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   //modales y sus funciones
@@ -152,10 +153,9 @@ function Motos() {
 }
 
 function Agregar({cerrarmodal}){
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
 
-  const usuarioLogueadoRol = Number(localStorage.getItem("rol"));
-  const usuarioLogueadoIdentidad = localStorage.getItem("numero_identidad") || "";
+  const { rol: usuarioLogueadoRol, numeroIdentidad: usuarioLogueadoIdentidad } = useSesion();
 
   const [Numero_identidad, setNumero_identidad] = useState(usuarioLogueadoRol === 3 ? usuarioLogueadoIdentidad : "");
   const [Marca_moto, setMarca_moto] = useState("");
@@ -227,7 +227,7 @@ function Agregar({cerrarmodal}){
 }
 
 function Editar({datos,cerrarmodal}){
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol } = useSesion();
 
   const [Id_motos, setId_motos] = useState("");
   const [Numero_identidad, setNumero_identidad] = useState();

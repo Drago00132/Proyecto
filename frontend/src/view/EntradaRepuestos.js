@@ -6,6 +6,7 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
 import ConfirmarEliminar from '../components/ConfirmarEliminar';
 import eliminarRecurso from '../utils/eliminarRecurso';
+import { useSesion } from '../components/Sesion';
 
 function EntradaRepuestos() {
   const [Entradas, setEntradas] = useState([]);
@@ -161,7 +162,7 @@ function Agregar({ cerrarmodal }) {
   // con la fecha de hoy y con el usuario de la sesión activa. Administrador
   // y Súper Administrador conservan el comportamiento anterior (campos
   // manuales, como pedía RF-29 originalmente).
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol, numeroIdentidad } = useSesion();
   const esRecepcionista = rol === 16;
   const hoy = new Date().toISOString().slice(0, 10);
 
@@ -172,7 +173,7 @@ function Agregar({ cerrarmodal }) {
   // RF-29: para Administrador/Súper Administrador el usuario responsable se
   // sigue seleccionando de una lista; se preselecciona el de la sesión activa
   // por comodidad. Para Recepcionista, ver nota arriba: queda fijo y oculto.
-  const [Numero_identidad, setNumero_identidad] = useState(localStorage.getItem("numero_identidad") || "");
+  const [Numero_identidad, setNumero_identidad] = useState(numeroIdentidad || "");
   const { repuestos, distribuidores, usuarios } = useRepuestosYDistribuidores();
 
   const add = (event) => {

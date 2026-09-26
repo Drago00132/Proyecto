@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSesion } from '../components/Sesion';
 
 // Administrador (1) y Súper Administrador (17) pueden editar también su
 // documento, tipo de documento y fecha de nacimiento. Los demás roles los ven
@@ -10,7 +11,7 @@ const ROLES_EDITAN_DATOS_PERSONALES = [1, 17];
 const TIPOS_DOCUMENTO = ['Cedula de Ciudadania', 'Cedula de Extranjeria', 'Pasaporte'];
 
 function MiPerfil() {
-  const rol = Number(localStorage.getItem("rol"));
+  const { rol, recargarSesion } = useSesion();
   const puedeEditarDatosPersonales = ROLES_EDITAN_DATOS_PERSONALES.includes(rol);
 
   const [cargando, setCargando] = useState(true);
@@ -130,8 +131,9 @@ function MiPerfil() {
       // sesión sin tener que volver a entrar.
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("numero_identidad", res.data.numero_identidad);
       }
+      // Actualiza el nombre y el número de identidad que usa el resto del panel.
+      recargarSesion();
       toast.success(res.data?.message || "Perfil actualizado correctamente");
     }).catch((error) => {
       console.error("Error al actualizar el perfil: ", error);

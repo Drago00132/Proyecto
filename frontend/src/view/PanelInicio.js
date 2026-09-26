@@ -1,16 +1,16 @@
 import { Link } from 'react-router-dom';
+import { useSesion } from '../components/Sesion';
 
 // RF: pantalla de inicio del panel. Antes /panel no tenía una ruta índice,
 // así que el <Outlet/> del Dashboard quedaba en blanco al entrar. Aquí se
-// saluda al usuario con su nombre (guardado en localStorage al iniciar
-// sesión, ver login.js) y se muestran accesos rápidos a las secciones
+// saluda al usuario con su nombre (tomado del servidor, ver
+// components/Sesion.js) y se muestran accesos rápidos a las secciones
 // según su rol, con la misma lógica de permisos que ya usa el menú lateral
 // (Dashboard.js).
 const NOMBRES_ROLES = { 1: "Administrador", 2: "Técnico", 3: "Cliente", 16: "Recepcionista", 17: "Super Administrador" };
 
 function PanelInicio() {
-  const rol = Number(localStorage.getItem("rol"));
-  const nombre = localStorage.getItem("nombre") || "";
+  const { rol, nombre } = useSesion();
 
   const opciones = [
     { to: "/panel/usuarios", titulo: "Usuarios", descripcion: "Gestionar las cuentas del sistema", permitido: rol === 1 || rol === 16 || rol === 17 },
