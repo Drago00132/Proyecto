@@ -32,6 +32,7 @@ describe('RF-M3.3 — Modificar historial', () => {
         cy.entrarComo('tecnico');
         cy.irASeccion('Servicio');
 
+        cy.buscarServicio(idServicio);
         cy.contains('table tbody tr', 'PRB001').find('button').contains('Actualizar').click();
         cy.contains('.modal-title', 'Editar un Servicio').should('be.visible');
 
@@ -56,6 +57,7 @@ describe('RF-M3.3 — Modificar historial', () => {
         // En pantalla el técnico ya no tiene el botón de actualizar.
         cy.entrarComo('tecnico');
         cy.irASeccion('Servicio');
+        cy.buscarServicio(idServicio);
         cy.contains('table tbody tr', 'PRB001').should('exist');
         cy.contains('table tbody tr', 'PRB001').contains('button', 'Actualizar').should('not.exist');
 
@@ -82,6 +84,7 @@ describe('RF-M3.3 — Modificar historial', () => {
       montarServicio({ id_tecnico: idTecnico, estado: 'En Proceso' }).then((idServicio) => {
         cy.entrarComo('cliente');
         cy.irASeccion('Servicio');
+        cy.buscarServicio(idServicio);
         cy.contains('table tbody tr', 'PRB001').contains('button', 'Actualizar').should('not.exist');
 
         cy.tokenApi('cliente').then((token) => {
@@ -111,6 +114,7 @@ describe('RF-M3.3 — Modificar historial', () => {
         cy.entrarComo('recepcionista');
         cy.irASeccion('Servicio');
 
+        cy.buscarServicio(idServicio);
         cy.contains('table tbody tr', 'PRB001').find('button').contains('Actualizar').click();
         cy.get('#historial-editar-tecnico').select(String(idTecnico));
         cy.contains('button', 'Guardar').click();
@@ -134,6 +138,7 @@ describe('RF-M3.3 — Modificar historial', () => {
       cy.entrarComo('recepcionista');
       cy.irASeccion('Servicio');
 
+      cy.buscarServicio(idServicio);
       cy.contains('table tbody tr', 'PRB001').find('button').contains('Actualizar').click();
 
       // En pantalla el campo viene bloqueado y con la explicación al lado.

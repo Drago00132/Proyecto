@@ -60,7 +60,7 @@ Cypress.Commands.add('cerrarSesion', () => {
  * con verificación en dos pasos resuelve el código desde la base.
  */
 Cypress.Commands.add('tokenApi', (clave) => {
-  const api = Cypress.env('apiUrl');
+  const api = Cypress.expose('apiUrl');
 
   return cy.fixture('usuarios').then((usuarios) => {
     const u = usuarios[clave];
@@ -95,7 +95,7 @@ Cypress.Commands.add('peticionApi', (token, opciones) => {
   return cy.request({
     failOnStatusCode: false,
     ...opciones,
-    url: `${Cypress.env('apiUrl')}${opciones.url}`,
+    url: `${Cypress.expose('apiUrl')}${opciones.url}`,
     headers: { Authorization: `Bearer ${token}`, ...(opciones.headers || {}) },
   });
 });
@@ -108,11 +108,30 @@ Cypress.Commands.add('datosUsuario', (identidad, idRol, etiqueta) => {
     nombre: 'Prueba',
     apellido: 'Automatica',
     fecha_nacimiento: '1995-05-20',
-    numero_celular: '3001234567',
+    // El celular se saca del propio documento, porque la base exige que no se
+    // repita entre usuarios. Con un número fijo, dos usuarios de prueba vivos
+    // al mismo tiempo chocaban y el segundo recibía un 409.
+    numero_celular: '3' + String(identidad).slice(-9),
     correo_electronico: `${etiqueta}@gmail.com`,
     contrasena: 'Sigat2026!',
     id_rol: idRol,
   }, { log: false });
+});
+
+/**
+ * Filtra la tabla de Servicio por el número de registro, usando el buscador
+ * de la propia pantalla, y deja a la vista únicamente ese servicio.
+ *
+ * Hace falta porque el listado muestra cinco servicios por página y los trae
+ * de los más viejos a los más nuevos. En una base de trabajo, con servicios
+ * reales de meses anteriores, el servicio que acaba de crear la prueba queda
+ * en la última página y no se ve. Buscándolo primero, las pruebas funcionan
+ * igual con la base llena que con la base vacía, sin tener que borrar nada.
+ */
+Cypress.Commands.add('buscarServicio', (idServicio) => {
+  cy.get('input[placeholder*="Buscar"]').clear().type(String(idServicio));
+  cy.contains('button', 'Buscar').click();
+  cy.get('table tbody tr', { timeout: 10000 }).should('have.length', 1);
 });
 
 /** Devuelve el identificador interno de una moto de prueba por su placa. */

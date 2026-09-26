@@ -4,6 +4,8 @@ import AsignarTecnico from './AsignarTecnico';
 import { AgregarEntradaRepuesto } from './EntradaRepuestos';
 import { AgregarHistorial } from './Historial';
 import InactividadTimer from '../components/InactividadTimer';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Dashboard() {
 
@@ -51,6 +53,12 @@ function Dashboard() {
   return (
     <div className="sigat-layout">
       <InactividadTimer />
+
+      {/* Un solo contenedor de avisos para todo el panel. Antes cada vista
+          tenía el suyo, y los formularios que se abren desde los botones
+          fijos (Nuevo servicio, Registrar entrada, Asignar técnico) no
+          mostraban el aviso cuando la página actual no tenía contenedor. */}
+      <ToastContainer position="top-right" autoClose={3000} />
 
       <header className="sigat-topbar">
         <button

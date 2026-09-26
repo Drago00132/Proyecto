@@ -19,20 +19,15 @@ cypress/e2e/Usuarios/RF-M1.1_Registrar_usuario_publico.cy.js
 
 ## 1. Antes de empezar: la base de datos de pruebas
 
-Las pruebas **crean, editan y borran registros**. Por eso corren contra una
-base local aparte, nunca contra la base de producción en Aiven.
+Las pruebas **crean, editan y borran registros**. Por eso corren contra la
+base de datos **local** (`sigat`), la misma que se usa para desarrollar, y
+nunca contra la de producción en Aiven. Si prefiere no mezclar, puede crear
+una aparte; lo único imprescindible es que esté en esta misma máquina.
 
-```sql
-CREATE DATABASE sigat_pruebas
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Cargue en ella la estructura del sistema (tablas, vistas y disparadores) y
-después los datos de prueba:
+Cárguele los datos de partida:
 
 ```bash
-mysql -u root -p sigat_pruebas < ruta/del/respaldo_estructura.sql
-mysql -u root -p sigat_pruebas < cypress/seed/datos_de_prueba.sql
+mysql -u root -p sigat < cypress/seed/datos_de_prueba.sql
 ```
 
 El archivo de datos de prueba deja seis usuarios, uno por rol, todos con la
@@ -54,17 +49,30 @@ su moto existen para comprobar que nadie ve los servicios de otro.
 
 ---
 
-## 2. Apuntar el backend a la base de pruebas
+## 2. Un solo sitio para los datos de la base: `backend/.env`
 
-En el archivo `.env` del backend, mientras corren las pruebas:
+`cypress.config.js` **lee los datos de la base del archivo `.env` del
+backend**, el mismo que usa el sistema y el mismo que usan las pruebas
+integradas. Así la contraseña está escrita en un solo sitio y no se pueden
+desincronizar. No hay que configurar nada aparte:
 
 ```
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=su_contraseña
-DB_NAME=sigat_pruebas
+DB_NAME=sigat
 FRONTEND_URL=http://localhost:3000
 ```
+
+Si ese archivo no existe, o le falta la contraseña, Cypress falla en la
+primera prueba con **`Access denied for user 'root'@'localhost' (using
+password: NO)`**: no es un fallo del sistema, es que no encontró con qué
+entrar a la base.
+
+Igual que las integradas, la configuración **se detiene sola** si `DB_HOST`
+no es esta máquina, para que estas pruebas no puedan borrar registros de
+producción por descuido.
 
 **El correo saliente tiene que funcionar.** El inicio de sesión del
 Administrador y del Súper Administrador envía un código de verificación, y
@@ -79,12 +87,18 @@ base de pruebas, pero el sistema sí necesita haberlos podido enviar.
 
 ## 3. Instalar y levantar todo
 
-Una sola vez, en la raíz del proyecto:
+Una sola vez, **en la raíz del proyecto** (la carpeta donde está
+`cypress.config.js`, no dentro de `backend`):
 
 ```bash
-npm install
+cd C:\Users\JEUS\OneDrive\Documents\Proyecto
 npm install --save-dev cypress mysql2
 ```
+
+La raíz y `backend` son dos instalaciones separadas, cada una con su propio
+`package.json` y su propio `node_modules`. Si esto se instala por error
+dentro de `backend`, Cypress abre pero falla al leer su configuración con
+**`Cannot find module 'cypress'`**.
 
 Después, con **tres terminales abiertas**:
 
@@ -104,19 +118,40 @@ npx cypress open                 # eligiéndolas una por una, viendo el navegado
 
 ## 4. Si sus puertos o su base son otros
 
-Se pueden cambiar por variables de entorno, sin tocar el código:
+Lo normal es cambiarlos en `backend/.env`, y las pruebas los toman de ahí.
+Para una corrida puntual, sin tocar ningún archivo, estas variables de
+entorno mandan por encima del `.env`:
 
-| Variable        | Para qué sirve                         | Valor por defecto |
-|-----------------|----------------------------------------|-------------------|
-| `CY_DB_HOST`    | Servidor de la base de pruebas         | `localhost`       |
-| `CY_DB_PORT`    | Puerto de la base                      | `3306`            |
-| `CY_DB_USER`    | Usuario de la base                     | `root`            |
-| `CY_DB_PASSWORD`| Contraseña de la base                  | *(vacía)*         |
-| `CY_DB_NAME`    | Nombre de la base de pruebas           | `sigat_pruebas`   |
-| `CY_API_URL`    | Dirección del backend                  | `http://localhost:3100` |
+| Variable        | Para qué sirve                         | De dónde sale si no se pone |
+|-----------------|----------------------------------------|------------------------------|
+| `CY_DB_HOST`    | Servidor de la base                    | `DB_HOST` del `.env`         |
+| `CY_DB_PORT`    | Puerto de la base                      | `DB_PORT` del `.env`         |
+| `CY_DB_USER`    | Usuario de la base                     | `DB_USER` del `.env`         |
+| `CY_DB_PASSWORD`| Contraseña de la base                  | `DB_PASSWORD` del `.env`     |
+| `CY_DB_NAME`    | Nombre de la base                      | `DB_NAME` del `.env`         |
+| `CY_API_URL`    | Dirección del backend                  | `http://localhost:3100`      |
 
 La dirección del frontend se cambia en `baseUrl`, dentro de
 `cypress.config.js`.
+
+### Sobre `apiUrl` y Cypress 16
+
+La dirección del backend llega a las pruebas por la clave `expose` de
+`cypress.config.js`, y dentro de las pruebas se lee así:
+
+```js
+const api = Cypress.expose('apiUrl');
+```
+
+Hasta la versión 15 esto se hacía con `Cypress.env('apiUrl')` y la clave iba
+en `env`, dentro de `e2e`. **Cypress quitó `Cypress.env()` en la versión 16**,
+y en su lugar hay dos caminos: `expose` con `Cypress.expose()` para los valores
+públicos, que se leen de una y sin `.then()`, y `env` con `cy.env()` para los
+valores secretos, que se leen dentro de un `.then()` y nunca llegan al
+navegador. La dirección del backend no es secreta, así que va por `expose`.
+
+Ojo con un detalle: `expose` va en la **raíz** de la configuración, al mismo
+nivel que `e2e`, no adentro.
 
 ---
 

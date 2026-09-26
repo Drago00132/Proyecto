@@ -34,6 +34,7 @@ describe('RF-M3.6 — Generar documentación de historial', () => {
       cy.entrarComo('tecnico');
       cy.irASeccion('Servicio');
 
+      cy.buscarServicio(idServicio);
       cy.contains('table tbody tr', 'PRB001').find('button').contains('Ver Detalles').click();
       cy.contains('.modal-title', 'Detalles Completos del Servicio').should('be.visible');
 
@@ -49,10 +50,11 @@ describe('RF-M3.6 — Generar documentación de historial', () => {
   });
 
   it('CP-090 — No deja generar el documento si el servicio no está finalizado', () => {
-    montarServicio('En Proceso').then(() => {
+    montarServicio('En Proceso').then((idServicio) => {
       cy.entrarComo('tecnico');
       cy.irASeccion('Servicio');
 
+      cy.buscarServicio(idServicio);
       cy.contains('table tbody tr', 'PRB001').find('button').contains('Ver Detalles').click();
       cy.contains('.modal-title', 'Detalles Completos del Servicio').should('be.visible');
 
@@ -75,8 +77,13 @@ describe('RF-M3.6 — Generar documentación de historial', () => {
           cy.irASeccion('Servicio');
 
           // Ese servicio no aparece en su listado, así que no tiene por dónde
-          // llegar al botón de descarga.
-          cy.contains('table tbody tr', 'PRB003').should('not.exist');
+          // llegar al botón de descarga. No se usa el buscador aquí: trae
+          // cualquier servicio por su número, sin mirar de quién es, así que
+          // lo que hay que comprobar es el listado, que sí respeta el rol.
+          // Esta línea mira la página que el cliente tiene delante; la
+          // comprobación contra la API, más abajo, revisa su listado completo
+          // y es la que de verdad cierra el caso.
+          cy.get('table tbody').should('not.contain', 'PRB003');
           cy.contains('button', 'Descargar PDF').should('not.exist');
 
           cy.tokenApi('cliente').then((tokenCliente) => {

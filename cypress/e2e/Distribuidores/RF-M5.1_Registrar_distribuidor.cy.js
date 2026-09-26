@@ -31,7 +31,7 @@ describe('RF-M5.1 — Registrar distribuidor', () => {
     cy.get('#distribuidor-agregar-correo').type('norte.pruebas@gmail.com');
     cy.get('#distribuidor-agregar-Direccion').type('Carrera 10 # 20-30');
     cy.get('#distribuidor-agregar-contacto').type('Luis Contacto');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('reguistro Exitoso');
 
@@ -52,7 +52,7 @@ describe('RF-M5.1 — Registrar distribuidor', () => {
     // Solo se diligencian los datos de contacto: el nombre queda vacío.
     cy.get('#distribuidor-agregar-telefono').type('3007776655');
     cy.get('#distribuidor-agregar-correo').type('sinnombre.pruebas@gmail.com');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('Faltan datos obligatorio');
 

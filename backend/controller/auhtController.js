@@ -51,6 +51,7 @@ exports.login = async (req, res) => {
         if (ROLES_CON_2FA.includes(usuario.id_rol)) {
             const codigo = crypto.randomInt(100000, 1000000).toString();
             await usuariosModelo.guardarCodigo2FA(usuario.numero_identidad, codigo, MINUTOS_CODIGO_2FA);
+
             await enviarCorreoCodigo2FA(usuario.correo_electronico, usuario.nombre, codigo, MINUTOS_CODIGO_2FA);
 
             return res.status(200).json({
@@ -139,6 +140,7 @@ exports.solicitarRecuperacion = async (req, res) => {
         await usuariosModelo.guardarTokenRecuperacion(usuario.numero_identidad, token, expira);
 
         const enlace = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/restablecer-contrasena?token=${token}`;
+
         await enviarCorreoRecuperacion(usuario.correo_electronico, usuario.nombre, enlace, MINUTOS_VIGENCIA_TOKEN);
 
         res.json({ message: "Se envió un enlace de recuperación a tu correo. Es válido por 15 minutos." });

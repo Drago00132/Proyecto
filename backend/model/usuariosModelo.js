@@ -60,6 +60,20 @@ const usuarios = {
             [nombre, apellido, correo_electronico, numero_celular, id]
         );
         return true;
+    },
+
+    // Mi perfil de Administrador (1) y Súper Administrador (17): además de los
+    // datos de contacto, pueden cambiar su documento, tipo de documento y fecha
+    // de nacimiento. Si cambia numero_identidad, las tablas que apuntan a él
+    // (motos, entrada_repuestos, tecnico) se actualizan solas gracias a
+    // ON UPDATE CASCADE (ver migracion_on_update_cascade.sql).
+    updatePerfilAdmin: async (idActual, data) => {
+        const { numero_identidad, tipo_documento, fecha_nacimiento, nombre, apellido, correo_electronico, numero_celular } = data;
+        await db.query(
+            'UPDATE usuarios SET numero_identidad = ?, tipo_documento = ?, fecha_nacimiento = ?, nombre = ?, apellido = ?, correo_electronico = ?, numero_celular = ? WHERE numero_identidad = ?',
+            [numero_identidad, tipo_documento, fecha_nacimiento, nombre, apellido, correo_electronico, numero_celular, idActual]
+        );
+        return true;
     }
 };
 

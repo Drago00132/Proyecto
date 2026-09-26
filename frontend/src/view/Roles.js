@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalOverlay from '../components/ModalOverlay';
 import Paginador from '../components/Paginador';
@@ -57,7 +57,6 @@ function Roles() {
     <div className="App">
       <div className="container mt-5">
         <div className="card p-4">
-          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="text-center mb-4">Roles</h2>
 
           {/*agregar, buscar y resetear*/}

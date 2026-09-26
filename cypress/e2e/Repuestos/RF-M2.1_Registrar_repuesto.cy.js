@@ -24,7 +24,7 @@ describe('RF-M2.1 — Registrar repuesto', () => {
 
     cy.get('#repuesto-agregar-nombre').type(NUEVO);
     cy.get('#repuesto-agregar-cantidad').type('30');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('reguistro Exitoso');
 
@@ -43,7 +43,7 @@ describe('RF-M2.1 — Registrar repuesto', () => {
     // "Bujia de prueba" ya viene cargado con los datos de partida.
     cy.get('#repuesto-agregar-nombre').type('Bujia de prueba');
     cy.get('#repuesto-agregar-cantidad').type('5');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('Ya existe un repuesto con ese nombre');
 
@@ -61,7 +61,7 @@ describe('RF-M2.1 — Registrar repuesto', () => {
 
     cy.get('#repuesto-agregar-nombre').type(NUEVO);
     cy.get('#repuesto-agregar-cantidad').type('-5');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('La cantidad debe ser un número mayor o igual a 0');
 

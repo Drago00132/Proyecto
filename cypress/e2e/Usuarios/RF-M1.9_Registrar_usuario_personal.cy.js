@@ -39,7 +39,7 @@ describe('RF-M1.9 — Registrar usuario por personal interno', () => {
     // varias maneras.
     cy.get('#usuario-agregar-rol').select('3');
 
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
     cy.verAviso('reguistro Exitoso');
 
     cy.task('consultaBD', {

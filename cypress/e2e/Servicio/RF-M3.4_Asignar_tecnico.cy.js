@@ -39,7 +39,7 @@ describe('RF-M3.4 — Asignar técnico a historial', () => {
 
         cy.get('#asignar-tecnico').select(String(idTecnico));
         cy.get('#asignar-historial').select(String(idServicio));
-        cy.contains('button', 'Asignar').click();
+        cy.contains('button', /^\s*Asignar\s*$/).click();
 
         cy.verAviso('Técnico asignado correctamente');
 
@@ -69,7 +69,7 @@ describe('RF-M3.4 — Asignar técnico a historial', () => {
 
         cy.get('#asignar-tecnico').select(String(idTecnico));
         cy.get('#asignar-historial').select(String(idServicio));
-        cy.contains('button', 'Asignar').click();
+        cy.contains('button', /^\s*Asignar\s*$/).click();
 
         cy.verAviso('Técnico asignado correctamente');
 

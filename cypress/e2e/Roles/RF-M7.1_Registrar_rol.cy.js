@@ -23,7 +23,7 @@ describe('RF-M7.1 — Registrar rol', () => {
     cy.contains('.modal-title', 'Agregar Nuevo Rol').should('be.visible');
 
     cy.get('#rol-agregar-nombre').type(NUEVO);
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('reguistro Exitoso');
 

@@ -42,29 +42,33 @@ hacer lo ajeno.
 
 ## 1. Qué hace falta para correrlas
 
-**La base local de pruebas.** Son las mismas de las pruebas automatizadas:
+**Una base de datos local con la estructura del sistema.** Sirve la misma que
+usa para desarrollar (`sigat`), o una aparte si prefiere no mezclar. Lo único
+imprescindible es que sea **local**: las pruebas nunca deben correr contra la
+base que está en internet.
 
-```sql
-CREATE DATABASE sigat_pruebas
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+A esa base hay que cargarle los datos de partida:
 
 ```bash
-mysql -u root -p sigat_pruebas < ruta/del/respaldo_estructura.sql
-mysql -u root -p sigat_pruebas < cypress/seed/datos_de_prueba.sql
+mysql -u root -p sigat < ../cypress/seed/datos_de_prueba.sql
 ```
 
-**El archivo `.env` del backend apuntando a ella:**
+**El archivo `.env` del backend apuntando a ella, con la confirmación:**
 
 ```
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=su_contraseña
-DB_NAME=sigat_pruebas
+DB_NAME=sigat
 JWT_SECRET=cualquier_clave_para_pruebas
 JWT_EXPIRES_IN=2h
+
+PRUEBAS_BD_OK=si
 ```
+
+La última línea es la confirmación de que esa base se puede usar para pruebas.
+Sin ella, las pruebas se detienen sin tocar nada.
 
 **No hace falta levantar el backend.** Jest carga la aplicación en memoria
 (`app.js` ya se exporta sin ponerse a escuchar) y le habla directamente con
@@ -81,19 +85,55 @@ npm install --save-dev supertest
 ## 2. Salvaguarda contra la base de producción
 
 Estas pruebas **crean, editan y borran registros**. Antes de tocar nada,
-`apoyo.js` comprueba que `DB_NAME` contenga la palabra "prueba"; si no, se
-detienen con un aviso y no ejecutan ni una sola petición:
+`apoyo.js` comprueba dos cosas, y las dos tienen que cumplirse:
+
+1. **Que el servidor sea el de esta misma máquina** (`DB_HOST` igual a
+   `localhost` o `127.0.0.1`). Así, se llame como se llame la base, las
+   pruebas no pueden correr contra la de producción en Aiven.
+2. **Que el `.env` tenga la línea `PRUEBAS_BD_OK=si`.** Es una confirmación a
+   propósito: nadie corre estas pruebas sin saber que van a escribir en esa
+   base.
+
+Si falta cualquiera de las dos, se detienen sin ejecutar ni una sola petición:
 
 ```
 Las pruebas integradas se detuvieron por seguridad.
-DB_NAME vale "defaultdb" y no parece una base de pruebas.
+DB_HOST vale "sigat-db.aivencloud.com", que no es esta máquina.
+Estas pruebas crean, editan y borran registros: solo pueden correr
+contra una base de datos local, nunca contra la de producción.
 ```
 
-Así, si el `.env` quedó apuntando a la base de Aiven, no pasa nada.
+## Antes de nada: el diagnóstico
+
+Si algo no arranca, no hay que adivinar. Desde la carpeta `backend`:
+
+```bash
+node test/integradas/diagnostico.js
+```
+
+Revisa uno por uno los requisitos (configuración, dependencias, conexión,
+base, tablas, disparadores y datos de partida) y dice en español qué falta y
+qué comando ejecutar. No modifica nada y no muestra la contraseña.
 
 ---
 
-## 3. Cómo correrlas
+## 3. Las pruebas corren una detrás de otra, nunca a la vez
+
+Todos estos archivos trabajan sobre **una sola base de datos**. Si dos
+corrieran al mismo tiempo, uno abriría un servicio en la moto de prueba
+mientras el otro la está limpiando, o los dos intentarían registrar un usuario
+a la vez. Los fallos que salen de ahí no son fallos del sistema: son dos
+pruebas pisándose.
+
+Por eso el archivo `jest.config.js` de la carpeta `backend` trae
+`maxWorkers: 1`. Jest, por su cuenta, reparte los archivos entre varios
+procesos según los núcleos que tenga el equipo, así que **sin esa línea el
+resultado cambia de un computador a otro**. Con ella, los archivos corren uno
+detrás de otro y el resultado es el mismo siempre.
+
+No hay que hacer nada especial: la configuración ya está puesta.
+
+## 4. Cómo correrlas
 
 ```bash
 npm test Cliente             # solo las del Cliente
@@ -109,7 +149,7 @@ siguen corriendo solas sin base de datos.
 
 ---
 
-## 4. El correo
+## 5. El correo
 
 Lo único que no es real en estas pruebas es el envío de correo. El sistema
 manda dos correos: el código de verificación en dos pasos (Administrador y
@@ -124,7 +164,7 @@ haría la persona al abrir su buzón.
 
 ---
 
-## 5. Qué comprueba cada prueba
+## 6. Qué comprueba cada prueba
 
 Siempre las dos caras:
 
@@ -147,7 +187,7 @@ los que arranca, y sin servicios ni entradas sueltas.
 
 ---
 
-## 6. Qué cubre cada archivo
+## 7. Qué cubre cada archivo
 
 | Archivo | Requerimientos que recorre |
 |---|---|

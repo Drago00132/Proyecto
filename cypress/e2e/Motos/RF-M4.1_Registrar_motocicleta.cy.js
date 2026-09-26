@@ -23,7 +23,7 @@ describe('RF-M4.1 — Registrar motocicleta', () => {
     cy.get('#moto-agregar-marca').type('Bajaj');
     cy.get('#moto-agregar-modelo').type('Pulsar NS 160');
     cy.get('#moto-agregar-placa').type(PLACA_NUEVA);
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('reguistro Exitoso');
 
@@ -46,7 +46,7 @@ describe('RF-M4.1 — Registrar motocicleta', () => {
     cy.get('#moto-agregar-marca').type('Bajaj');
     cy.get('#moto-agregar-modelo').type('Pulsar NS 160');
     cy.get('#moto-agregar-placa').type('PRB001');
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('Ya existe un registro con esos datos');
 
@@ -69,7 +69,7 @@ describe('RF-M4.1 — Registrar motocicleta', () => {
     cy.get('#moto-agregar-marca').type('Kawasaki');
     cy.get('#moto-agregar-modelo').type('Rouser NS 200');
     cy.get('#moto-agregar-placa').type(PLACA_NUEVA);
-    cy.contains('button', 'Agregar').click();
+    cy.contains('button', /^\s*Agregar\s*$/).click();
 
     cy.verAviso('reguistro Exitoso');
 

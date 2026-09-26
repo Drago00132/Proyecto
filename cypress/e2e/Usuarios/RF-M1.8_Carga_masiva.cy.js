@@ -69,7 +69,12 @@ describe('RF-M1.8 — Carga masiva de usuarios', () => {
     );
     cy.contains('button', 'Subir Técnicos').click();
 
-    cy.verAviso('No se pudo procesar la carga masiva');
+    // El aviso que sale es el del servidor, no el texto de respaldo de la
+    // pantalla: la fila sin contraseña hace fallar el cifrado, el servidor
+    // responde 500 con su mensaje genérico, y Tecnicos.js muestra ese mensaje
+    // (`error.response.data.message`) porque solo usa su propio texto cuando la
+    // respuesta no trae ninguno.
+    cy.verAviso('Ocurrió un error interno');
 
     cy.task('consultaBD', {
       sql: 'SELECT numero_identidad FROM usuarios WHERE numero_identidad = ?',

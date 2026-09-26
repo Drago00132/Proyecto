@@ -42,6 +42,7 @@ describe('RF-M3.2 — Consultar historial', () => {
     cy.entrarComo('cliente');
     cy.irASeccion('Servicio');
 
+    cy.buscarServicio(idAsignado);
     cy.contains('table tbody tr', 'PRB001').find('button').contains('Ver Detalles').click();
 
     cy.contains('.modal-title', 'Detalles Completos del Servicio').should('be.visible');
@@ -55,9 +56,13 @@ describe('RF-M3.2 — Consultar historial', () => {
     cy.irASeccion('Servicio');
 
     // Ve el que le asignaron.
+    cy.buscarServicio(idAsignado);
     cy.contains('table tbody tr', 'PRB001').should('exist');
-    // Y no el que no tiene técnico.
-    cy.contains('table tbody tr', 'PRB002').should('not.exist');
+
+    // Que no vea el ajeno se comprueba contra la API, unas líneas más abajo,
+    // y no contra la tabla: el buscador de la pantalla trae cualquier
+    // servicio por su número, sin mirar de quién es, así que buscarlo no
+    // probaría nada. El listado sí respeta el rol, y eso es lo que se mide.
 
     cy.tokenApi('tecnico').then((token) => {
       cy.peticionApi(token, { method: 'GET', url: '/api/historial/listar?limit=999999' })
@@ -81,7 +86,9 @@ describe('RF-M3.2 — Consultar historial', () => {
 
     cy.entrarComo('recepcionista');
     cy.irASeccion('Servicio');
+    cy.buscarServicio(idAsignado);
     cy.contains('table tbody tr', 'PRB001').should('exist');
+    cy.buscarServicio(idSinAsignar);
     cy.contains('table tbody tr', 'PRB002').should('exist');
   });
 
@@ -97,7 +104,9 @@ describe('RF-M3.2 — Consultar historial', () => {
 
     cy.entrarComo('administrador');
     cy.irASeccion('Servicio');
+    cy.buscarServicio(idAsignado);
     cy.contains('table tbody tr', 'PRB001').should('exist');
+    cy.buscarServicio(idSinAsignar);
     cy.contains('table tbody tr', 'PRB002').should('exist');
   });
 
@@ -112,8 +121,11 @@ describe('RF-M3.2 — Consultar historial', () => {
     cy.contains('table tbody tr', 'PRB001').should('exist');
     cy.contains('table tbody tr', 'PRB002').should('not.exist');
 
-    // El botón "resetear" devuelve el listado completo.
+    // El botón "resetear" devuelve el listado completo. No se busca PRB002
+    // aquí: el listado vuelve paginado de cinco en cinco y ese servicio no
+    // tiene por qué caer en la primera página. Lo que prueba que el filtro se
+    // soltó es que vuelvan a verse varios servicios y reaparezca el paginador.
     cy.contains('button', 'resetear').click();
-    cy.contains('table tbody tr', 'PRB002').should('exist');
+    cy.get('table tbody tr').should('have.length.greaterThan', 1);
   });
 });

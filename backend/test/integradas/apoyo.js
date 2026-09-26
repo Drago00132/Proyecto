@@ -14,19 +14,41 @@ const db = require('../../config/db');
 const app = require('../../app');
 
 // ---------------------------------------------------------------------------
-//  Salvaguarda: estas pruebas crean, editan y borran registros. Si por error
-//  el archivo .env quedó apuntando a la base de producción, aquí se detiene
-//  todo antes de tocar un solo dato.
+//  Salvaguarda: estas pruebas crean, editan y borran registros. Antes de tocar
+//  un solo dato se comprueban dos cosas, y las dos tienen que cumplirse:
+//
+//    1. Que el servidor de base de datos sea el de esta misma máquina. Así, se
+//       llame como se llame la base, nunca pueden correr contra la base que
+//       está en internet (Aiven), que es la del sistema en producción.
+//
+//    2. Que el archivo .env tenga escrita la línea  PRUEBAS_BD_OK=si  . Es una
+//       confirmación a propósito: nadie corre estas pruebas sin saber que van
+//       a escribir en esa base.
 // ---------------------------------------------------------------------------
-const NOMBRE_BD = process.env.DB_NAME || '';
+const NOMBRE_BD  = process.env.DB_NAME || '';
+const SERVIDOR   = (process.env.DB_HOST || '').trim().toLowerCase();
+const CONFIRMADO = (process.env.PRUEBAS_BD_OK || '').trim().toLowerCase();
+
+const SERVIDORES_LOCALES = ['localhost', '127.0.0.1', '::1', ''];
+const CONFIRMACIONES = ['si', 'sí', 'yes', 'true', '1'];
 
 function comprobarBaseDePruebas() {
-  if (!NOMBRE_BD.toLowerCase().includes('prueba')) {
+  if (!SERVIDORES_LOCALES.includes(SERVIDOR)) {
     throw new Error(
       `\n\n  Las pruebas integradas se detuvieron por seguridad.\n` +
-      `  DB_NAME vale "${NOMBRE_BD}" y no parece una base de pruebas.\n` +
-      `  Apunta el archivo .env del backend a la base local (DB_NAME=sigat_pruebas)\n` +
-      `  antes de correrlas: estas pruebas crean, editan y borran registros.\n`
+      `  DB_HOST vale "${process.env.DB_HOST}", que no es esta máquina.\n` +
+      `  Estas pruebas crean, editan y borran registros: solo pueden correr\n` +
+      `  contra una base de datos local, nunca contra la de producción.\n`
+    );
+  }
+
+  if (!CONFIRMADO || !CONFIRMACIONES.includes(CONFIRMADO)) {
+    throw new Error(
+      `\n\n  Las pruebas integradas se detuvieron por seguridad.\n` +
+      `  Van a crear, editar y borrar registros en la base "${NOMBRE_BD}".\n` +
+      `  Si esa es la base que quieres usar para pruebas, agrega esta línea\n` +
+      `  al archivo .env de la carpeta backend:\n\n` +
+      `      PRUEBAS_BD_OK=si\n`
     );
   }
 }
@@ -125,7 +147,10 @@ function datosUsuario(identidad, idRol, etiqueta) {
     nombre: 'Prueba',
     apellido: 'Integrada',
     fecha_nacimiento: '1995-05-20',
-    numero_celular: '3001234567',
+    // El celular se saca del propio documento, porque la base exige que no se
+    // repita entre usuarios. Con un número fijo, dos usuarios de prueba vivos
+    // al mismo tiempo chocaban.
+    numero_celular: '3' + String(identidad).slice(-9),
     correo_electronico: `${etiqueta}@gmail.com`,
     contrasena: CONTRASENA,
     id_rol: idRol,

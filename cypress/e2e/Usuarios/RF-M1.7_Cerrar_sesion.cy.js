@@ -30,7 +30,7 @@ describe('RF-M1.7 — Cerrar sesión', () => {
 
     cy.request({
       method: 'GET',
-      url: `${Cypress.env('apiUrl')}/api/usuarios/listar`,
+      url: `${Cypress.expose('apiUrl')}/api/usuarios/listar`,
       failOnStatusCode: false,
     }).then((respuesta) => {
       expect(respuesta.status, 'el servidor niega el acceso sin sesión').to.be.oneOf([401, 403]);

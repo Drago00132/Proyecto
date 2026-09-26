@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function AsignarTecnico() {
@@ -68,7 +68,6 @@ function AsignarTecnico() {
 
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={3000} />
 
       {historialesSinAsignar.length === 0 && (
         <p className="text-muted text-center">No hay historiales pendientes de asignar técnico.</p>

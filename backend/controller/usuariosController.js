@@ -173,11 +173,103 @@ exports.obtenerMiPerfil = async (req, res) => {
     }
 };
 
+// Roles que, desde Mi perfil, también pueden cambiar su propio documento,
+// tipo de documento y fecha de nacimiento: Administrador y Súper Administrador.
+const ROLES_EDITAN_DATOS_PERSONALES = [1, 17];
+const TIPOS_DOCUMENTO = ['Cedula de Ciudadania', 'Cedula de Extranjeria', 'Pasaporte'];
+// numero_identidad es int(11) con signo en la base: por encima de este valor
+// MySQL no lo guarda bien.
+const MAX_NUMERO_IDENTIDAD = 2147483647;
+
+function edadEnAnios(fechaTexto) {
+    const [anio, mes, dia] = fechaTexto.split('-').map(Number);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - anio;
+    const mesActual = hoy.getMonth() + 1;
+    if (mesActual < mes || (mesActual === mes && hoy.getDate() < dia)) edad--;
+    return edad;
+}
+
+async function actualizarMiPerfilAdmin(req, res) {
+    const { numero_identidad, tipo_documento, fecha_nacimiento, nombre, apellido, correo_electronico, numero_celular } = req.body;
+
+    if (!numero_identidad || !tipo_documento || !fecha_nacimiento) {
+        return res.status(400).json({ message: 'Número de identidad, tipo de documento y fecha de nacimiento son obligatorios' });
+    }
+
+    const nuevaIdentidad = String(numero_identidad).trim();
+    if (!/^\d{10}$/.test(nuevaIdentidad)) {
+        return res.status(400).json({ message: 'El numero de identidad debe tener exactamente 10 dígitos.' });
+    }
+    if (Number(nuevaIdentidad) > MAX_NUMERO_IDENTIDAD) {
+        return res.status(400).json({ message: `El numero de identidad no puede ser mayor a ${MAX_NUMERO_IDENTIDAD}.` });
+    }
+
+    if (!TIPOS_DOCUMENTO.includes(tipo_documento)) {
+        return res.status(400).json({ message: 'Tipo de documento no válido' });
+    }
+
+    const fecha = String(fecha_nacimiento).split('T')[0];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || Number.isNaN(new Date(fecha).getTime())) {
+        return res.status(400).json({ message: 'La fecha de nacimiento no es válida' });
+    }
+    if (edadEnAnios(fecha) < 18) {
+        return res.status(400).json({ message: 'El usuario debe ser mayor de 18 años.' });
+    }
+
+    const idActual = String(req.usuario.id);
+    const cambioIdentidad = nuevaIdentidad !== idActual;
+
+    try {
+        if (cambioIdentidad) {
+            const otro = await usuario_modelo.findById(nuevaIdentidad);
+            if (otro) {
+                return res.status(409).json({ message: 'Ya existe un usuario con ese número de identidad.' });
+            }
+        }
+
+        await usuario_modelo.updatePerfilAdmin(idActual, {
+            numero_identidad: nuevaIdentidad,
+            tipo_documento,
+            fecha_nacimiento: fecha,
+            nombre,
+            apellido,
+            correo_electronico,
+            numero_celular
+        });
+
+        const respuesta = { message: 'Perfil actualizado correctamente' };
+
+        // El token de la sesión guarda el número de identidad. Si cambió, se
+        // entrega uno nuevo para que la web y el móvil sigan funcionando sin
+        // tener que volver a iniciar sesión.
+        if (cambioIdentidad) {
+            respuesta.numero_identidad = Number(nuevaIdentidad);
+            respuesta.token = jwt.sign(
+                { id: Number(nuevaIdentidad), nombre, rol: req.usuario.rol },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+        }
+
+        res.status(200).json(respuesta);
+    } catch (error) {
+        if (error.code === 'ER_ROW_IS_REFERENCED_2' || error.code === 'ER_ROW_IS_REFERENCED') {
+            return res.status(409).json({ message: 'No se pudo cambiar el número de identidad porque tiene registros relacionados en el sistema.' });
+        }
+        manejarError(error, res, 'actualizar mi perfil');
+    }
+}
+
 exports.actualizarMiPerfil = async (req, res) => {
     const { nombre, apellido, correo_electronico, numero_celular } = req.body;
 
     if (!nombre || !correo_electronico) {
         return res.status(400).json({ message: 'Nombre y correo electrónico son obligatorios' });
+    }
+
+    if (ROLES_EDITAN_DATOS_PERSONALES.includes(Number(req.usuario.rol))) {
+        return actualizarMiPerfilAdmin(req, res);
     }
 
     try {

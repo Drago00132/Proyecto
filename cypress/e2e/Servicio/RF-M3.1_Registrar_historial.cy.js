@@ -24,7 +24,7 @@ describe('RF-M3.1 — Registrar historial', () => {
     cy.idMoto('PRB001').then((idMoto) => {
       cy.get('#historial-agregar-moto').select(String(idMoto));
       cy.get('#historial-agregar-descripcion-problema').type(PROBLEMA);
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('Registro Exitoso');
 
@@ -57,7 +57,7 @@ describe('RF-M3.1 — Registrar historial', () => {
       cy.contains('button', 'Nuevo servicio').click();
       cy.get('#historial-agregar-moto').select(String(idMoto));
       cy.get('#historial-agregar-descripcion-problema').type('Otro problema distinto en la misma moto');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('ya tiene un historial activo');
 
@@ -79,12 +79,12 @@ describe('RF-M3.1 — Registrar historial', () => {
 
       // Solo espacios: el sistema lo toma como campo sin diligenciar.
       cy.get('#historial-agregar-descripcion-problema').type('     ');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
       cy.verAviso('faltan datos obligatorio');
 
       // Descripción demasiado corta.
       cy.get('#historial-agregar-descripcion-problema').clear().type('no prende');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
       cy.verAviso('al menos 10 caracteres');
 
       cy.task('consultaBD', {
@@ -107,7 +107,7 @@ describe('RF-M3.1 — Registrar historial', () => {
         'cypress/fixtures/archivos/documento_no_permitido.txt',
         { force: true }
       );
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('Solo se permiten imágenes');
 
@@ -132,7 +132,7 @@ describe('RF-M3.1 — Registrar historial', () => {
       cy.get('#historial-agregar-cliente').select('1900000001');
       cy.get('#historial-agregar-moto').select(String(idMoto));
       cy.get('#historial-agregar-descripcion-problema').type('Cambio de aceite y revisión general de frenos');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('Registro Exitoso');
 

@@ -1,16 +1,54 @@
 const { defineConfig } = require('cypress');
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 
-// Conexión a la BASE DE DATOS LOCAL DE PRUEBAS. Nunca apuntes esto a la base
-// de producción (Aiven): las pruebas crean, editan y borran registros.
+// Los datos de la base de datos se leen del mismo archivo que usa el backend
+// (backend/.env), para no tener la contraseña escrita en dos sitios distintos
+// y que no se puedan desincronizar. Se lee a mano, con fs, para no obligar a
+// instalar dotenv en la raíz del proyecto.
+function leerEnv(ruta) {
+  const valores = {};
+  if (!fs.existsSync(ruta)) return valores;
+  for (const linea of fs.readFileSync(ruta, 'utf8').split(/\r?\n/)) {
+    const limpia = linea.trim();
+    if (!limpia || limpia.startsWith('#')) continue;
+    const corte = limpia.indexOf('=');
+    if (corte === -1) continue;
+    const clave = limpia.slice(0, corte).trim();
+    let valor = limpia.slice(corte + 1).trim();
+    const entrecomillado =
+      (valor.startsWith('"') && valor.endsWith('"')) ||
+      (valor.startsWith("'") && valor.endsWith("'"));
+    if (entrecomillado) valor = valor.slice(1, -1);
+    valores[clave] = valor;
+  }
+  return valores;
+}
+
+const ENV = leerEnv(path.join(__dirname, 'backend', '.env'));
+
 const BD = {
-  host: process.env.CY_DB_HOST || 'localhost',
-  port: Number(process.env.CY_DB_PORT || 3306),
-  user: process.env.CY_DB_USER || 'root',
-  password: process.env.CY_DB_PASSWORD || '',
-  database: process.env.CY_DB_NAME || 'sigat_pruebas',
+  host: process.env.CY_DB_HOST || ENV.DB_HOST || 'localhost',
+  port: Number(process.env.CY_DB_PORT || ENV.DB_PORT || 3306),
+  user: process.env.CY_DB_USER || ENV.DB_USER || 'root',
+  password: process.env.CY_DB_PASSWORD || ENV.DB_PASSWORD || 'JEUSarias',
+  database: process.env.CY_DB_NAME || ENV.DB_NAME || 'sigat',
   multipleStatements: true,
 };
+
+// La misma salvaguarda que tienen las pruebas integradas: estas pruebas crean,
+// editan y borran registros, así que solo pueden correr contra una base de
+// datos de esta misma máquina, nunca contra la de producción.
+const SERVIDORES_LOCALES = ['localhost', '127.0.0.1', '::1'];
+if (!SERVIDORES_LOCALES.includes(String(BD.host).trim().toLowerCase())) {
+  throw new Error(
+    'Las pruebas automatizadas se detuvieron por seguridad.\n' +
+    `El servidor de base de datos es "${BD.host}", que no es esta máquina.\n` +
+    'Estas pruebas crean, editan y borran registros: solo pueden correr\n' +
+    'contra una base de datos local, nunca contra la de producción.'
+  );
+}
 
 async function consultar(sql, valores = []) {
   const conexion = await mysql.createConnection(BD);
@@ -23,6 +61,20 @@ async function consultar(sql, valores = []) {
 }
 
 module.exports = defineConfig({
+  // Valores que las pruebas pueden leer desde el navegador con
+  // Cypress.expose(). Aquí solo va lo que no es secreto.
+  //
+  // Antes esto estaba dentro de e2e como `env` y se leía con Cypress.env(),
+  // pero Cypress quitó Cypress.env() en la versión 16. Ahora los valores
+  // públicos van en `expose` (en la raíz de la configuración, no dentro de
+  // e2e) y se leen con Cypress.expose(), que sigue siendo inmediato, sin
+  // .then(). Los valores sensibles irían en `env` y se leerían con cy.env().
+  expose: {
+    // URL del backend. Las pruebas la usan para las comprobaciones que se
+    // hacen contra la API directamente (permisos por rol, códigos de estado).
+    apiUrl: process.env.CY_API_URL || 'http://localhost:3100',
+  },
+
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx}',
@@ -34,12 +86,6 @@ module.exports = defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     retries: { runMode: 1, openMode: 0 },
-
-    // URL del backend. Las pruebas la usan para las comprobaciones que se
-    // hacen contra la API directamente (permisos por rol, códigos de estado).
-    env: {
-      apiUrl: process.env.CY_API_URL || 'http://localhost:3100',
-    },
 
     setupNodeEvents(on, config) {
       on('task', {

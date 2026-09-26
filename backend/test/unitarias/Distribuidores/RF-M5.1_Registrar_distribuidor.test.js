@@ -1,0 +1,68 @@
+// RF-M5.1 — Registrar distribuidor
+// Casos de prueba: CP-069 (M5), CP-070 (M5)
+//
+// Nota: en el documento de Casos de Prueba la numeración vuelve a empezar
+// en el módulo 5, así que estos códigos también existen en el módulo 3. Se
+// marcan con "(M5)" para poder distinguirlos en el informe de las pruebas.
+
+jest.mock('../../../model/distribuidorModelo');
+jest.mock('../../../utils/manejarError');
+
+const { crearDistribuidor } = require('../../../controller/distribuidoresController');
+const distribuidor_mo = require('../../../model/distribuidorModelo');
+const manejarError = require('../../../utils/manejarError');
+
+function crearRes() {
+    return {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis()
+    };
+}
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
+describe('RF-M5.1 — Registrar distribuidor', () => {
+    test('CP-070 (M5) — Debería retornar 400 si el nombre viene vacío', async () => {
+        const req = { body: { telefono: '3001234567' } };
+        const res = crearRes();
+
+        await crearDistribuidor(req, res);
+
+        expect(distribuidor_mo.create).not.toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    test('CP-069 (M5) — Debería registrar el distribuidor y responder 201', async () => {
+        distribuidor_mo.create.mockResolvedValue(10);
+
+        const req = {
+            body: {
+                nombre_distribuidor: 'Repuestos del Norte',
+                telefono: '3001234567',
+                correo: 'contacto@repuestosnorte.com',
+                direccion: 'Calle 10 #20-30',
+                contacto: 'Juan Pérez'
+            }
+        };
+        const res = crearRes();
+
+        await crearDistribuidor(req, res);
+
+        expect(distribuidor_mo.create).toHaveBeenCalledWith(req.body);
+        expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+    test('Debería delegar a manejarError ante un error inesperado', async () => {
+        const error = new Error('fallo de bd');
+        distribuidor_mo.create.mockRejectedValue(error);
+
+        const req = { body: { nombre_distribuidor: 'Repuestos del Norte' } };
+        const res = crearRes();
+
+        await crearDistribuidor(req, res);
+
+        expect(manejarError).toHaveBeenCalledWith(error, res);
+    });
+});

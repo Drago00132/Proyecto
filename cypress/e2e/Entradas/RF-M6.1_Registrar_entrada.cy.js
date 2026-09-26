@@ -23,6 +23,25 @@ describe('RF-M6.1 — Registrar entrada de repuestos', () => {
     cy.contains('.modal-title', 'Registrar entrada de repuestos').should('be.visible');
   };
 
+  /**
+   * Borra las entradas que hayan quedado de corridas anteriores con las
+   * fechas que usan estas pruebas. Si una prueba falla antes de su limpieza
+   * final, la entrada se queda en la base y en la siguiente corrida la
+   * consulta encuentra varias en vez de una. Se borran con la tarea
+   * borrarEntrada para que el sistema devuelva el stock que habían sumado.
+   */
+  beforeEach(() => {
+    cy.task('consultaBD', {
+      sql: `SELECT e.id_entrada
+            FROM entrada_repuestos e
+            JOIN repuestos r ON e.id_repuestos = r.id_repuestos
+            WHERE r.nombre_repuesto = ? AND e.fecha_entrada IN (?, ?)`,
+      valores: [REPUESTO, '2026-03-10', '2026-03-11'],
+    }).then((filas) => {
+      filas.forEach((fila) => cy.task('borrarEntrada', fila.id_entrada));
+    });
+  });
+
   it('CP-077 (M6) — El administrador registra una entrada y el inventario sube', () => {
     stockDe(REPUESTO).then((stockAntes) => {
       abrirFormulario('administrador');
@@ -32,7 +51,7 @@ describe('RF-M6.1 — Registrar entrada de repuestos', () => {
       cy.get('#entrada-agregar-repuesto').select(REPUESTO);
       cy.get('#entrada-agregar-distribuidor').select(DISTRIBUIDOR);
       cy.get('#entrada-agregar-usuario').select('1900000010');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('reguistro Exitoso');
 
@@ -67,7 +86,7 @@ describe('RF-M6.1 — Registrar entrada de repuestos', () => {
       cy.get('#entrada-agregar-repuesto').select(REPUESTO);
       cy.get('#entrada-agregar-distribuidor').select(DISTRIBUIDOR);
       cy.get('#entrada-agregar-usuario').select('1900000010');
-      cy.contains('button', 'Agregar').click();
+      cy.contains('button', /^\s*Agregar\s*$/).click();
 
       cy.verAviso('La cantidad ingresada debe ser un número mayor a 0');
 

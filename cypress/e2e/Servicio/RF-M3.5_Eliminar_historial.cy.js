@@ -30,6 +30,7 @@ describe('RF-M3.5 — Eliminar historial', () => {
       cy.entrarComo('administrador');
       cy.irASeccion('Servicio');
 
+      cy.buscarServicio(idServicio);
       cy.contains('table tbody tr', 'PRB001').find('button').contains('Eliminar').click();
       cy.contains('¿Seguro que quieres eliminar este Servicio?').should('be.visible');
       cy.contains('button', 'eliminar').click();
@@ -63,6 +64,7 @@ describe('RF-M3.5 — Eliminar historial', () => {
         // El cliente ya no tiene el botón de eliminar en su fila.
         cy.entrarComo('cliente');
         cy.irASeccion('Servicio');
+        cy.buscarServicio(idServicio);
         cy.contains('table tbody tr', 'PRB001').contains('button', 'Eliminar').should('not.exist');
 
         // Y el servidor se lo niega.
@@ -106,6 +108,7 @@ describe('RF-M3.5 — Eliminar historial', () => {
     montarServicio().then((idServicio) => {
       cy.entrarComo('recepcionista');
       cy.irASeccion('Servicio');
+      cy.buscarServicio(idServicio);
       cy.contains('table tbody tr', 'PRB001').contains('button', 'Eliminar').should('not.exist');
 
       cy.tokenApi('recepcionista').then((token) => {
